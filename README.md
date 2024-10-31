@@ -2,15 +2,15 @@
 
 farmers jounal app project
 
-## Getting Started
+## Project Description 
+**Author** : Yang seung jun 
 
-This project is a starting point for a Flutter application.
+**figma** : https://www.figma.com/design/mH4hN1Mm68mfZOw7ZdPYLO/%EB%86%8D%EC%97%85%EC%9D%BC%EC%A7%80%EA%B8%B0%ED%9A%8D%EC%84%9C?node-id=0-1&t=rUAQsCf8aykENsmw-1
 
-A few resources to get you started if this is your first Flutter project:
+**Description** : 
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Journaling app for farmers.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Share your daily journal about your farming process with other farmers.
+
+Track what things to be done based on your past notes and ohter farmers notes. 
