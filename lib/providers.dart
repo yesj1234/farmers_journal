@@ -31,7 +31,7 @@ Future<List<dynamic>> journal(Ref ref) async {
   db.collection("journals").get().then(
     (querySnapshot) {
       for (var docSnapshot in querySnapshot.docs) {
-        print(docSnapshot.data());
+        // print(docSnapshot.data());
         result.add(Journal.fromFirestore(docSnapshot, null));
       }
     },
