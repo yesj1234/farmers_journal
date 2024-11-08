@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+//Riverpod
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:farmers_journal/providers.dart';
+import 'package:farmers_journal/model/user.dart';
 
 import 'package:farmers_journal/components/button/button_create_post.dart';
 import 'package:farmers_journal/components/button/button_status.dart';
 import 'package:farmers_journal/components/avatar/avatar_profile.dart';
+import 'package:farmers_journal/components/card/card_single.dart';
 
 /// TODO:
 ///  - 1. Apply font. Pretandard
@@ -11,11 +16,11 @@ import 'package:farmers_journal/components/avatar/avatar_profile.dart';
 ///  - 4. Connect Database. :: _Content should change based on the user's journal status.
 ///  - 5. Think of the properties that should be resolved to each child components. => Needs modeling first.
 ///  - 6. Add onTap / onClick callback to profile image directing to the profile setting page.
-class PageMain extends StatelessWidget {
+class PageMain extends ConsumerWidget {
   const PageMain({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
@@ -24,12 +29,12 @@ class PageMain extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 5.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Spacer(),
               _TopNavTemp(),
-              Spacer(flex: 9),
               _Content(),
-              Spacer(flex: 10)
+              Spacer(flex: 10),
             ],
           ),
         ),
@@ -74,7 +79,7 @@ class _TopNavTemp extends StatelessWidget {
                   onClick: () => debugPrint("Clicked"),
                 ),
                 const Spacer(),
-                const AvatarProfile(width: 70, height: 70),
+                const AvatarProfile(width: 55, height: 55),
               ],
             ),
           ),
@@ -84,8 +89,30 @@ class _TopNavTemp extends StatelessWidget {
   }
 }
 
+/// TODO
+/// 1. Fetch user data from firestore => StatefulWidget.
+/// 2. Based on the content status of the user show DefaultContent or the CardView and Consider the responsiveness.
+/// 3. Add sorting buttons.
 class _Content extends StatelessWidget {
+  final bool _isEmpty = false; // To be replaced to fetching logic.
+
   const _Content({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget child = _isEmpty ? const _DefaultContent() : _UserContent();
+
+    final TextStyle textStyle = TextStyle(
+      color: Colors.grey.shade600,
+      fontWeight: FontWeight.bold,
+    );
+
+    return Center(child: child);
+  }
+}
+
+class _DefaultContent extends StatelessWidget {
+  const _DefaultContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -95,16 +122,46 @@ class _Content extends StatelessWidget {
     );
 
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset("assets/icons/LogoTemp.png"),
-          const SizedBox(
-            height: 15,
-          ),
-          Text("일지를 작성해보세요", style: textStyle),
-        ],
-      ),
+      child: Padding(
+          padding: const EdgeInsets.only(top: 200),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/icons/LogoTemp.png"),
+              const SizedBox(
+                height: 15,
+              ),
+              Text("일지를 작성해보세요", style: textStyle),
+            ],
+          )),
     );
+  }
+}
+
+class _UserContent extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final journals = ref.watch(journalProvider);
+
+    return ListView(
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(top: 4.0),
+        children: switch (journals) {
+          AsyncData(:final value) => [
+              for (var journal in value)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Center(
+                    child: CardSingle(
+                        title: journal.title,
+                        content: journal.content,
+                        createdAt: journal.createdAt,
+                        image: journal.image),
+                  ),
+                )
+            ],
+          AsyncError() => [const Text("Oops! Something went wrong")],
+          _ => [const CircularProgressIndicator()]
+        });
   }
 }

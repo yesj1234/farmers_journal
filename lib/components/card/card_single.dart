@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmers_journal/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 /// TODO:
 /// 2. GET dummy image stored in fire storage DONE / dummy title and content in firestore
@@ -9,76 +10,61 @@ import 'package:firebase_storage/firebase_storage.dart';
 /// 6. Change the code showing the placement of pictures.
 /// 7. Add on progress circular indicator to show the fetching image.
 /// 8. Add caching image to local device.
-class CardSingle extends StatefulWidget {
-  const CardSingle({super.key});
-
-  @override
-  State<CardSingle> createState() => _CardSingleState();
-}
-
-class _CardSingleState extends State<CardSingle> {
-  String? imageURL;
+class CardSingle extends StatelessWidget {
+  const CardSingle(
+      {super.key, this.createdAt, this.title, this.content, this.image});
   final double innerPadding = 12.0;
-
-  Future<void> _fetchImageURLs() async {
-    final storageRef = FirebaseStorage.instance.ref();
-    final String url =
-        await storageRef.child('/grapeFarm.jpg').getDownloadURL();
-
-    setState(() {
-      imageURL = url;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchImageURLs();
-  }
+  final Timestamp? createdAt;
+  final String? title;
+  final String? content;
+  final String? image;
 
   @override
   Widget build(BuildContext context) {
-    final Widget image = imageURL != null
-        ? ClipRRect(
-            borderRadius: const BorderRadius.horizontal(
-              left: Radius.circular(4.0),
-              right: Radius.circular(4.0),
-            ),
-            child: Image.network(imageURL!, fit: BoxFit.cover),
-          )
-        : const Text("Network Error");
-    // debugPrint(imageURL);
-
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _UpperDatePortion(
           padding: innerPadding,
-          child: const Text(
-            "오늘",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          child: Text(
+            "${DateTime.parse(createdAt!.toDate().toString()).day}일",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ),
         ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 335, maxWidth: 325),
+          constraints: const BoxConstraints(maxHeight: 270, maxWidth: 325),
           child: Card(
-            color: colorScheme.primaryContainer,
+            color: colorScheme.surface.withOpacity(0.5),
             elevation: 3.0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _ImagePortion(padding: innerPadding, child: image),
+                _ImagePortion(padding: innerPadding, url: image),
+                title != null
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(horizontal: innerPadding),
+                        child: Text(
+                          title!,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : const SizedBox(width: 0, height: 0),
                 _TextPortion(
                   padding: innerPadding,
                   child: RichText(
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      text: const TextSpan(
-                          text:
-                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In neque quam, pellentesque eu nisl a, posuere posuere lacus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. ")),
+                      text: TextSpan(
+                          style: TextStyle(color: colorScheme.onSurfaceVariant),
+                          text: content)),
                 ),
+                const Spacer(),
                 const Divider(
                   indent: 12,
                   endIndent: 12,
@@ -111,17 +97,35 @@ class _UpperDatePortion extends StatelessWidget {
 }
 
 class _ImagePortion extends StatelessWidget {
-  final Widget? child;
+  final String? url;
   final double padding;
 
-  const _ImagePortion({required this.child, required this.padding});
+  const _ImagePortion({required this.padding, required this.url});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(
-            left: padding, right: padding, top: 8.0, bottom: 8.0),
-        child: child);
+      padding:
+          EdgeInsets.only(left: padding, right: padding, top: 8.0, bottom: 8.0),
+      child: SizedBox(
+        height: 110,
+        child: ClipRRect(
+          clipBehavior: Clip.antiAlias,
+          borderRadius: const BorderRadius.horizontal(
+            left: Radius.circular(4.0),
+            right: Radius.circular(4.0),
+          ),
+          child: url != null
+              ? Center(
+                  child: AspectRatio(
+                    aspectRatio: 13 / 4,
+                    child: Image.network(url!, fit: BoxFit.fill),
+                  ),
+                )
+              : const Text("Network Error"),
+        ),
+      ),
+    );
   }
 }
 
@@ -169,7 +173,7 @@ class _DatePortion extends StatelessWidget {
     );
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: padding),
+      padding: EdgeInsets.only(left: padding, right: padding, bottom: 4.0),
       child: Row(
         children: [
           Text(
