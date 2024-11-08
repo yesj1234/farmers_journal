@@ -45,3 +45,6 @@ app.*.map.json
 # Firebase configs
 /firebase.json
 /firepit-log.txt
+
+# code generators generated files
+*.g.*
