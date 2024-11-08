@@ -31,10 +31,8 @@ class PageMain extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Spacer(),
               _TopNavTemp(),
-              _Content(),
-              Spacer(flex: 10),
+              Expanded(child: _Content()),
             ],
           ),
         ),
@@ -102,11 +100,6 @@ class _Content extends StatelessWidget {
   Widget build(BuildContext context) {
     final Widget child = _isEmpty ? const _DefaultContent() : _UserContent();
 
-    final TextStyle textStyle = TextStyle(
-      color: Colors.grey.shade600,
-      fontWeight: FontWeight.bold,
-    );
-
     return Center(child: child);
   }
 }
@@ -121,19 +114,15 @@ class _DefaultContent extends StatelessWidget {
       fontWeight: FontWeight.bold,
     );
 
-    return Center(
-      child: Padding(
-          padding: const EdgeInsets.only(top: 200),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset("assets/icons/LogoTemp.png"),
-              const SizedBox(
-                height: 15,
-              ),
-              Text("일지를 작성해보세요", style: textStyle),
-            ],
-          )),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset("assets/icons/LogoTemp.png"),
+        const SizedBox(
+          height: 15,
+        ),
+        Text("일지를 작성해보세요", style: textStyle),
+      ],
     );
   }
 }
