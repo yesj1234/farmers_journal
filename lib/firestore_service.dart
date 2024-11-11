@@ -8,8 +8,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/model/user.dart';
 import 'package:farmers_journal/model/journal.dart';
 
-part 'providers.g.dart';
+part 'firestore_service.g.dart';
 
+// firestore_service.dart => firebase service (providers) 로 네이밍 변경
 @riverpod
 Future<User?> user(Ref ref) async {
   final db = FirebaseFirestore.instance;
