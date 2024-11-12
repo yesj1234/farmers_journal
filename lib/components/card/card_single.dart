@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmers_journal/providers.dart';
+import 'package:farmers_journal/firestore_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:farmers_journal/model/journal.dart';
 
 /// TODO:
 /// 2. GET dummy image stored in fire storage DONE / dummy title and content in firestore
@@ -11,13 +13,25 @@ import 'package:flutter/material.dart';
 /// 7. Add on progress circular indicator to show the fetching image.
 /// 8. Add caching image to local device.
 class CardSingle extends StatelessWidget {
-  const CardSingle(
-      {super.key, this.createdAt, this.title, this.content, this.image});
-  final double innerPadding = 12.0;
-  final Timestamp? createdAt;
-  final String? title;
-  final String? content;
-  final String? image;
+  const CardSingle({
+    super.key,
+    required this.journal,
+    this.includeUpperDate = true,
+    this.cardMaxWidth = 270,
+    this.horizontalPadding = 4.0,
+    this.verticalPadding = 8.0,
+    this.textMaxLine = 3,
+    this.aspectRatio = 7 / 3,
+    this.dateFontSize = 12,
+  });
+  final Journal journal;
+  final bool includeUpperDate;
+  final double cardMaxWidth;
+  final double horizontalPadding;
+  final double verticalPadding;
+  final int textMaxLine;
+  final double aspectRatio;
+  final double dateFontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -27,56 +41,67 @@ class CardSingle extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _UpperDatePortion(
-          padding: innerPadding,
-          child: Text(
-            "${DateTime.parse(createdAt!.toDate().toString()).day}일",
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-        ),
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 270, maxWidth: 325),
-          child: Card(
-            color: colorScheme.surface.withOpacity(0.5),
-            elevation: 3.0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _ImagePortion(padding: innerPadding, url: image),
-                title != null
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(horizontal: innerPadding),
-                        child: Text(
-                          title!,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    : const SizedBox(width: 0, height: 0),
-                _TextPortion(
-                  padding: innerPadding,
-                  child: RichText(
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      text: TextSpan(
-                          style: TextStyle(color: colorScheme.onSurfaceVariant),
-                          text: content)),
+        includeUpperDate
+            ? _UpperDatePortion(
+                padding: horizontalPadding,
+                journal: journal,
+              )
+            : const SizedBox(width: 0, height: 0),
+        IntrinsicHeight(
+          child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: cardMaxWidth),
+              child: Card(
+                shape: const ContinuousRectangleBorder(),
+                color: colorScheme.surface.withOpacity(0.5),
+                elevation: 3.0,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _ImagePortion(
+                        horizontalPadding: horizontalPadding,
+                        verticalPadding: verticalPadding,
+                        aspectRatio: aspectRatio,
+                        url: journal.image),
+                    journal.title != null
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: Text(
+                              journal.title!,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )
+                        : const SizedBox(width: 0, height: 0),
+                    Expanded(
+                        child: _TextPortion(
+                      horizontalPadding: horizontalPadding,
+                      verticalPadding: verticalPadding,
+                      child: RichText(
+                          maxLines: textMaxLine,
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(
+                              style: TextStyle(
+                                  color: colorScheme.onSurfaceVariant),
+                              text: journal.content)),
+                    )),
+                    Divider(
+                      indent: verticalPadding,
+                      endIndent: verticalPadding,
+                    ),
+                    _DatePortion(
+                      fontSize: dateFontSize,
+                      horizontalPadding: horizontalPadding,
+                      verticalPadding: verticalPadding,
+                      date: journal.createdAt!.toDate(),
+                      onEdit: () => debugPrint("Hello"),
+                    ),
+                  ],
                 ),
-                const Spacer(),
-                const Divider(
-                  indent: 12,
-                  endIndent: 12,
-                ),
-                _DatePortion(
-                  padding: innerPadding,
-                  date: DateTime.now(),
-                  onEdit: () => debugPrint("Hello"),
-                )
-              ],
-            ),
-          ),
+              )),
         )
       ],
     );
@@ -85,40 +110,46 @@ class CardSingle extends StatelessWidget {
 
 class _UpperDatePortion extends StatelessWidget {
   final double padding;
-  final Widget? child;
+  final Journal journal;
   const _UpperDatePortion(
-      {super.key, this.padding = 12.0, required this.child});
+      {super.key, required this.journal, this.padding = 12.0});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: padding), child: child);
+        padding: EdgeInsets.symmetric(horizontal: padding),
+        child: Text(
+          "${DateTime.parse(journal.createdAt!.toDate().toString()).day}일",
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ));
   }
 }
 
 class _ImagePortion extends StatelessWidget {
   final String? url;
-  final double padding;
+  final double verticalPadding;
+  final double horizontalPadding;
+  final double aspectRatio;
 
-  const _ImagePortion({required this.padding, required this.url});
+  const _ImagePortion(
+      {required this.verticalPadding,
+      required this.horizontalPadding,
+      required this.aspectRatio,
+      required this.url});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.only(left: padding, right: padding, top: 8.0, bottom: 8.0),
+      padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding, vertical: verticalPadding),
       child: SizedBox(
-        height: 110,
+        height: 100,
         child: ClipRRect(
           clipBehavior: Clip.antiAlias,
-          borderRadius: const BorderRadius.horizontal(
-            left: Radius.circular(4.0),
-            right: Radius.circular(4.0),
-          ),
           child: url != null
               ? Center(
                   child: AspectRatio(
-                    aspectRatio: 13 / 4,
+                    aspectRatio: aspectRatio,
                     child: Image.network(url!, fit: BoxFit.fill),
                   ),
                 )
@@ -133,25 +164,35 @@ class _ImagePortion extends StatelessWidget {
 /// 1. Add abbreviation functionality when the text exceeds certain amount. DONE
 /// 2. connect onTap / onClick functionality to onCreate icon.
 class _TextPortion extends StatelessWidget {
-  final double padding;
+  final double horizontalPadding;
+  final double verticalPadding;
   final Widget? child;
 
-  const _TextPortion({required this.child, required this.padding});
+  const _TextPortion(
+      {required this.child,
+      required this.horizontalPadding,
+      required this.verticalPadding});
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(
-            left: padding, right: padding, top: 8.0, bottom: 8.0),
+        padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding, vertical: verticalPadding),
         child: child);
   }
 }
 
 class _DatePortion extends StatelessWidget {
-  final double padding;
+  final double horizontalPadding;
+  final double verticalPadding;
   final DateTime date;
   final VoidCallback onEdit;
+  final double fontSize;
   const _DatePortion(
-      {required this.padding, required this.date, required this.onEdit});
+      {required this.horizontalPadding,
+      required this.verticalPadding,
+      required this.date,
+      required this.onEdit,
+      required this.fontSize});
 
   String? _formatDate(DateTime date) {
     final localDateTime = date.toLocal();
@@ -168,12 +209,14 @@ class _DatePortion extends StatelessWidget {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     final textStyle = TextStyle(
+      fontSize: fontSize,
       fontWeight: FontWeight.w500,
       color: colorScheme.onSurfaceVariant.withOpacity(0.5),
     );
 
     return Padding(
-      padding: EdgeInsets.only(left: padding, right: padding, bottom: 4.0),
+      padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding, vertical: verticalPadding),
       child: Row(
         children: [
           Text(
@@ -183,7 +226,7 @@ class _DatePortion extends StatelessWidget {
           const Spacer(),
           const Icon(
             Icons.create_rounded,
-            size: 20,
+            size: 18,
           ),
         ],
       ),
