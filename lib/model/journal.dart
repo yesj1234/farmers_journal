@@ -8,20 +8,19 @@ class Journal {
 
   Journal({this.title, this.content, this.image, this.createdAt});
 
-  factory Journal.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
+  // model은 외부 패키지에 종속성이 생기지 않도록 dart로만 구성.
+  factory Journal.fromMap(
+    Map<String, dynamic> map,
     SnapshotOptions? options,
   ) {
-    final data = snapshot.data();
-
     return Journal(
-        title: data?['title'],
-        content: data?['content'],
-        image: data?['image'],
-        createdAt: data?['createdAt']);
+        title: map['title'],
+        content: map['content'],
+        image: map['image'],
+        createdAt: map['createdAt']);
   }
 
-  Map<String, dynamic> toFirestore() {
+  Map<String, dynamic> toMap() {
     return {
       if (title != null) "title": title,
       if (content != null) "content": content,
