@@ -14,3 +14,6 @@ Journaling app for farmers.
 Share your daily journal about your farming process with other farmers.
 
 Track what things to be done based on your past notes and ohter farmers notes. 
+
+**App Architecture** 
+- TODO : Refactor to MVVM architecture.  
