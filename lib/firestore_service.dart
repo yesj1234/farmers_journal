@@ -10,7 +10,6 @@ import 'package:farmers_journal/model/journal.dart';
 
 part 'firestore_service.g.dart';
 
-// firestore_service.dart => firebase service (providers) 로 네이밍 변경
 @riverpod
 Future<User?> user(Ref ref) async {
   final db = FirebaseFirestore.instance;
@@ -25,15 +24,14 @@ Future<User?> user(Ref ref) async {
 }
 
 @riverpod
-Future<List<dynamic>> journal(Ref ref) async {
+Future<List<Journal>> journal(Ref ref) async {
   final db = FirebaseFirestore.instance;
 
-  var result = [];
-  db.collection("journals").get().then(
+  List<Journal> result = [];
+  db.collection("journals").orderBy("createdAt", descending: true).get().then(
     (querySnapshot) {
       for (var docSnapshot in querySnapshot.docs) {
-        // print(docSnapshot.data());
-        result.add(Journal.fromFirestore(docSnapshot, null));
+        result.add(Journal.fromMap(docSnapshot.data(), null));
       }
     },
     onError: (e) => print("Error completing: $e"),

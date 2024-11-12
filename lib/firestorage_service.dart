@@ -9,5 +9,6 @@ part 'firestorage_service.g.dart';
 Future<String> defaultImage(Ref ref) async {
   final storageRef = FirebaseStorage.instance.ref();
   final String url = await storageRef.child('/farmer.png').getDownloadURL();
+  // URL validation - is image file
   return url;
 }
