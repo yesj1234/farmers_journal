@@ -1,3 +1,5 @@
+import 'dart:collection';
+import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/model/journal.dart';
 
@@ -61,5 +63,28 @@ class CustomDateUtils {
         .map((entry) => WeeklyGroup(weekLabel: entry.key, items: entry.value))
         .toList();
     return result;
+  }
+
+  static formatDate(DateTime date) {
+    var formatter = DateFormat('yyyy-MM-dd');
+    return DateTime.parse(formatter.format(date));
+  }
+
+  static LinkedHashMap<DateTime, List<Journal>> getMonthlyJournal(
+      List<Journal> journals) {
+    Map<DateTime, List<Journal>> temp = {};
+
+    for (Journal journal in journals) {
+      if (journal.createdAt != null) {
+        DateTime formattedDateTime = formatDate(journal.createdAt as DateTime);
+
+        if (temp.containsKey(formattedDateTime)) {
+          temp[formattedDateTime]?.add(journal);
+        } else {
+          temp.putIfAbsent(formattedDateTime, () => [journal]);
+        }
+      }
+    }
+    return LinkedHashMap.from(temp);
   }
 }
