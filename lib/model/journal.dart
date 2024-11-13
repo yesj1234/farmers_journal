@@ -4,7 +4,7 @@ class Journal {
   final String? title;
   final String? content;
   final String? image;
-  final Timestamp? createdAt;
+  final DateTime? createdAt;
 
   Journal({this.title, this.content, this.image, this.createdAt});
 
@@ -13,11 +13,13 @@ class Journal {
     Map<String, dynamic> map,
     SnapshotOptions? options,
   ) {
+    Timestamp createdAt = map['createdAt'];
+    DateTime toDateTime = createdAt.toDate();
     return Journal(
         title: map['title'],
         content: map['content'],
         image: map['image'],
-        createdAt: map['createdAt']);
+        createdAt: toDateTime);
   }
 
   Map<String, dynamic> toMap() {
@@ -25,7 +27,7 @@ class Journal {
       if (title != null) "title": title,
       if (content != null) "content": content,
       if (image != null) "image": image,
-      if (createdAt != null) "createdAt": createdAt,
+      if (createdAt != null) "createdAt": createdAt?.millisecondsSinceEpoch,
     };
   }
 }
