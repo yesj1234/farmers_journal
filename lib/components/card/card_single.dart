@@ -53,7 +53,7 @@ class CardSingle extends StatelessWidget {
               child: Card(
                 shape: const ContinuousRectangleBorder(),
                 color: colorScheme.surface.withOpacity(0.5),
-                elevation: 3.0,
+                elevation: 2.0,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -96,7 +96,7 @@ class CardSingle extends StatelessWidget {
                       fontSize: dateFontSize,
                       horizontalPadding: horizontalPadding,
                       verticalPadding: verticalPadding,
-                      date: journal.createdAt!.toDate(),
+                      date: journal.createdAt!,
                       onEdit: () => debugPrint("Hello"),
                     ),
                   ],
@@ -119,7 +119,7 @@ class _UpperDatePortion extends StatelessWidget {
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: padding),
         child: Text(
-          "${DateTime.parse(journal.createdAt!.toDate().toString()).day}일",
+          "${journal.createdAt?.day}일",
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ));
   }
