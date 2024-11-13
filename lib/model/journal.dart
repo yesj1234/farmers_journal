@@ -30,4 +30,9 @@ class Journal {
       if (createdAt != null) "createdAt": createdAt?.millisecondsSinceEpoch,
     };
   }
+
+  @override
+  String toString() {
+    return 'Instance of "Journal"\ntitle: $title\ncontent: $content\nimage: $image\ncreatedAt: $createdAt';
+  }
 }
