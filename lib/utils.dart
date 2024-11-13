@@ -42,16 +42,16 @@ class CustomDateUtils {
 
   static List<WeeklyGroup<Journal>> groupItemsByWeek(List<Journal> items) {
     items.sort((a, b) {
-      Timestamp timeA = a.createdAt as Timestamp;
-      Timestamp timeB = b.createdAt as Timestamp;
+      DateTime timeA = a.createdAt as DateTime;
+      DateTime timeB = b.createdAt as DateTime;
       return timeB.compareTo(timeA);
     });
 
     Map<String, List<Journal>> weeklyGroups = {};
     DateTime now = DateTime.now();
     for (var item in items) {
-      Timestamp timestamp = item.createdAt as Timestamp;
-      DateTime dateTime = timestamp.toDate();
+      DateTime dateTime = item.createdAt as DateTime;
+
       String weekLabel = _getWeekLabel(dateTime, now);
 
       weeklyGroups.putIfAbsent(weekLabel, () => []);
