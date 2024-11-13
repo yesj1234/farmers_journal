@@ -23,7 +23,7 @@ Future<User?> user(Ref ref) async {
   return result;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<List<Journal>> journal(Ref ref) async {
   final db = FirebaseFirestore.instance;
 
