@@ -4,6 +4,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:farmers_journal/enums.dart';
 
+import 'dart:math';
+
 part 'providers.g.dart';
 
 @riverpod
@@ -16,6 +18,13 @@ class DateFilter extends _$DateFilter {
   changeDateFilter(DateView view) {
     state = view;
   }
+}
+
+@riverpod
+List<int> price(Ref ref) {
+  // fetch Price API..
+  Random random = Random();
+  return List.generate(10, (index) => random.nextInt(6000));
 }
 
 class MyObserver extends ProviderObserver {
