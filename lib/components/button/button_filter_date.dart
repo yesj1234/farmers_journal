@@ -5,13 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/providers.dart';
 
 class ButtonFilterDate extends ConsumerWidget {
-  const ButtonFilterDate({super.key});
+  const ButtonFilterDate({
+    super.key,
+    this.backgroundColor = Colors.white,
+  });
+  final Color backgroundColor;
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentDateView = ref.watch(dateFilterProvider);
-    return SegmentedButton<DateView>(
-      style: ButtonStyle(
+  ButtonStyle get buttonStyle => ButtonStyle(
         shape: WidgetStateProperty.all(const BeveledRectangleBorder()),
         minimumSize: WidgetStateProperty.all(const Size(0, 48)),
         fixedSize: WidgetStateProperty.all(const Size(120, 48)),
@@ -30,8 +30,14 @@ class ButtonFilterDate extends ConsumerWidget {
               wordSpacing: 0,
               decorationThickness: 2.5);
         }),
-        backgroundColor: const WidgetStatePropertyAll(Colors.white),
-      ),
+        backgroundColor: WidgetStatePropertyAll(backgroundColor),
+      );
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentDateView = ref.watch(dateFilterProvider);
+    return SegmentedButton<DateView>(
+      style: buttonStyle,
       segments: const <ButtonSegment<DateView>>[
         ButtonSegment<DateView>(
             value: DateView.day,
