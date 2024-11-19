@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:intl/intl.dart';
 
 import 'dart:math';
 
@@ -241,9 +241,11 @@ class PriceBarChart extends ConsumerWidget {
         tooltipBorder: BorderSide.none,
         tooltipPadding: EdgeInsets.zero,
         getTooltipItem: (group, groupIndex, rod, rodIndex) => BarTooltipItem(
-          rod.toY.round().toString(),
+          NumberFormat.simpleCurrency(locale: "ko_KR")
+              .format(rod.toY.round())
+              .toString(),
           const TextStyle(
-            color: Colors.white,
+            color: Colors.red,
             fontWeight: FontWeight.bold,
           ),
         ),
