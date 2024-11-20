@@ -48,3 +48,6 @@ app.*.map.json
 
 # code generators generated files
 *.g.*
+
+# env config
+*.env
