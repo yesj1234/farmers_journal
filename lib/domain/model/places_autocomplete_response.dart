@@ -1,3 +1,5 @@
+import 'package:farmers_journal/enums.dart';
+
 /// PlaceAutocompleteMatchedSubString from [here](https://developers.google.com/maps/documentation/places/web-service/autocomplete?_gl=1*j7omyq*_up*MQ..*_ga*ODQ3MzE0MDQuMTczMjA4MjE0MA..*_ga_NRWSTWS78N*MTczMjA4MjEzOS4xLjEuMTczMjA4MjU1OS4wLjAuMA..#PlaceAutocompleteMatchedSubstring)
 class PlaceAutocompleteMatchedSubString {
   PlaceAutocompleteMatchedSubString(
@@ -129,16 +131,6 @@ class PlaceAutocompletePrediction {
       types: types,
     );
   }
-}
-
-/// PlaceAutocompleteStatus from [here](https://developers.google.com/maps/documentation/places/web-service/autocomplete?_gl=1*j7omyq*_up*MQ..*_ga*ODQ3MzE0MDQuMTczMjA4MjE0MA..*_ga_NRWSTWS78N*MTczMjA4MjEzOS4xLjEuMTczMjA4MjU1OS4wLjAuMA..#PlacesAutocompleteStatus)
-enum PlaceAutocompleteStatus {
-  OK,
-  ZERO_RESULTS,
-  INVALID_REQUEST,
-  OVER_QUERY_LIMIT,
-  REQUEST_DENIED,
-  UNKNOWN_ERROR,
 }
 
 class GooglePlaceResponse {
