@@ -1,10 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'package:farmers_journal/domain/model/geocoding_response.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:farmers_journal/enums.dart';
-
+import 'package:farmers_journal/domain/model/places_autocomplete_response.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:math';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 part 'providers.g.dart';
 
@@ -27,41 +29,33 @@ List<int> price(Ref ref) {
   return List.generate(10, (index) => random.nextInt(6000));
 }
 
-class MyObserver extends ProviderObserver {
-  @override
-  void didAddProvider(
-    ProviderBase<Object?> provider,
-    Object? value,
-    ProviderContainer container,
-  ) {
-    debugPrint('Provider $provider was initialized with $value');
-  }
+@riverpod
+Future<GooglePlaceResponse> googlePlaceAPI(
+    Ref ref, String place, String token) async {
+  String? key = dotenv.env['GOOGLE_MAPS_API_KEY'];
+  String input = place;
+  String language = "ko";
+  String sessionToken = token; // to identify autocomplete session for billing
+  Uri url = Uri.parse(
+    'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&components=country:kr&language=$language&sessiontoken=$sessionToken&key=$key',
+  );
+  var response = await http.get(url);
+  var googlePlaceResponse = response.body;
+  var parsedJson = jsonDecode(googlePlaceResponse);
+  var googlePlaceResponseJson = GooglePlaceResponse.fromJson(parsedJson);
+  return googlePlaceResponseJson;
+}
 
-  @override
-  void didDisposeProvider(
-    ProviderBase<Object?> provider,
-    ProviderContainer container,
-  ) {
-    debugPrint('Provider $provider was disposed');
-  }
+@riverpod
+Future<MyLatLng> geoCodingAPI(Ref ref, String address) async {
+  String? key = dotenv.env['GOOGLE_MAPS_API_KEY'];
 
-  @override
-  void didUpdateProvider(
-    ProviderBase<Object?> provider,
-    Object? previousValue,
-    Object? newValue,
-    ProviderContainer container,
-  ) {
-    debugPrint('Provider $provider updated from $previousValue to $newValue');
-  }
+  Uri url = Uri.parse(
+      'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$key');
+  var response = await http.get(url);
+  var geoCodingResponse = response.body;
+  var parsedJson = jsonDecode(geoCodingResponse);
+  var geoCodingResponseJson = GeocodingResponse.fromJson(parsedJson);
 
-  @override
-  void providerDidFail(
-    ProviderBase<Object?> provider,
-    Object error,
-    StackTrace stackTrace,
-    ProviderContainer container,
-  ) {
-    debugPrint('Provider $provider threw $error at $stackTrace');
-  }
+  return geoCodingResponseJson.results.first.geometry.location;
 }

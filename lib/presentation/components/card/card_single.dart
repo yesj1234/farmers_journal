@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmers_journal/firestore_service.dart';
+import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:farmers_journal/model/journal.dart';
+import 'package:farmers_journal/domain/model/journal.dart';
 
 /// TODO:
 /// 2. GET dummy image stored in fire storage DONE / dummy title and content in firestore

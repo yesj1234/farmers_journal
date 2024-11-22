@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 import 'dart:math';
 
-import '../providers.dart';
+import 'package:farmers_journal/data/providers.dart';
 
 class RecordBarChart extends StatelessWidget {
   const RecordBarChart({super.key});

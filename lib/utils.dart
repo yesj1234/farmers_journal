@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmers_journal/model/journal.dart';
+import 'package:farmers_journal/domain/model/journal.dart';
 
 class WeeklyGroup<T> {
   final String weekLabel;

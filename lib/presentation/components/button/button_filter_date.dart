@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:farmers_journal/enums.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:farmers_journal/providers.dart';
+import 'package:farmers_journal/data/providers.dart';
 
 class ButtonFilterDate extends ConsumerWidget {
   const ButtonFilterDate({

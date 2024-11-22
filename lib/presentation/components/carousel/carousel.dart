@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:farmers_journal/components/card/card_single.dart';
+import 'package:farmers_journal/presentation/components/card/card_single.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:farmers_journal/firestore_service.dart';
+import 'package:farmers_journal/data/firestore_service.dart';
 
-import 'package:farmers_journal/model/journal.dart';
+import 'package:farmers_journal/domain/model/journal.dart';
 
 // Should be a StatefulWidget since CarouselView can have a controller.
 class MyCarousel extends ConsumerStatefulWidget {

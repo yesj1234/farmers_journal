@@ -6,22 +6,22 @@ import 'package:table_calendar/table_calendar.dart';
 
 //Riverpod
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:farmers_journal/firestore_service.dart';
-import 'package:farmers_journal/providers.dart';
+import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/data/providers.dart';
 
 // custom components
-import 'package:farmers_journal/components/button/button_create_post.dart';
-import 'package:farmers_journal/components/button/button_status.dart';
-import 'package:farmers_journal/components/button/button_filter_date.dart';
-import 'package:farmers_journal/components/avatar/avatar_profile.dart';
-import 'package:farmers_journal/components/card/card_single.dart';
-import 'package:farmers_journal/components/carousel/carousel.dart';
+import 'package:farmers_journal/presentation/components/button/button_create_post.dart';
+import 'package:farmers_journal/presentation/components/button/button_status.dart';
+import 'package:farmers_journal/presentation/components/button/button_filter_date.dart';
+import 'package:farmers_journal/presentation/components/avatar/avatar_profile.dart';
+import 'package:farmers_journal/presentation/components/card/card_single.dart';
+import 'package:farmers_journal/presentation/components/carousel/carousel.dart';
 
 // enums
 import 'package:farmers_journal/enums.dart';
 
 // models
-import 'package:farmers_journal/model/journal.dart';
+import 'package:farmers_journal/domain/model/journal.dart';
 
 // utils
 import 'package:farmers_journal/utils.dart';

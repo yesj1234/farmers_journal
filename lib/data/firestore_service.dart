@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Models
-import 'package:farmers_journal/domain/model/user.dart';
+
 import 'package:farmers_journal/domain/model/journal.dart';
 
 part 'firestore_service.g.dart';

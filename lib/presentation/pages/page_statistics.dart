@@ -1,8 +1,8 @@
-import 'package:farmers_journal/components/avatar/avatar_profile.dart';
+import 'package:farmers_journal/presentation/components/avatar/avatar_profile.dart';
 import 'package:flutter/material.dart';
-import 'package:farmers_journal/components/chart.dart';
+import 'package:farmers_journal/presentation/components/chart.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:farmers_journal/components/button/button_filter_date.dart';
+import 'package:farmers_journal/presentation/components/button/button_filter_date.dart';
 
 class PageStatistics extends StatelessWidget {
   const PageStatistics({super.key});

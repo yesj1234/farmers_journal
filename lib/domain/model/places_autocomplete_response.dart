@@ -141,19 +141,19 @@ class GooglePlaceResponse {
     this.infoMessages,
   });
   final List<PlaceAutocompletePrediction> predictions;
-  final PlaceAutocompleteStatus status;
+  final ResponseStatus status;
   String? errorMessage;
   List<String>? infoMessages;
 
   factory GooglePlaceResponse.fromJson(Map<String, dynamic> data) {
     final predictions = data['predictions'] as List<dynamic>;
-    final PlaceAutocompleteStatus status = switch (data['status']) {
-      'OK' => PlaceAutocompleteStatus.OK,
-      'ZERO_RESULTS' => PlaceAutocompleteStatus.ZERO_RESULTS,
-      'INVALID_REQUEST' => PlaceAutocompleteStatus.INVALID_REQUEST,
-      'OVER_QUERY_LIMIT' => PlaceAutocompleteStatus.OVER_QUERY_LIMIT,
-      'REQUEST_DENIED' => PlaceAutocompleteStatus.REQUEST_DENIED,
-      'UNKNOWN_ERROR' => PlaceAutocompleteStatus.UNKNOWN_ERROR,
+    final ResponseStatus status = switch (data['status']) {
+      'OK' => ResponseStatus.OK,
+      'ZERO_RESULTS' => ResponseStatus.ZERO_RESULTS,
+      'INVALID_REQUEST' => ResponseStatus.INVALID_REQUEST,
+      'OVER_QUERY_LIMIT' => ResponseStatus.OVER_QUERY_LIMIT,
+      'REQUEST_DENIED' => ResponseStatus.REQUEST_DENIED,
+      'UNKNOWN_ERROR' => ResponseStatus.UNKNOWN_ERROR,
       // TODO: Handle this case.
       Object() => throw UnimplementedError(),
       // TODO: Handle this case.

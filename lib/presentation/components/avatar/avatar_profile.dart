@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:farmers_journal/firestorage_service.dart';
+import 'package:farmers_journal/data/firestorage_service.dart';
 
 /// TODO
 /// 2. consider the user has update the profile image. (foreground image url must change)

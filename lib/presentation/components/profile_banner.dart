@@ -1,4 +1,4 @@
-import 'package:farmers_journal/components/avatar/avatar_profile.dart';
+import 'package:farmers_journal/presentation/components/avatar/avatar_profile.dart';
 import 'package:flutter/material.dart';
 
 class ProfileBanner extends StatelessWidget {
