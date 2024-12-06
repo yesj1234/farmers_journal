@@ -2,7 +2,7 @@ import 'package:farmers_journal/presentation/components/avatar/avatar_profile.da
 import 'package:flutter/material.dart';
 import 'package:farmers_journal/presentation/components/chart.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:farmers_journal/presentation/components/button/button_filter_date.dart';
+import 'package:go_router/go_router.dart';
 
 class PageStatistics extends StatelessWidget {
   const PageStatistics({super.key});
@@ -19,15 +19,16 @@ class PageStatistics extends StatelessWidget {
               height: 75,
               decoration: const BoxDecoration(
                   color: Color.fromRGBO(174, 189, 175, 0.5)),
-              child: const Row(
+              child: Row(
                 children: [
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   AvatarProfile(
                     width: 50,
                     height: 50,
+                    onNavigateTap: () => context.go('/settings'),
                   ),
-                  SizedBox(width: 20),
-                  Text(
+                  const SizedBox(width: 20),
+                  const Text(
                     "Anonymous",
                     style: TextStyle(
                       fontSize: 25,
@@ -38,13 +39,7 @@ class PageStatistics extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: Container(
-                decoration: const BoxDecoration(
-                  border: Border(
-                    top: BorderSide(color: Colors.red),
-                    bottom: BorderSide(color: Colors.red),
-                  ),
-                ),
+              child: SizedBox(
                 width: MediaQuery.sizeOf(context).width,
                 height: MediaQuery.sizeOf(context).height,
                 child: Center(

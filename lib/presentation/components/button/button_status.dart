@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 
 /// TODO:
 /// 1. figure out how to set this emojis
@@ -9,14 +9,14 @@ class ButtonStatus extends StatelessWidget {
   final String status;
   final String statusValue;
   final String statusEmoji; // TODO: figure out how to set this emojis.
-  final VoidCallback onClick;
 
+  final VoidCallback onNavigateTap;
   const ButtonStatus(
       {super.key,
       required this.status,
       required this.statusValue,
       required this.statusEmoji,
-      required this.onClick});
+      required this.onNavigateTap});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class ButtonStatus extends StatelessWidget {
           Padding(
               padding: const EdgeInsets.only(left: 5.0),
               child: TextButton(
-                onPressed: onClick,
+                onPressed: onNavigateTap,
                 style: TextButton.styleFrom(
                     padding: const EdgeInsets.all(0.0),
                     minimumSize: Size.zero,

@@ -1,5 +1,6 @@
 import 'package:farmers_journal/presentation/components/avatar/avatar_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileBanner extends StatelessWidget {
   const ProfileBanner({super.key});
@@ -12,16 +13,17 @@ class ProfileBanner extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Color.fromRGBO(174, 189, 175, 0.5),
       ),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           AvatarProfile(
             width: 60,
             height: 60,
+            onNavigateTap: () => context.go('/main/settings'),
           ),
-          SizedBox(width: 20),
-          Column(
+          const SizedBox(width: 20),
+          const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

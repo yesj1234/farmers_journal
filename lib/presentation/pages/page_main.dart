@@ -1,6 +1,6 @@
 // packages
 import 'dart:collection';
-
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -55,7 +55,7 @@ class PageMain extends ConsumerWidget {
         ),
       ),
       floatingActionButton: ButtonCreatePost(
-        onClick: () => debugPrint("clicked"),
+        onClick: () => context.go('/main/create'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
@@ -84,7 +84,7 @@ class _TopNavTemp extends StatelessWidget {
                   status: "작물",
                   statusValue: "포도(캠벨얼리)",
                   statusEmoji: "assets/icons/Grapes.png",
-                  onClick: () => debugPrint("Clicked"),
+                  onNavigateTap: () => context.go('/main/statistics'),
                 ),
                 const VerticalDivider(
                   thickness: 2,
@@ -93,10 +93,14 @@ class _TopNavTemp extends StatelessWidget {
                   status: "기록일수",
                   statusValue: "0 일",
                   statusEmoji: "assets/icons/Fire.png",
-                  onClick: () => debugPrint("Clicked"),
+                  onNavigateTap: () => context.go('/main/statistics'),
                 ),
                 const Spacer(),
-                const AvatarProfile(width: 50, height: 50),
+                AvatarProfile(
+                  width: 50,
+                  height: 50,
+                  onNavigateTap: () => context.go('/main/settings'),
+                ),
               ],
             ),
           ),
@@ -230,7 +234,6 @@ class _WeekView extends ConsumerWidget {
 
 class _MonthView extends ConsumerWidget {
   const _MonthView({super.key});
-  final CalendarFormat _calendarFormat = CalendarFormat.month;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

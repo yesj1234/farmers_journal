@@ -1,5 +1,4 @@
 import 'package:farmers_journal/enums.dart';
-import 'package:flutter/cupertino.dart';
 
 class GeocodingResponse {
   final List<dynamic> results;

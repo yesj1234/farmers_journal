@@ -1,3 +1,6 @@
+import 'package:farmers_journal/data/interfaces.dart';
+import 'package:farmers_journal/data/repositories.dart';
+import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/domain/model/user.dart';
@@ -9,31 +12,36 @@ import 'package:farmers_journal/domain/model/journal.dart';
 
 part 'firestore_service.g.dart';
 
+final userRepositoryProvider = Provider<UserRepository>((ref) {
+  return FireStoreUserRepository(instance: FirebaseFirestore.instance);
+});
+
 @riverpod
 Future<User?> user(Ref ref) async {
-  final db = FirebaseFirestore.instance;
-  final user = db.collection("users").doc('otOHyOdeUe97mmVyeIXz');
-  final result = await user.get().then((DocumentSnapshot doc) {
-    final json = doc.data() as Map<String, dynamic>;
-    final userModel = User.fromJson(json);
-    return userModel;
-  });
-
-  return result;
+  final repository = ref.read(userRepositoryProvider);
+  return repository.getUsers();
 }
+
+final journalRepositoryProvider = Provider<JournalRepository>((ref) {
+  return FireStoreJournalRepository(instance: FirebaseFirestore.instance);
+});
 
 @Riverpod(keepAlive: true)
 Future<List<Journal>> journal(Ref ref) async {
-  final db = FirebaseFirestore.instance;
+  final repository = ref.read(journalRepositoryProvider);
+  return repository.getJournals();
+}
 
-  List<Journal> result = [];
-  db.collection("journals").orderBy("createdAt", descending: true).get().then(
-    (querySnapshot) {
-      for (var docSnapshot in querySnapshot.docs) {
-        result.add(Journal.fromMap(docSnapshot.data(), null));
-      }
-    },
-    onError: (e) => print("Error completing: $e"),
-  );
-  return result;
+// @riverpod
+// Future<DefaultImageRepository> defaultImageRepository(Ref ref) async {
+//   return FireStoreDefaultImageRepository(instance: FirebaseFirestore.instance);
+// }
+final defaultImageRepositoryProvider = Provider<DefaultImageRepository>((ref) {
+  return FireStoreDefaultImageRepository(instance: FirebaseFirestore.instance);
+});
+
+@riverpod
+Future<DefaultImage> defaultImage(Ref ref) async {
+  final repository = ref.read(defaultImageRepositoryProvider);
+  return repository.getDefaultImage();
 }
