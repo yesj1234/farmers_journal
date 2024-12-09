@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
-import 'package:farmers_journal/data/firestore_service.dart';
+// import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/presentation/controller/default_image_controller.dart';
 
 /// TODO
 /// 2. consider the user has update the profile image. (foreground image url must change)
@@ -23,7 +24,7 @@ class AvatarProfile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<DefaultImage> defaultImage =
-        ref.watch(defaultImageProvider);
+        ref.watch(defaultImageControllerProvider);
     return GestureDetector(
       onTap: onNavigateTap,
       child: SizedBox(

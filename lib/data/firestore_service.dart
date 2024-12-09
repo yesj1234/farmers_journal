@@ -39,9 +39,3 @@ Future<List<Journal>> journal(Ref ref) async {
 final defaultImageRepositoryProvider = Provider<DefaultImageRepository>((ref) {
   return FireStoreDefaultImageRepository(instance: FirebaseFirestore.instance);
 });
-
-@riverpod
-Future<DefaultImage> defaultImage(Ref ref) async {
-  final repository = ref.read(defaultImageRepositoryProvider);
-  return repository.getDefaultImage();
-}
