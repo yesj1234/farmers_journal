@@ -14,7 +14,6 @@ class CardSingle extends StatelessWidget {
   const CardSingle({
     super.key,
     required this.journal,
-    this.includeUpperDate = true,
     this.cardMaxWidth = 270,
     this.horizontalPadding = 4.0,
     this.verticalPadding = 8.0,
@@ -23,7 +22,7 @@ class CardSingle extends StatelessWidget {
     this.dateFontSize = 12,
   });
   final Journal journal;
-  final bool includeUpperDate;
+
   final double cardMaxWidth;
   final double horizontalPadding;
   final double verticalPadding;
@@ -39,12 +38,6 @@ class CardSingle extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        includeUpperDate
-            ? _UpperDatePortion(
-                padding: horizontalPadding,
-                journal: journal,
-              )
-            : const SizedBox(width: 0, height: 0),
         IntrinsicHeight(
           child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: cardMaxWidth),
@@ -56,11 +49,13 @@ class CardSingle extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _ImagePortion(
-                        horizontalPadding: horizontalPadding,
-                        verticalPadding: verticalPadding,
-                        aspectRatio: aspectRatio,
-                        url: journal.image),
+                    journal.image != null && journal.image!.isNotEmpty
+                        ? _ImagePortion(
+                            horizontalPadding: horizontalPadding,
+                            verticalPadding: verticalPadding,
+                            aspectRatio: aspectRatio,
+                            url: journal.image)
+                        : const SizedBox.shrink(),
                     journal.title != null
                         ? Padding(
                             padding: EdgeInsets.symmetric(

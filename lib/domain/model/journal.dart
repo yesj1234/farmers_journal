@@ -9,20 +9,19 @@ class Journal {
   Journal({this.title, this.content, this.image, this.createdAt});
 
   // model은 외부 패키지에 종속성이 생기지 않도록 dart로만 구성.
-  factory Journal.fromMap(
+  factory Journal.fromJson(
     Map<String, dynamic> map,
-    SnapshotOptions? options,
   ) {
-    Timestamp createdAt = map['createdAt'];
-    DateTime toDateTime = createdAt.toDate();
+    int createdAt = map['createdAt'];
+    DateTime toDateTime = DateTime.fromMillisecondsSinceEpoch(createdAt);
     return Journal(
         title: map['title'],
         content: map['content'],
-        image: map['image'],
+        image: map['imageURL'],
         createdAt: toDateTime);
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       if (title != null) "title": title,
       if (content != null) "content": content,

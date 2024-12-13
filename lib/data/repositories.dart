@@ -31,8 +31,37 @@ class FireStoreUserRepository implements UserRepository {
       final userModel = User.fromJson(json);
       return userModel;
     });
-
     return result;
+  }
+
+  @override
+  Future<List<Journal?>> getJournals() async {
+    // 1. Fetch the current user.
+    // 2. Fetch the journals of the current user.
+    final user = instance.collection("users").doc('otOHyOdeUe97mmVyeIXz');
+    final result = await user.get().then((DocumentSnapshot doc) {
+      final json = doc.data() as Map<String, dynamic>;
+      final userModel = User.fromJson(json);
+      return userModel.journals as List<Journal?>;
+    });
+    return result;
+  }
+
+  @override
+  Future<void> createJournal(
+      {required String title,
+      required String content,
+      required DateTime date,
+      required String? image}) async {
+    // 1. Fetch the current user.
+    // 2. create new Journal object with the provided date, title and content
+    // 3. call firestore API which creates new Journal in the user's journal field.
+    final userRef = instance.collection("users").doc('otOHyOdeUe97mmVyeIXz');
+    final newJournal =
+        Journal(title: title, content: content, image: image, createdAt: date);
+    userRef.update({
+      "journals": FieldValue.arrayUnion([newJournal.toJson()])
+    });
   }
 }
 
@@ -50,7 +79,7 @@ class FireStoreJournalRepository implements JournalRepository {
         .then(
       (querySnapshot) {
         for (var docSnapshot in querySnapshot.docs) {
-          result.add(Journal.fromMap(docSnapshot.data(), null));
+          result.add(Journal.fromJson(docSnapshot.data()));
         }
       },
       onError: (e) => print("Error completing: $e"),

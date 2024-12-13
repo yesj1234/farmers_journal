@@ -31,7 +31,6 @@ class _MyCarouselState extends ConsumerState<MyCarousel> {
                 dateFontSize: 10,
                 textMaxLine: 1,
                 cardMaxWidth: widget.cardMaxWidth,
-                includeUpperDate: false,
                 horizontalPadding: 2.0,
                 verticalPadding: 0.0,
                 aspectRatio: 2 / 1,

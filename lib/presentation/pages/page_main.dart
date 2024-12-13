@@ -7,6 +7,7 @@ import 'package:table_calendar/table_calendar.dart';
 //Riverpod
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/presentation/controller/journal_controller.dart';
 import 'package:farmers_journal/data/providers.dart';
 
 // custom components
@@ -114,16 +115,25 @@ class _TopNavTemp extends StatelessWidget {
 /// 1. Fetch user data from firestore => StatefulWidget.
 /// 2. Based on the content status of the user show DefaultContent or the CardView and Consider the responsiveness.
 /// 3. Add sorting buttons.
-class _Content extends StatelessWidget {
-  final bool _isEmpty = false; // To be replaced to fetching logic.
-
+class _Content extends ConsumerWidget {
   const _Content({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final Widget child = _isEmpty ? const _DefaultContent() : _UserContent();
-
-    return Center(child: child);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final journals = ref.watch(journalControllerProvider);
+    return journals.when(
+      data: (data) {
+        return _UserContent(journals: data);
+      },
+      loading: () => const CircularProgressIndicator(),
+      error: (e, st) {
+        return Center(
+          child: Text(
+            e.toString(),
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -151,60 +161,117 @@ class _DefaultContent extends StatelessWidget {
 }
 
 class _UserContent extends ConsumerWidget {
+  const _UserContent({super.key, required this.journals});
+  final List<Journal?> journals;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dateFilter = ref.watch(dateFilterProvider);
-
-    Widget child = switch (dateFilter) {
-      DateView.day => const _DayView(),
-      DateView.week => const _WeekView(),
-      DateView.month => const _MonthView(),
-    };
-    return child;
+    if (journals.isNotEmpty) {
+      return switch (dateFilter) {
+        DateView.day => const _DayView(),
+        DateView.week => const _WeekView(),
+        DateView.month => const _MonthView(),
+      };
+    } else {
+      return const _DefaultContent();
+    }
   }
 }
 
-class _DayView extends ConsumerWidget {
-  const _DayView({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final journals = ref.watch(journalProvider);
+class _DayView extends ConsumerStatefulWidget {
+  const _DayView({
+    super.key,
+  });
 
-    return ListView(
-        shrinkWrap: true,
-        padding: const EdgeInsets.only(top: 4.0),
-        children: switch (journals) {
-          AsyncData(:final value) => [
-              for (var journal in value)
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _DayViewState();
+}
+
+class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
+  late Future<Map<DateTime, List<Journal?>>> _sortedJournal;
+  @override
+  void initState() {
+    _sortedJournal =
+        ref.read(journalControllerProvider.notifier).getDayViewJournals();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: _sortedJournal,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<Widget> children = [];
+            for (var entry in snapshot.data!.entries) {
+              children.add(
                 Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Center(
-                    child: CardSingle(
-                      journal: journal,
-                    ),
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Text(
+                    '${entry.key.month}월 ${entry.key.day}일',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                )
-            ],
-          AsyncError() => [const Text("Oops! Something went wrong")],
-          _ => [const CircularProgressIndicator()]
+                ),
+              );
+              for (var journal in entry.value) {
+                if (journal != null) {
+                  children.add(_DayViewCard(journal: journal));
+                }
+              }
+            }
+            return ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(top: 4.0),
+                children: children);
+          }
+          return const SizedBox.shrink();
         });
   }
 }
 
-class _WeekView extends ConsumerWidget {
+class _DayViewCard extends StatelessWidget {
+  const _DayViewCard({super.key, required this.journal});
+  final Journal journal;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0),
+      child: Center(
+        child: CardSingle(
+          journal: journal,
+        ),
+      ),
+    );
+  }
+}
+
+class _WeekView extends ConsumerStatefulWidget {
   const _WeekView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final journals = ref.watch(journalProvider);
-    final Widget child = switch (journals) {
-      AsyncData(:final value) => LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-          List<WeeklyGroup<Journal>> sortedJournals =
-              CustomDateUtils.groupItemsByWeek(value);
+  ConsumerState<ConsumerStatefulWidget> createState() => _WeekViewState();
+}
+
+class _WeekViewState extends ConsumerState<ConsumerStatefulWidget> {
+  late Future<List<WeeklyGroup<Journal>>> _sortedJournals;
+  @override
+  void initState() {
+    _sortedJournals =
+        ref.read(journalControllerProvider.notifier).getWeekViewJournals();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _sortedJournals,
+      builder: (context, snapshot) {
+        if (snapshot.data != null) {
           return ListView(
             children: [
-              for (var items in sortedJournals)
+              for (var items in snapshot.data!)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -224,30 +291,42 @@ class _WeekView extends ConsumerWidget {
                 )
             ],
           );
-        }),
-      AsyncError() => const Text("Something went wrong"),
-      _ => const CircularProgressIndicator()
-    };
-    return child;
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
   }
 }
 
-class _MonthView extends ConsumerWidget {
+class _MonthView extends ConsumerStatefulWidget {
   const _MonthView({super.key});
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _MonthViewState();
+}
+
+class _MonthViewState extends ConsumerState<ConsumerStatefulWidget> {
+  late Future<LinkedHashMap<DateTime, List<Journal?>>> _linkedHashMap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final journals = ref.watch(journalProvider);
-    final Widget widget = switch (journals) {
-      AsyncData(:final value) => Builder(builder: (BuildContext context) {
-          final linkedHashMap = CustomDateUtils.getMonthlyJournal(value);
+  void initState() {
+    super.initState();
+    _linkedHashMap =
+        ref.read(journalControllerProvider.notifier).getMonthlyJournals();
+  }
 
-          return Center(child: CalendarWidget(events: linkedHashMap));
-        }),
-      AsyncError() => const Text("Error"),
-      _ => const CircularProgressIndicator()
-    };
-    return widget;
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _linkedHashMap,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Center(child: CalendarWidget(events: snapshot.data!));
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
   }
 }
 

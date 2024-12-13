@@ -1,7 +1,10 @@
 class Plant {
   final String name;
 
-  Plant(this.name);
+  Plant({required this.name});
 
-  Plant.fromJson(Map<String, dynamic> json) : name = json['name'] as String;
+  factory Plant.fromJson(Map<String, dynamic> json) {
+    String name = json['name'] as String;
+    return Plant(name: name);
+  }
 }

@@ -1,6 +1,5 @@
 import 'package:farmers_journal/data/interfaces.dart';
 import 'package:farmers_journal/data/repositories.dart';
-import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/domain/model/user.dart';

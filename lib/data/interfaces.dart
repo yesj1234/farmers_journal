@@ -8,6 +8,13 @@ abstract class DefaultImageRepository {
 
 abstract class UserRepository {
   Future<User?> getUsers();
+  Future<List<Journal?>> getJournals();
+  Future<void> createJournal({
+    required String title,
+    required String content,
+    required DateTime date,
+    required String? image,
+  });
 }
 
 abstract class JournalRepository {

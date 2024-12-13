@@ -42,22 +42,22 @@ class CustomDateUtils {
     }
   }
 
-  static List<WeeklyGroup<Journal>> groupItemsByWeek(List<Journal> items) {
+  static List<WeeklyGroup<Journal>> groupItemsByWeek(List<Journal?> items) {
     items.sort((a, b) {
-      DateTime timeA = a.createdAt as DateTime;
-      DateTime timeB = b.createdAt as DateTime;
+      DateTime timeA = a?.createdAt as DateTime;
+      DateTime timeB = b?.createdAt as DateTime;
       return timeB.compareTo(timeA);
     });
 
     Map<String, List<Journal>> weeklyGroups = {};
     DateTime now = DateTime.now();
     for (var item in items) {
-      DateTime dateTime = item.createdAt as DateTime;
+      DateTime dateTime = item?.createdAt as DateTime;
 
       String weekLabel = _getWeekLabel(dateTime, now);
 
       weeklyGroups.putIfAbsent(weekLabel, () => []);
-      weeklyGroups[weekLabel]!.add(item);
+      weeklyGroups[weekLabel]!.add(item!);
     }
     List<WeeklyGroup<Journal>> result = weeklyGroups.entries
         .map((entry) => WeeklyGroup(weekLabel: entry.key, items: entry.value))
@@ -71,17 +71,16 @@ class CustomDateUtils {
   }
 
   static LinkedHashMap<DateTime, List<Journal>> getMonthlyJournal(
-      List<Journal> journals) {
+      List<Journal?> journals) {
     Map<DateTime, List<Journal>> temp = {};
-
-    for (Journal journal in journals) {
-      if (journal.createdAt != null) {
-        DateTime formattedDateTime = formatDate(journal.createdAt as DateTime);
+    for (var journal in journals) {
+      if (journal?.createdAt != null) {
+        DateTime formattedDateTime = formatDate(journal?.createdAt as DateTime);
 
         if (temp.containsKey(formattedDateTime)) {
-          temp[formattedDateTime]?.add(journal);
+          temp[formattedDateTime]?.add(journal!);
         } else {
-          temp.putIfAbsent(formattedDateTime, () => [journal]);
+          temp.putIfAbsent(formattedDateTime, () => [journal!]);
         }
       }
     }
