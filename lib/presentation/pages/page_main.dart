@@ -6,7 +6,6 @@ import 'package:table_calendar/table_calendar.dart';
 
 //Riverpod
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:farmers_journal/presentation/controller/journal_controller.dart';
 import 'package:farmers_journal/data/providers.dart';
 
@@ -34,10 +33,10 @@ import 'package:farmers_journal/utils.dart';
 ///  - 4. Connect Database. :: _Content should change based on the user's journal status.
 ///  - 5. Think of the properties that should be resolved to each child components. => Needs modeling first.
 ///  - 6. Add onTap / onClick callback to profile image directing to the profile setting page.
-class PageMain extends ConsumerWidget {
+class PageMain extends StatelessWidget {
   const PageMain({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: const SafeArea(
         child: Padding(
@@ -63,11 +62,13 @@ class PageMain extends ConsumerWidget {
   }
 }
 
-class _TopNavTemp extends StatelessWidget {
-  const _TopNavTemp();
+class _TopNavTemp extends ConsumerWidget {
+  const _TopNavTemp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final journalCount = ref.watch(journalCountProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +93,7 @@ class _TopNavTemp extends StatelessWidget {
                 ),
                 ButtonStatus(
                   status: "기록일수",
-                  statusValue: "0 일",
+                  statusValue: "$journalCount 일",
                   statusEmoji: "assets/icons/Fire.png",
                   onNavigateTap: () => context.go('/main/statistics'),
                 ),
@@ -125,7 +126,7 @@ class _Content extends ConsumerWidget {
       data: (data) {
         return _UserContent(journals: data);
       },
-      loading: () => const CircularProgressIndicator(),
+      loading: () => const SizedBox.shrink(),
       error: (e, st) {
         return Center(
           child: Text(

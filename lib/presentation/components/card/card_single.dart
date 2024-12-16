@@ -14,6 +14,8 @@ class CardSingle extends StatelessWidget {
   const CardSingle({
     super.key,
     required this.journal,
+    this.cardMinHeight = 0,
+    this.cardMaxHeight = 300,
     this.cardMaxWidth = 270,
     this.horizontalPadding = 4.0,
     this.verticalPadding = 8.0,
@@ -22,7 +24,8 @@ class CardSingle extends StatelessWidget {
     this.dateFontSize = 12,
   });
   final Journal journal;
-
+  final double cardMinHeight;
+  final double cardMaxHeight;
   final double cardMaxWidth;
   final double horizontalPadding;
   final double verticalPadding;
@@ -40,7 +43,10 @@ class CardSingle extends StatelessWidget {
       children: [
         IntrinsicHeight(
           child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: cardMaxWidth),
+              constraints: BoxConstraints(
+                  maxWidth: cardMaxWidth,
+                  minHeight: cardMinHeight,
+                  maxHeight: cardMaxHeight),
               child: Card(
                 shape: const ContinuousRectangleBorder(),
                 color: colorScheme.surface.withOpacity(0.5),
