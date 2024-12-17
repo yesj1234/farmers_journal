@@ -38,12 +38,10 @@ class CreateJournalForm extends HookConsumerWidget {
     }
 
     void updateJournalTitle(String? title) {
-      debugPrint(title);
       newJournalTitle.value = title?.isNotEmpty == true ? title! : '';
     }
 
     void updateJournalContent(String? content) {
-      debugPrint(content);
       newJournalContent.value = content?.isNotEmpty == true ? content! : '';
     }
 
@@ -68,17 +66,16 @@ class CreateJournalForm extends HookConsumerWidget {
             onUpdateContent: updateJournalContent,
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               _formKey.currentState?.save();
-              debugPrint(newJournalTitle.value);
-              debugPrint(newJournalContent.value);
-              debugPrint(datePicked.value.toString());
-              ref.read(journalControllerProvider.notifier).createJournal(
+              await ref.read(journalControllerProvider.notifier).createJournal(
                   title: newJournalContent.value,
                   content: newJournalContent.value,
                   date: datePicked.value,
                   image: '');
-              context.go('/main');
+              if (context.mounted) {
+                context.go('/main');
+              }
             },
             child: const Text("Save"),
           ),
