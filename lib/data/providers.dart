@@ -20,7 +20,7 @@ int journalCount(Ref ref) {
       loading: () => 0);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class DateFilter extends _$DateFilter {
   @override
   DateView build() {
@@ -29,54 +29,6 @@ class DateFilter extends _$DateFilter {
 
   changeDateFilter(DateView view) {
     state = view;
-  }
-}
-
-@riverpod
-class DatePicked extends _$DatePicked {
-  @override
-  DateTime? build() {
-    return DateTime.now();
-  }
-
-  updatePickedDate(DateTime? pickedDate) {
-    if (pickedDate == null) {
-      state = DateTime.now();
-    } else {
-      state = pickedDate;
-    }
-  }
-}
-
-@riverpod
-class NewJournalTitle extends _$NewJournalTitle {
-  @override
-  String? build() {
-    return '';
-  }
-
-  updateJournalTitle(String? title) {
-    if (title == null || title.isEmpty) {
-      state = '';
-    } else {
-      state = title;
-    }
-  }
-}
-
-@riverpod
-class NewJournalContent extends _$NewJournalContent {
-  @override
-  String? build() {
-    return '';
-  }
-
-  updateJournalContent(String? content) {
-    if (content == null || content.isEmpty) {
-      state = '';
-    } else {
-      state = content;
-    }
   }
 }
 

@@ -55,7 +55,7 @@ class PageMain extends StatelessWidget {
         ),
       ),
       floatingActionButton: ButtonCreatePost(
-        onClick: () => context.go('/main/create'),
+        onClick: () => context.go('/create'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
@@ -170,11 +170,9 @@ class _UserContent extends ConsumerWidget {
     final dateFilter = ref.watch(dateFilterProvider);
     if (journals.isNotEmpty) {
       return switch (dateFilter) {
-        DateView.day => _DayView(journals: journals),
-        DateView.week => _WeekView(journals: journals),
-        DateView.month => _MonthView(
-            journals: journals,
-          ),
+        DateView.day => const _DayView(),
+        DateView.week => const _WeekView(),
+        DateView.month => const _MonthView(),
       };
     } else {
       return const _DefaultContent();
@@ -182,55 +180,52 @@ class _UserContent extends ConsumerWidget {
   }
 }
 
-class _DayView extends StatelessWidget {
-  const _DayView({super.key, required this.journals});
-  final List<Journal?> journals;
-  Map<DateTime, List<Journal?>> getDayViewJournals(journals) {
-    Map<DateTime, List<Journal?>> map = {};
-    if (journals.isNotEmpty) {
-      journals
-          .sort((Journal a, Journal b) => b.createdAt!.compareTo(a.createdAt!));
-      for (var journal in journals) {
-        int? year = journal?.createdAt?.year;
-        int? month = journal?.createdAt?.month;
-        int? day = journal?.createdAt?.day;
-        if (year != null && month != null && day != null) {
-          var createdDate = DateTime(year, month, day);
-          if (map.containsKey(createdDate)) {
-            map[createdDate]?.add(journal);
-          } else {
-            map[createdDate] = [journal];
-          }
-        }
-      }
-    }
-    return map;
+class _DayView extends ConsumerStatefulWidget {
+  const _DayView({super.key});
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _DayViewState();
+}
+
+class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
+  late Future<Map<DateTime, List<Journal?>>> _sortedJournal;
+  @override
+  void initState() {
+    super.initState();
+    _sortedJournal =
+        ref.read(journalControllerProvider.notifier).getDayViewJournals();
   }
 
   @override
   Widget build(BuildContext context) {
-    final sortedJournal = getDayViewJournals(journals);
-    List<Widget> children = [];
-    for (var entry in sortedJournal.entries) {
-      children.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Text(
-            '${entry.key.month}월 ${entry.key.day}일',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-        ),
-      );
-      for (var journal in entry.value) {
-        if (journal != null) {
-          children.add(_DayViewCard(journal: journal));
-        }
-      }
-    }
-    return ListView(
-        shrinkWrap: true,
-        padding: const EdgeInsets.only(top: 4.0),
-        children: children);
+    return FutureBuilder(
+        future: _sortedJournal,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<Widget> children = [];
+            for (var entry in snapshot.data!.entries) {
+              children.add(
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Text(
+                    '${entry.key.month}월 ${entry.key.day}일',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ),
+              );
+              for (var journal in entry.value) {
+                if (journal != null) {
+                  children.add(_DayViewCard(journal: journal));
+                }
+              }
+            }
+            return ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(top: 4.0),
+                children: children);
+          }
+          return const SizedBox.shrink();
+        });
   }
 }
 
@@ -250,51 +245,82 @@ class _DayViewCard extends StatelessWidget {
   }
 }
 
-class _WeekView extends StatelessWidget {
-  const _WeekView({super.key, required this.journals});
-  final List<Journal?> journals;
-  List<WeeklyGroup<Journal>> getWeeklySortedJournals(journals) {
-    return CustomDateUtils.groupItemsByWeek(journals);
+class _WeekView extends ConsumerStatefulWidget {
+  const _WeekView({super.key});
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _WeekViewState();
+}
+
+class _WeekViewState extends ConsumerState<ConsumerStatefulWidget> {
+  late Future<List<WeeklyGroup<Journal>>> _sortedJournals;
+
+  @override
+  void initState() {
+    _sortedJournals =
+        ref.read(journalControllerProvider.notifier).getWeekViewJournals();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final sortedJournals = getWeeklySortedJournals(journals);
-    return ListView(
-      children: [
-        for (var items in sortedJournals)
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Text(
-                  items.weekLabel,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              SizedBox(height: 200, child: MyCarousel(journals: items.items))
-            ],
-          )
-      ],
-    );
+    return FutureBuilder(
+        future: _sortedJournals,
+        builder: (context, snapshot) {
+          if (snapshot.data != null) {
+            return ListView(children: [
+              for (var items in snapshot.data!)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        items.weekLabel,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                        height: 200, child: MyCarousel(journals: items.items))
+                  ],
+                )
+            ]);
+          } else {
+            return const SizedBox.shrink();
+          }
+        });
   }
 }
 
-class _MonthView extends StatelessWidget {
-  const _MonthView({super.key, required this.journals});
-  final List<Journal?> journals;
-  LinkedHashMap<DateTime, List<Journal?>> getMonthlySortedJournals(journals) {
-    return CustomDateUtils.getMonthlyJournal(journals);
+class _MonthView extends ConsumerStatefulWidget {
+  const _MonthView({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _MonthViewState();
+}
+
+class _MonthViewState extends ConsumerState<ConsumerStatefulWidget> {
+  late Future<LinkedHashMap<DateTime, List<Journal?>>> _linkedHashMap;
+  @override
+  void initState() {
+    super.initState();
+    _linkedHashMap =
+        ref.read(journalControllerProvider.notifier).getMonthlyJournals();
   }
 
   @override
   Widget build(BuildContext context) {
-    final sortedJournals = getMonthlySortedJournals(journals);
-    return Center(child: CalendarWidget(events: sortedJournals));
+    return FutureBuilder(
+        future: _linkedHashMap,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Center(child: CalendarWidget(events: snapshot.data!));
+          } else {
+            return const SizedBox.shrink();
+          }
+        });
   }
 }
 

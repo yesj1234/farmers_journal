@@ -14,6 +14,9 @@ class PageCreateJournal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+          onPressed: () => context.go('/main'),
+        ),
         title: const Text("일지 쓰기"),
       ),
       body: SafeArea(
@@ -61,10 +64,11 @@ class CreateJournalForm extends HookConsumerWidget {
           const SizedBox(
             height: 10,
           ),
-          _ContentForm(
+          Flexible(
+              child: _ContentForm(
             content: newJournalContent.value,
             onUpdateContent: updateJournalContent,
-          ),
+          )),
           ElevatedButton(
             onPressed: () async {
               _formKey.currentState?.save();

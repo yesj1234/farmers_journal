@@ -12,6 +12,9 @@ final router = GoRouter(
       builder: (context, state) => const PageInitialSetting(),
     ),
     GoRoute(
+        path: '/create',
+        builder: (context, state) => const PageCreateJournal()),
+    GoRoute(
         path: '/main',
         builder: (context, state) => const PageMain(),
         routes: [
