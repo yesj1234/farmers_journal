@@ -27,7 +27,7 @@ class User {
         email: email,
         password: password,
         createdAt: createdAt,
-        journals: journals.map((journal) => Journal.fromJson(journal)).toList(),
+        journals: journals,
         plants: plants.map((plant) => Plant.fromJson(plant)).toList());
   }
 }

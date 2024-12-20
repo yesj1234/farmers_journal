@@ -18,7 +18,7 @@ class MyCarousel extends ConsumerStatefulWidget {
 class _MyCarouselState extends ConsumerState<MyCarousel> {
   @override
   Widget build(BuildContext context) {
-    double minimumItemSize = MediaQuery.sizeOf(context).width / 3;
+    double minimumItemSize = MediaQuery.sizeOf(context).width / 2.5;
 
     return Center(
       child: CarouselView(
@@ -30,8 +30,8 @@ class _MyCarouselState extends ConsumerState<MyCarousel> {
             CardSingle(
                 dateFontSize: 10,
                 textMaxLine: 1,
-                cardMaxHeight: 180,
-                cardMinHeight: 180,
+                cardMaxHeight: 200,
+                cardMinHeight: 200,
                 cardMaxWidth: widget.cardMaxWidth,
                 horizontalPadding: 2.0,
                 verticalPadding: 0.0,

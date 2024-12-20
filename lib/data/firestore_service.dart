@@ -18,18 +18,18 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
 @riverpod
 Future<User?> user(Ref ref) async {
   final repository = ref.read(userRepositoryProvider);
-  return repository.getUsers();
+  return repository.getUser();
 }
 
 final journalRepositoryProvider = Provider<JournalRepository>((ref) {
   return FireStoreJournalRepository(instance: FirebaseFirestore.instance);
 });
 
-@Riverpod(keepAlive: true)
-Future<List<Journal>> journal(Ref ref) async {
-  final repository = ref.read(journalRepositoryProvider);
-  return repository.getJournals();
-}
+// @Riverpod(keepAlive: true)
+// Future<List<Journal>> journal(Ref ref) async {
+//   final repository = ref.read(journalRepositoryProvider);
+//   return repository.getJournals();
+// }
 
 final defaultImageRepositoryProvider = Provider<DefaultImageRepository>((ref) {
   return FireStoreDefaultImageRepository(instance: FirebaseFirestore.instance);

@@ -46,7 +46,10 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Used to access the user's photo album for uploading picture for new journal</string>
 	<key>NSCameraUsageDescription</key>
+	<string>Used to access the user's camera for taking picture and upload for new journal directly</string>
     <key>NSMicrophoneUsageDescription</key>
+    <string>Used to access the user's microphone</string>
 </dict>
 </plist>

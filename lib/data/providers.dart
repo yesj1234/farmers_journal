@@ -1,5 +1,7 @@
+import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:farmers_journal/domain/model/geocoding_response.dart';
 import 'package:farmers_journal/presentation/controller/journal_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/enums.dart';
@@ -12,12 +14,12 @@ import 'package:http/http.dart' as http;
 part 'providers.g.dart';
 
 @riverpod
-int journalCount(Ref ref) {
-  final journalController = ref.watch(journalControllerProvider);
-  return AsyncData(journalController).when(
-      data: (data) => data.value != null ? data.value!.length : 0,
-      error: (e, st) => 0,
-      loading: () => 0);
+Future<int> journalCount(Ref ref) async {
+  final userRepo = ref.watch(userRepositoryProvider);
+  final user = await userRepo.getUser();
+  return user?.journals != null && user!.journals.isNotEmpty
+      ? user.journals.length
+      : 0;
 }
 
 @Riverpod(keepAlive: true)

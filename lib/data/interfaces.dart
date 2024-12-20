@@ -7,16 +7,26 @@ abstract class DefaultImageRepository {
 }
 
 abstract class UserRepository {
-  Future<User?> getUsers();
+  Future<User?> getUser();
   Future<List<Journal?>> getJournals();
-  Future<void> createJournal({
+
+  Future<List<Journal?>> createJournal({
     required String title,
     required String content,
     required DateTime date,
-    required String? image,
+    required List<String>? images,
   });
+  Future<List<Journal?>> updateJournal({
+    required String id,
+    required String title,
+    required String content,
+    required DateTime date,
+    required List<String?>? images,
+  });
+  Future<void> deleteJournal({required String id});
 }
 
 abstract class JournalRepository {
-  Future<List<Journal>> getJournals();
+  Future<Journal> getJournal(String id);
+  Future<List<Journal>> getJournals(List<String> ids);
 }

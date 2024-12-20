@@ -26,13 +26,6 @@ import 'package:farmers_journal/domain/model/journal.dart';
 // utils
 import 'package:farmers_journal/utils.dart';
 
-/// TODO:
-///  - 1. Apply font. Pretandard
-///  - 2. Connect FireStore(?) image provider for button profile avatar component.
-///  - 3. Make the page responsive.
-///  - 4. Connect Database. :: _Content should change based on the user's journal status.
-///  - 5. Think of the properties that should be resolved to each child components. => Needs modeling first.
-///  - 6. Add onTap / onClick callback to profile image directing to the profile setting page.
 class PageMain extends StatelessWidget {
   const PageMain({super.key});
   @override
@@ -93,7 +86,9 @@ class _TopNavTemp extends ConsumerWidget {
                 ),
                 ButtonStatus(
                   status: "기록일수",
-                  statusValue: "$journalCount 일",
+                  statusValue: AsyncData(journalCount).hasValue
+                      ? '${journalCount.value}'
+                      : '$journalCount 일',
                   statusEmoji: "assets/icons/Fire.png",
                   onNavigateTap: () => context.go('/main/statistics'),
                 ),
@@ -112,10 +107,6 @@ class _TopNavTemp extends ConsumerWidget {
   }
 }
 
-/// TODO
-/// 1. Fetch user data from firestore => StatefulWidget.
-/// 2. Based on the content status of the user show DefaultContent or the CardView and Consider the responsiveness.
-/// 3. Add sorting buttons.
 class _Content extends ConsumerWidget {
   const _Content({super.key});
 
@@ -126,7 +117,7 @@ class _Content extends ConsumerWidget {
       data: (data) {
         return _UserContent(journals: data);
       },
-      loading: () => const SizedBox.shrink(),
+      loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, st) {
         return Center(
           child: Text(
@@ -238,6 +229,7 @@ class _DayViewCard extends StatelessWidget {
       padding: const EdgeInsets.only(top: 4.0),
       child: Center(
         child: CardSingle(
+          verticalPadding: 0,
           journal: journal,
         ),
       ),

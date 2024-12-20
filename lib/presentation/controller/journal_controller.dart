@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
 
@@ -56,16 +57,37 @@ class JournalController extends _$JournalController {
     return CustomDateUtils.getMonthlyJournal(journals);
   }
 
+  Future<Journal> getJournal(String id) async {
+    final repository = ref.read(journalRepositoryProvider);
+    return await repository.getJournal(id);
+  }
+
   Future<void> createJournal(
       {required String title,
       required String content,
       required DateTime date,
-      required String? image}) async {
-    // 0. Define the Database structure.
-    // 1. Call the userRepository API that create a new journal
-    ref.read(userRepositoryProvider).createJournal(
-        title: title, content: content, date: date, image: image);
-    ref.invalidateSelf();
-    await future;
+      required List<String>? images}) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => ref
+        .read(userRepositoryProvider)
+        .createJournal(
+            title: title, content: content, date: date, images: images));
+  }
+
+  Future<void> updateJournal(
+      {required String id,
+      required String title,
+      required String content,
+      required DateTime date,
+      required List<String?>? images}) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => ref
+        .read(userRepositoryProvider)
+        .updateJournal(
+            id: id,
+            title: title,
+            content: content,
+            date: date,
+            images: images));
   }
 }
