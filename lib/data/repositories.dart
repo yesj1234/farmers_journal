@@ -154,7 +154,20 @@ class FireStoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<void> deleteJournal({required String id}) async {}
+  Future<List<Journal?>> deleteJournal({required String id}) async {
+    // 1. remove the journal with journal id
+    // 2. remove the id from the user's journal
+    // 3. optionally remove the image from the firestorage
+    final userRef = instance.collection("users").doc(
+        'otOHyOdeUe97mmVyeIXz'); // TODO: Replace with actual logged in user fetching logic
+    final journalRef = instance.collection("journals").doc(id);
+    final user = await userRef.get().then((doc) => User.fromJson(doc.data()!));
+    final previousJournalList = user.journals;
+    previousJournalList.remove(id);
+    await userRef.update({'journals': previousJournalList});
+    await journalRef.delete();
+    return await getJournals();
+  }
 }
 
 class FireStoreJournalRepository implements JournalRepository {

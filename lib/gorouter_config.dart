@@ -1,5 +1,5 @@
-import 'package:farmers_journal/presentation/components/update_journal.dart';
-import 'package:farmers_journal/presentation/pages/page_create_journal.dart';
+import 'package:farmers_journal/presentation/pages/page_journal/update_journal.dart';
+import 'package:farmers_journal/presentation/pages/page_journal/page_create_journal.dart';
 import 'package:go_router/go_router.dart';
 import 'package:farmers_journal/presentation/pages/page_initial_setting.dart';
 import 'package:farmers_journal/presentation/pages/page_main.dart';

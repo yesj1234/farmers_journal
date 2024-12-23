@@ -1,5 +1,6 @@
 // packages
 import 'dart:collection';
+import 'package:farmers_journal/presentation/components/card/day_view_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -14,7 +15,6 @@ import 'package:farmers_journal/presentation/components/button/button_create_pos
 import 'package:farmers_journal/presentation/components/button/button_status.dart';
 import 'package:farmers_journal/presentation/components/button/button_filter_date.dart';
 import 'package:farmers_journal/presentation/components/avatar/avatar_profile.dart';
-import 'package:farmers_journal/presentation/components/card/card_single.dart';
 import 'package:farmers_journal/presentation/components/carousel/carousel.dart';
 
 // enums
@@ -60,8 +60,7 @@ class _TopNavTemp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final journalCount = ref.watch(journalCountProvider);
-
+    final journals = ref.watch(journalControllerProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -86,9 +85,9 @@ class _TopNavTemp extends ConsumerWidget {
                 ),
                 ButtonStatus(
                   status: "기록일수",
-                  statusValue: AsyncData(journalCount).hasValue
-                      ? '${journalCount.value}'
-                      : '$journalCount 일',
+                  statusValue: journals.value != null
+                      ? '${journals.value?.length} 일'
+                      : '0 일',
                   statusEmoji: "assets/icons/Fire.png",
                   onNavigateTap: () => context.go('/main/statistics'),
                 ),
@@ -228,7 +227,7 @@ class _DayViewCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 4.0),
       child: Center(
-        child: CardSingle(
+        child: DayViewCard(
           verticalPadding: 0,
           journal: journal,
         ),
@@ -248,9 +247,9 @@ class _WeekViewState extends ConsumerState<ConsumerStatefulWidget> {
 
   @override
   void initState() {
+    super.initState();
     _sortedJournals =
         ref.read(journalControllerProvider.notifier).getWeekViewJournals();
-    super.initState();
   }
 
   @override

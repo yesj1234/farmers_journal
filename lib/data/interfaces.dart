@@ -23,7 +23,7 @@ abstract class UserRepository {
     required DateTime date,
     required List<String?>? images,
   });
-  Future<void> deleteJournal({required String id});
+  Future<List<Journal?>> deleteJournal({required String id});
 }
 
 abstract class JournalRepository {

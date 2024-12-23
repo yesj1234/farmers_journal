@@ -1,10 +1,10 @@
+import 'package:farmers_journal/presentation/components/card/week_view_card.dart';
 import 'package:flutter/material.dart';
 import 'package:farmers_journal/presentation/components/card/card_single.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:farmers_journal/domain/model/journal.dart';
 
-// Should be a StatefulWidget since CarouselView can have a controller.
 class MyCarousel extends ConsumerStatefulWidget {
   const MyCarousel({super.key, required this.journals});
   final double cardMaxHeight = 200;
@@ -18,24 +18,24 @@ class MyCarousel extends ConsumerStatefulWidget {
 class _MyCarouselState extends ConsumerState<MyCarousel> {
   @override
   Widget build(BuildContext context) {
-    double minimumItemSize = MediaQuery.sizeOf(context).width / 2.5;
+    double minimumItemSize = MediaQuery.sizeOf(context).width / 2.2;
 
     return Center(
       child: CarouselView(
+        enableSplash: false,
         itemSnapping: true,
         itemExtent: minimumItemSize,
         shrinkExtent: minimumItemSize,
         children: [
           for (var journal in widget.journals)
-            CardSingle(
+            WeekViewCard(
                 dateFontSize: 10,
                 textMaxLine: 1,
                 cardMaxHeight: 200,
                 cardMinHeight: 200,
                 cardMaxWidth: widget.cardMaxWidth,
-                horizontalPadding: 2.0,
+                horizontalPadding: 6.0,
                 verticalPadding: 0.0,
-                aspectRatio: 2 / 1,
                 journal: journal),
         ],
       ),

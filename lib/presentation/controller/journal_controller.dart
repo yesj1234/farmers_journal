@@ -22,6 +22,11 @@ class JournalController extends _$JournalController {
     return journals;
   }
 
+  int getJournalCount() {
+    return state.when(
+        data: (data) => data.length, loading: () => 0, error: (e, st) => 0);
+  }
+
   Future<Map<DateTime, List<Journal?>>> getDayViewJournals() async {
     final repository = ref.read(userRepositoryProvider);
     List<Journal?> journals = await repository.getJournals();
@@ -89,5 +94,11 @@ class JournalController extends _$JournalController {
             content: content,
             date: date,
             images: images));
+  }
+
+  Future<void> deleteJournal({required String id}) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(
+        () => ref.read(userRepositoryProvider).deleteJournal(id: id));
   }
 }

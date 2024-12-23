@@ -1,11 +1,14 @@
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/layout_images.dart';
+import 'package:farmers_journal/presentation/components/styles/button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/presentation/controller/journal_controller.dart';
+
+import 'package:farmers_journal/presentation/components/styles/text.dart';
 
 class UpdateJournalForm extends StatefulHookConsumerWidget {
   const UpdateJournalForm({super.key, required this.id});
@@ -132,7 +135,8 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                       context.go('/main');
                     }
                   },
-                  child: const Text("Save"),
+                  style: onSaveButtonStyle,
+                  child: const Text("저장", style: onSaveTextStyle),
                 ),
               ],
             ),
