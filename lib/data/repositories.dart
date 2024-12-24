@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
+import 'package:farmers_journal/domain/model/plant.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/data/interfaces.dart';
@@ -27,9 +27,48 @@ class FireStoreDefaultImageRepository implements DefaultImageRepository {
 class FireStoreUserRepository implements UserRepository {
   final FirebaseFirestore instance;
   FireStoreUserRepository({required this.instance});
+
+  @override
+  Future<void> setPlantAndPlace({required Plant plant}) async {
+    final user =
+        instance.collection('users').doc('otOHyOdeUe97mmVyeIXz'); // REPLACE
+    await user.update({
+      'plants': FieldValue.arrayUnion([plant.toJson()])
+    });
+  }
+
+  @override
+  Future<void> setPlace(
+      {required String? id, required String? newPlantPlace}) async {
+    final userRef =
+        instance.collection('users').doc('otOHyOdeUe97mmVyeIXz'); // REPLACE
+    final user = await userRef.get();
+    List plants = user.data()?['plants'] ?? [];
+    int index = plants.indexWhere((plant) => plant['id'] == id);
+    Map<String, dynamic> plant = plants[index];
+    plant.update('place', (_) => newPlantPlace);
+    plants[index] = plant;
+    await userRef.update({'plants': plants});
+  }
+
+  @override
+  Future<void> setPlant(
+      {required String? id, required String? newPlantName}) async {
+    final userRef =
+        instance.collection('users').doc('otOHyOdeUe97mmVyeIXz'); // REPLACE
+    final user = await userRef.get();
+    List plants = user.data()?['plants'] ?? [];
+    int index = plants.indexWhere((plant) => plant['id'] == id);
+    Map<String, dynamic> plant = plants[index];
+    plant.update('name', (_) => newPlantName);
+    plants[index] = plant;
+    await userRef.update({'plants': plants});
+  }
+
   @override
   Future<User?> getUser() async {
-    final user = instance.collection("users").doc('otOHyOdeUe97mmVyeIXz');
+    final user =
+        instance.collection("users").doc('otOHyOdeUe97mmVyeIXz'); // REPLACE
     final result = await user.get().then((DocumentSnapshot doc) {
       final json = doc.data() as Map<String, dynamic>;
       final userModel = User.fromJson(json);
@@ -40,7 +79,8 @@ class FireStoreUserRepository implements UserRepository {
 
   @override
   Future<List<Journal?>> getJournals() async {
-    final user = instance.collection("users").doc('otOHyOdeUe97mmVyeIXz');
+    final user =
+        instance.collection("users").doc('otOHyOdeUe97mmVyeIXz'); // REPLACE
     final journalRef = instance.collection("journals");
 
     final journals = await user.get().then((DocumentSnapshot doc) {
@@ -78,7 +118,8 @@ class FireStoreUserRepository implements UserRepository {
       required DateTime date,
       required List<String>? images}) async {
     // TODO: user authentication
-    final userRef = instance.collection("users").doc('otOHyOdeUe97mmVyeIXz');
+    final userRef =
+        instance.collection("users").doc('otOHyOdeUe97mmVyeIXz'); // REPLACE
     final journalRef = instance.collection("journals");
     var uuid = const Uuid();
     String id = uuid.v4();

@@ -1,5 +1,8 @@
-import 'package:farmers_journal/presentation/components/profile_banner.dart';
 import 'package:flutter/material.dart';
+
+import 'package:go_router/go_router.dart';
+
+import 'package:farmers_journal/presentation/components/profile_banner.dart';
 
 class PageSettings extends StatelessWidget {
   const PageSettings({super.key});
@@ -121,11 +124,11 @@ class _PlantSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return _SettingContainer(settingTitle: "작물", items: [
       _SelectionItemWithCallback(
-          callback: () => print("plant"),
+          callback: () => context.go('/main/settings/plant/'),
           icon: Icons.apple_rounded,
           selectionName: "작물 변경"),
       _SelectionItemWithCallback(
-          callback: () => print("location"),
+          callback: () => context.go("/main/settings/place"),
           icon: Icons.place_outlined,
           selectionName: "위치 변경"),
     ]);

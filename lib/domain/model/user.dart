@@ -28,6 +28,8 @@ class User {
         password: password,
         createdAt: createdAt,
         journals: journals,
-        plants: plants.map((plant) => Plant.fromJson(plant)).toList());
+        plants: plants
+            .map((plant) => Plant.fromJson(plant as Map<String, dynamic>))
+            .toList());
   }
 }

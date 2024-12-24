@@ -1,5 +1,6 @@
 import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
+import 'package:farmers_journal/domain/model/plant.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 
 abstract class DefaultImageRepository {
@@ -8,6 +9,10 @@ abstract class DefaultImageRepository {
 
 abstract class UserRepository {
   Future<User?> getUser();
+  Future<void> setPlant({required String? id, required String? newPlantName});
+  Future<void> setPlace({required String? id, required String? newPlantPlace});
+  Future<void> setPlantAndPlace({required Plant plant});
+
   Future<List<Journal?>> getJournals();
 
   Future<List<Journal?>> createJournal({

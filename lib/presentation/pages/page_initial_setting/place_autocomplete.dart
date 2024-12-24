@@ -5,22 +5,27 @@ import 'package:farmers_journal/data/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PlaceAutoComplete extends ConsumerStatefulWidget {
-  const PlaceAutoComplete({super.key, required this.sessionToken});
+  const PlaceAutoComplete({
+    super.key,
+    required this.sessionToken,
+    required this.onFieldSubmitted,
+  });
   final String sessionToken;
 
+  final void Function(String) onFieldSubmitted;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PlaceAutoComplete();
 }
 
 class _PlaceAutoComplete extends ConsumerState<PlaceAutoComplete> {
-  String? placeInitialValue;
+  String userInput = '';
+  String finalAddress = '';
   bool isPlaceFinal = false;
-  String userInput = "";
-  String finalAddress = "";
   final TextEditingController textEditingController = TextEditingController();
 
   InputDecoration get inputDecoration => const InputDecoration(
-        labelText: "위치 검색",
+        labelText: "위치 선택",
+        hintText: "작물의 재배 위치를 검색해 보세요.",
         fillColor: Colors.transparent,
         isDense: true,
       );
@@ -32,8 +37,8 @@ class _PlaceAutoComplete extends ConsumerState<PlaceAutoComplete> {
 
   @override
   void dispose() {
-    super.dispose();
     textEditingController.dispose();
+    super.dispose();
   }
 
   void _onChanged(String value) async {
@@ -48,8 +53,8 @@ class _PlaceAutoComplete extends ConsumerState<PlaceAutoComplete> {
     final googlePlaceResponse =
         ref.watch(googlePlaceAPIProvider(userInput, widget.sessionToken));
     final Widget predictedPlaces = switch (googlePlaceResponse) {
-      AsyncData(:final value) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      AsyncData(:final value) => ListView(
+          shrinkWrap: true,
           children: [
             for (PlaceAutocompletePrediction prediction in value.predictions)
               PlaceAutoCompletePredictionItem(
@@ -82,16 +87,20 @@ class _PlaceAutoComplete extends ConsumerState<PlaceAutoComplete> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: ListView(children: [
+      child: Column(children: [
         TextFormField(
+          textInputAction: TextInputAction.next,
+          onFieldSubmitted: (String text) {
+            widget.onFieldSubmitted(text);
+          },
           decoration: inputDecoration,
           onChanged: _onChanged,
           controller: textEditingController,
         ),
         isPlaceFinal
-            ? finalAddressMap
+            ? Flexible(child: finalAddressMap)
             : userInput != ""
-                ? predictedPlaces
+                ? Flexible(child: predictedPlaces)
                 : const SizedBox.shrink()
       ]),
     );
@@ -170,7 +179,7 @@ class _PlaceMapState extends State<PlaceMap> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.sizeOf(context).width / 1.5,
+      width: MediaQuery.sizeOf(context).width / 1.2,
       height: MediaQuery.sizeOf(context).height / 3,
       child: GoogleMap(
         onMapCreated: _onMapCreated,

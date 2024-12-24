@@ -1,28 +1,18 @@
 import 'package:flutter/material.dart';
 
 class PlantSelection extends StatelessWidget {
-  const PlantSelection({super.key});
+  const PlantSelection({super.key, required this.onFieldSubmitted});
 
+  final void Function(String) onFieldSubmitted;
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PlantTextField(),
-          SizedBox(height: 10),
-          PlantSuggestion(
-            suggestions: [
-              "캠밸얼리",
-              "거봉",
-              "샤인 머스캣",
-              "레드글로브",
-              "마스캇베리에이",
-              "청포도",
-              '흑보석'
-            ],
-          ),
+          PlantTextField(onFieldSubmitted: onFieldSubmitted),
+          const SizedBox(height: 10),
         ],
       ),
     );
@@ -30,7 +20,8 @@ class PlantSelection extends StatelessWidget {
 }
 
 class PlantTextField extends StatelessWidget {
-  const PlantTextField({super.key});
+  const PlantTextField({super.key, required this.onFieldSubmitted});
+  final void Function(String) onFieldSubmitted;
   InputDecoration get inputDecoration => const InputDecoration(
         labelText: "작물 선택",
         fillColor: Colors.transparent,
@@ -39,7 +30,12 @@ class PlantTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(decoration: inputDecoration);
+    return TextFormField(
+        textInputAction: TextInputAction.done,
+        onFieldSubmitted: (String text) {
+          onFieldSubmitted(text);
+        },
+        decoration: inputDecoration);
   }
 }
 

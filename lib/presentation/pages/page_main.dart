@@ -1,6 +1,7 @@
 // packages
 import 'dart:collection';
 import 'package:farmers_journal/presentation/components/card/day_view_card.dart';
+import 'package:farmers_journal/presentation/controller/user_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -60,7 +61,7 @@ class _TopNavTemp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final journals = ref.watch(journalControllerProvider);
+    final user = ref.watch(userControllerProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -76,8 +77,11 @@ class _TopNavTemp extends ConsumerWidget {
               children: [
                 ButtonStatus(
                   status: "작물",
-                  statusValue: "포도(캠벨얼리)",
-                  statusEmoji: "assets/icons/Grapes.png",
+                  statusValue: user.value != null
+                      ? '${user.value?.plants.first.name}'
+                      : '',
+                  statusIcon: Icons.eco,
+                  statusIconColor: Colors.green,
                   onNavigateTap: () => context.go('/main/statistics'),
                 ),
                 const VerticalDivider(
@@ -85,10 +89,11 @@ class _TopNavTemp extends ConsumerWidget {
                 ),
                 ButtonStatus(
                   status: "기록일수",
-                  statusValue: journals.value != null
-                      ? '${journals.value?.length} 일'
+                  statusValue: user.value != null
+                      ? '${user.value?.journals.length} 일'
                       : '0 일',
-                  statusEmoji: "assets/icons/Fire.png",
+                  statusIcon: Icons.local_fire_department_sharp,
+                  statusIconColor: Colors.red,
                   onNavigateTap: () => context.go('/main/statistics'),
                 ),
                 const Spacer(),

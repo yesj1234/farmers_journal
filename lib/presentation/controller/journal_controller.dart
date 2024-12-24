@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/utils.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
 
