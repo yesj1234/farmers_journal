@@ -84,10 +84,10 @@ class WeekViewCard extends ConsumerWidget {
                   )
                 : const SizedBox.shrink(),
             journal.title != null
-                ? Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: horizontalPadding),
-                    child: Expanded(
+                ? Expanded(
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: horizontalPadding),
                       child: Text(
                         journal.title!,
                         style: const TextStyle(
