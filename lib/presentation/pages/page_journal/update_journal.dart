@@ -1,6 +1,7 @@
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/components/styles/button.dart';
+import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
@@ -94,7 +95,13 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                           width: MediaQuery.sizeOf(context).width / 1.1,
                           height: MediaQuery.sizeOf(context).height / 4,
                           child: ImageWidgetLayout(
-                            images: images as List<dynamic>,
+                            images: images!.map((item) {
+                              if (item is String) {
+                                return UrlImage(item);
+                              } else {
+                                return XFileImage(item);
+                              }
+                            }).toList(),
                             onDelete: deleteImage,
                             isEditMode: true,
                           ),

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/plant.dart';
 
 class User {

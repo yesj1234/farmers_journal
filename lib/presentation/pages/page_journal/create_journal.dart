@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/presentation/controller/journal_controller.dart';
+import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
 class CreateJournalForm extends StatefulHookConsumerWidget {
   const CreateJournalForm({super.key});
@@ -72,7 +73,13 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
                     height: MediaQuery.sizeOf(context).height / 4,
                     child: xFileList.value != null
                         ? ImageWidgetLayout(
-                            images: xFileList.value as List<dynamic>,
+                            images: xFileList.value!.map((item) {
+                              if (item is String) {
+                                return UrlImage(item as String);
+                              } else {
+                                return XFileImage(item);
+                              }
+                            }).toList(),
                             isEditMode: true,
                             onDelete: deleteImage,
                           )

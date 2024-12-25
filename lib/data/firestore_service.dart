@@ -7,8 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Models
 
-import 'package:farmers_journal/domain/model/journal.dart';
-
 part 'firestore_service.g.dart';
 
 final userRepositoryProvider = Provider<UserRepository>((ref) {

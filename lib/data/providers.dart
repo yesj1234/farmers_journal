@@ -1,7 +1,5 @@
 import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:farmers_journal/domain/model/geocoding_response.dart';
-import 'package:farmers_journal/presentation/controller/journal_controller.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/enums.dart';

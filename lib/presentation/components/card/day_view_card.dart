@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/card/card_single.dart';
 
+import '../../pages/page_journal/image_type.dart';
+
 class DayViewCard extends ConsumerWidget {
   const DayViewCard({
     super.key,
@@ -81,7 +83,14 @@ class DayViewCard extends ConsumerWidget {
                 ? Expanded(
                     flex: 4,
                     child: ImageWidgetLayout(
-                        images: journal.images as List<dynamic>),
+                        images: journal.images!.map((item) {
+                      if (item is String) {
+                        return UrlImage(item);
+                      } else {
+                        throw ArgumentError(
+                            'Invalid type in list: ${item.runtimeType}');
+                      }
+                    }).toList()),
                   )
                 : const SizedBox.shrink(),
             journal.title != null

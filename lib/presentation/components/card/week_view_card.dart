@@ -1,5 +1,6 @@
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/controller/journal_controller.dart';
+import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -80,7 +81,14 @@ class WeekViewCard extends ConsumerWidget {
                 ? Expanded(
                     flex: 4,
                     child: ImageWidgetLayout(
-                        images: journal.images as List<dynamic>),
+                        images: journal.images!.map((item) {
+                      if (item is String) {
+                        return UrlImage(item);
+                      } else {
+                        throw ArgumentError(
+                            'Invalid type in list: ${item.runtimeType}');
+                      }
+                    }).toList()),
                   )
                 : const SizedBox.shrink(),
             journal.title != null

@@ -1,5 +1,3 @@
-import 'package:farmers_journal/domain/model/journal.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/create_journal.dart';

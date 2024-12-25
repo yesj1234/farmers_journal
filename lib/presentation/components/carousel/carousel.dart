@@ -1,6 +1,5 @@
 import 'package:farmers_journal/presentation/components/card/week_view_card.dart';
 import 'package:flutter/material.dart';
-import 'package:farmers_journal/presentation/components/card/card_single.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:farmers_journal/domain/model/journal.dart';

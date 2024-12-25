@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 class Journal {
   final String? id;
   final String? title;

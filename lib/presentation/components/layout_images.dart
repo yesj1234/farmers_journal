@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
-class Union {
-  String? imageUrl;
-  XFile? imageFile;
-  String type = 'url';
-}
+import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
 class ImageWidgetLayout extends StatelessWidget {
   const ImageWidgetLayout({
@@ -17,15 +12,13 @@ class ImageWidgetLayout extends StatelessWidget {
   });
   final bool isEditMode;
   final void Function(int id)? onDelete;
-  final List<dynamic> images;
-  // final List<XFile>? images;
-  // final List<String?>? urls;
+  final List<ImageType> images;
 
   int _getCrossAxisCount(int imageCount) {
     if (imageCount == 1) return 1;
     if (imageCount <= 4) return 2;
     if (imageCount <= 9) return 3;
-    return 4; // Maximum of 4 columns for 10–13 images
+    return 4;
   }
 
   int _getRowCount(int imageCount, int crossAxisCount) {
@@ -61,27 +54,29 @@ class ImageWidgetLayout extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              if (images[index].runtimeType == String) {
-                return _URLImageTile(
-                  id: index,
-                  url: images[index],
-                  onDelete: () {
-                    debugPrint(index.toString());
-                    onDelete!(index);
-                  },
-                  width: tileWidth,
-                  height: tileHeight,
-                  isEditMode: isEditMode,
-                );
-              } else {
-                return _XFileImageTile(
-                  id: index,
-                  image: images[index],
-                  onDelete: () => {onDelete!(index)},
-                  width: tileWidth,
-                  height: tileHeight,
-                  isEditMode: isEditMode,
-                );
+              switch (images[index]) {
+                case UrlImage(:final value):
+                  return _URLImageTile(
+                    id: index,
+                    url: value,
+                    onDelete: () {
+                      debugPrint(index.toString());
+                      onDelete!(index);
+                    },
+                    width: tileWidth,
+                    height: tileHeight,
+                    isEditMode: isEditMode,
+                  );
+
+                case XFileImage(:final value):
+                  return _XFileImageTile(
+                    id: index,
+                    image: value,
+                    onDelete: () => {onDelete!(index)},
+                    width: tileWidth,
+                    height: tileHeight,
+                    isEditMode: isEditMode,
+                  );
               }
             },
           );
