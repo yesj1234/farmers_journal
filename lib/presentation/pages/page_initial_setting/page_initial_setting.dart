@@ -68,11 +68,15 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
                 actions: <Widget>[
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('취소'),
+                    child: const Text(
+                      '취소',
+                      textAlign: TextAlign.end,
+                    ),
                   ),
                   TextButton(
                     child: const Text(
                       '확정',
+                      textAlign: TextAlign.end,
                       style: TextStyle(
                         color: Colors.red,
                       ),

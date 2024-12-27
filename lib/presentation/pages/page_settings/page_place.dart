@@ -23,7 +23,7 @@ class _PagePlantState extends ConsumerState<PagePlace> {
         fontSize: 25,
         fontWeight: FontWeight.bold,
       );
-  late final Future<User?> _user;
+  late final Future<AppUser?> _user;
   final _formKey = GlobalKey<FormState>();
   String? plantId;
   String? plantPlace;

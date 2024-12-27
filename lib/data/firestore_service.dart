@@ -1,5 +1,7 @@
 import 'package:farmers_journal/data/interfaces.dart';
-import 'package:farmers_journal/data/repositories.dart';
+import 'package:farmers_journal/data/repositories/default_image_repository.dart';
+import 'package:farmers_journal/data/repositories/journal_repository.dart';
+import 'package:farmers_journal/data/repositories/user_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/domain/model/user.dart';
@@ -14,7 +16,7 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
 });
 
 @riverpod
-Future<User?> user(Ref ref) async {
+Future<AppUser?> user(Ref ref) async {
   final repository = ref.read(userRepositoryProvider);
   return repository.getUser();
 }
@@ -22,12 +24,6 @@ Future<User?> user(Ref ref) async {
 final journalRepositoryProvider = Provider<JournalRepository>((ref) {
   return FireStoreJournalRepository(instance: FirebaseFirestore.instance);
 });
-
-// @Riverpod(keepAlive: true)
-// Future<List<Journal>> journal(Ref ref) async {
-//   final repository = ref.read(journalRepositoryProvider);
-//   return repository.getJournals();
-// }
 
 final defaultImageRepositoryProvider = Provider<DefaultImageRepository>((ref) {
   return FireStoreDefaultImageRepository(instance: FirebaseFirestore.instance);

@@ -1,28 +1,12 @@
 import 'dart:io';
-import 'package:farmers_journal/domain/model/plant.dart';
-import 'package:uuid/uuid.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/data/interfaces.dart';
-import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
+import 'package:farmers_journal/domain/model/plant.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
-class FireStoreDefaultImageRepository implements DefaultImageRepository {
-  final FirebaseFirestore instance;
-  FireStoreDefaultImageRepository({required this.instance});
-  @override
-  Future<DefaultImage> getDefaultImage() async {
-    // TODO: send request, parse response, return DefaultImage object or throw.
-    final image = instance.collection('images').doc('LNnga0Rn86RkxU6kB8VO');
-    final result = await image.get().then((DocumentSnapshot doc) {
-      final json = doc.data() as Map<String, dynamic>;
-      final defaultImage = DefaultImage.fromJson(json);
-      return defaultImage;
-    });
-    return result;
-  }
-}
+import 'package:uuid/uuid.dart';
 
 class FireStoreUserRepository implements UserRepository {
   final FirebaseFirestore instance;
@@ -66,12 +50,12 @@ class FireStoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<User?> getUser() async {
+  Future<AppUser?> getUser() async {
     final user =
         instance.collection("users").doc('otOHyOdeUe97mmVyeIXz'); // REPLACE
     final result = await user.get().then((DocumentSnapshot doc) {
       final json = doc.data() as Map<String, dynamic>;
-      final userModel = User.fromJson(json);
+      final userModel = AppUser.fromJson(json);
       return userModel;
     });
     return result;
@@ -85,7 +69,7 @@ class FireStoreUserRepository implements UserRepository {
 
     final journals = await user.get().then((DocumentSnapshot doc) {
       final json = doc.data() as Map<String, dynamic>;
-      final userModel = User.fromJson(json);
+      final userModel = AppUser.fromJson(json);
       return userModel.journals;
     });
     List<Journal?> res = [];
@@ -202,42 +186,12 @@ class FireStoreUserRepository implements UserRepository {
     final userRef = instance.collection("users").doc(
         'otOHyOdeUe97mmVyeIXz'); // TODO: Replace with actual logged in user fetching logic
     final journalRef = instance.collection("journals").doc(id);
-    final user = await userRef.get().then((doc) => User.fromJson(doc.data()!));
+    final user =
+        await userRef.get().then((doc) => AppUser.fromJson(doc.data()!));
     final previousJournalList = user.journals;
     previousJournalList.remove(id);
     await userRef.update({'journals': previousJournalList});
     await journalRef.delete();
     return await getJournals();
-  }
-}
-
-class FireStoreJournalRepository implements JournalRepository {
-  final FirebaseFirestore instance;
-  FireStoreJournalRepository({required this.instance});
-
-  @override
-  Future<Journal> getJournal(String id) async {
-    Journal journal;
-    return await instance
-        .collection("journals")
-        .doc(id)
-        .get()
-        .then((docSnapshot) {
-      journal = Journal.fromJson(docSnapshot.data() as Map<String, dynamic>);
-      return journal;
-    });
-  }
-
-  @override
-  Future<List<Journal>> getJournals(List<String> ids) async {
-    List<Journal> result = [];
-    for (String id in ids) {
-      await instance.collection("journals").doc(id).get().then(
-          (docSnapshot) => result.add(
-                Journal.fromJson(docSnapshot.data() as Map<String, dynamic>),
-              ),
-          onError: (e) => print("Error completing : $e"));
-    }
-    return result;
   }
 }

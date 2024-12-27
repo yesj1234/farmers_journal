@@ -7,8 +7,23 @@ abstract class DefaultImageRepository {
   Future<DefaultImage> getDefaultImage();
 }
 
+abstract class AuthRepository {
+  Future<void> signUpWithEmail({
+    required String email,
+    required String password,
+    String? name,
+  });
+  Future<void> signInWithEmail(
+      {required String email, required String password});
+  Future<void> signOut();
+  Future<void> resetPassword({
+    required String email,
+  });
+  Future<void> deleteAccount();
+}
+
 abstract class UserRepository {
-  Future<User?> getUser();
+  Future<AppUser?> getUser();
   Future<void> setPlant({required String? id, required String? newPlantName});
   Future<void> setPlace({required String? id, required String? newPlantPlace});
   Future<void> setPlantAndPlace({required Plant plant});

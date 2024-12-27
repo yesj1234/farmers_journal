@@ -9,7 +9,7 @@ part 'user_controller.g.dart';
 @riverpod
 class UserController extends _$UserController {
   @override
-  Future<User?> build() {
+  Future<AppUser?> build() {
     final repository = ref.read(userRepositoryProvider);
     return repository.getUser();
   }

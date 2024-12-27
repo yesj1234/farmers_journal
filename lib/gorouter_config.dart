@@ -1,4 +1,5 @@
 import 'package:farmers_journal/presentation/pages/page_journal/page_create_journal.dart';
+import 'package:farmers_journal/presentation/pages/page_login.dart';
 import 'package:farmers_journal/presentation/pages/page_settings/page_place.dart';
 import 'package:farmers_journal/presentation/pages/page_settings/page_plant.dart';
 import 'package:go_router/go_router.dart';
@@ -10,8 +11,12 @@ import 'package:farmers_journal/presentation/pages/page_statistics.dart';
 final router = GoRouter(
   routes: [
     GoRoute(
-      path: '/',
+      path: '/initialSetting',
       builder: (context, state) => const PageInitialSetting(),
+    ),
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const PageLogin(),
     ),
     GoRoute(
         path: '/create',
