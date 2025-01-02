@@ -1,14 +1,14 @@
 // packages
 import 'dart:collection';
 import 'package:farmers_journal/presentation/components/card/day_view_card.dart';
-import 'package:farmers_journal/presentation/controller/user_controller.dart';
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 //Riverpod
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:farmers_journal/presentation/controller/journal_controller.dart';
+import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/data/providers.dart';
 
 // custom components
@@ -61,7 +61,28 @@ class _TopNavTemp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // listen to the user changes.
+    // user has 4 states.
+    // initial
+    // loading
+    // suceess
+    // failure
+    // based on these four states, define the callback for the ui to handle each data responsibly.
+    // ref.listen(userControllerProvider, (previous, next) {
+    //   next.maybeWhen(
+    //       initial: () => null,
+    //       loading: () => null,
+    //       success: () => null,
+    //       failure: () => null,
+    //       );
+    // });
+
+    // And let the component that needs to change for the loading stat,
+    // make the widget watch for the state.
+    // ref.watch(userControllerProvider).maybeWhen(loading: ()=> null, orElse: () => {});
+
     final user = ref.watch(userControllerProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -88,10 +109,10 @@ class _TopNavTemp extends ConsumerWidget {
                   thickness: 2,
                 ),
                 ButtonStatus(
-                  status: "기록일수",
+                  status: "일지",
                   statusValue: user.value != null
-                      ? '${user.value?.journals.length} 일'
-                      : '0 일',
+                      ? '${user.value?.journals.length} 개'
+                      : '0 개',
                   statusIcon: Icons.local_fire_department_sharp,
                   statusIconColor: Colors.red,
                   onNavigateTap: () => context.go('/main/statistics'),

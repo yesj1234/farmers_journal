@@ -1,17 +1,28 @@
+import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:go_router/go_router.dart';
 
 import 'package:farmers_journal/presentation/components/profile_banner.dart';
 
-class PageSettings extends StatelessWidget {
+class PageSettings extends ConsumerWidget {
   const PageSettings({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Settings "),
+        actions: [
+          TextButton(
+            onPressed: () {
+              ref.read(authRepositoryProvider).signOut();
+              context.go('/');
+            },
+            child: const Text("signOut"),
+          )
+        ],
       ),
       body: SafeArea(
         child: Column(

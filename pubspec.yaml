@@ -53,6 +53,9 @@ dependencies:
   image_picker: ^1.1.2
   uuid: ^4.5.1
   firebase_auth: ^5.3.4
+  firebase_ui_auth: ^1.16.0
+  freezed: ^2.5.7
+  freezed_annotation: ^2.4.4
 
 dev_dependencies:
   flutter_test:

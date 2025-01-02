@@ -1,5 +1,7 @@
 import 'package:farmers_journal/presentation/pages/page_journal/page_create_journal.dart';
-import 'package:farmers_journal/presentation/pages/page_login.dart';
+import 'package:farmers_journal/presentation/pages/page_login/auth_bridge.dart';
+
+import 'package:farmers_journal/presentation/pages/page_login/page_signup.dart';
 import 'package:farmers_journal/presentation/pages/page_settings/page_place.dart';
 import 'package:farmers_journal/presentation/pages/page_settings/page_plant.dart';
 import 'package:go_router/go_router.dart';
@@ -11,20 +13,28 @@ import 'package:farmers_journal/presentation/pages/page_statistics.dart';
 final router = GoRouter(
   routes: [
     GoRoute(
-      path: '/initialSetting',
-      builder: (context, state) => const PageInitialSetting(),
-    ),
-    GoRoute(
       path: '/',
-      builder: (context, state) => const PageLogin(),
+      builder: (context, state) => const AuthBridge(),
+      routes: [
+        GoRoute(
+          path: 'registration',
+          builder: (context, state) => const PageSignup(),
+        ),
+        GoRoute(
+          path: '/initialSetting',
+          builder: (context, state) => const PageInitialSetting(),
+        ),
+      ],
     ),
     GoRoute(
-        path: '/create',
-        builder: (context, state) => const PageCreateJournal(id: null)),
+      path: '/create',
+      builder: (context, state) => const PageCreateJournal(id: null),
+    ),
     GoRoute(
-        path: '/update/:id',
-        builder: (context, state) =>
-            PageCreateJournal(id: state.pathParameters['id'])),
+      path: '/update/:id',
+      builder: (context, state) =>
+          PageCreateJournal(id: state.pathParameters['id']),
+    ),
     GoRoute(
         path: '/main',
         builder: (context, state) => const PageMain(),

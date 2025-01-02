@@ -11,15 +11,6 @@ import 'package:http/http.dart' as http;
 
 part 'providers.g.dart';
 
-@riverpod
-Future<int> journalCount(Ref ref) async {
-  final userRepo = ref.watch(userRepositoryProvider);
-  final user = await userRepo.getUser();
-  return user?.journals != null && user!.journals.isNotEmpty
-      ? user.journals.length
-      : 0;
-}
-
 @Riverpod(keepAlive: true)
 class DateFilter extends _$DateFilter {
   @override

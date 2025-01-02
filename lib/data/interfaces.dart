@@ -2,12 +2,14 @@ import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/plant.dart';
 import 'package:farmers_journal/domain/model/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class DefaultImageRepository {
   Future<DefaultImage> getDefaultImage();
 }
 
 abstract class AuthRepository {
+  User? getCurrentUser();
   Future<void> signUpWithEmail({
     required String email,
     required String password,

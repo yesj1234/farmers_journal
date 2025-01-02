@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:farmers_journal/presentation/controller/journal_controller.dart';
+import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
 class CreateJournalForm extends StatefulHookConsumerWidget {
@@ -114,7 +114,9 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
               }
             },
             style: onSaveButtonStyle,
-            child: const Text("저장", style: onSaveTextStyle),
+            child: ref.watch(journalControllerProvider).maybeWhen(
+                orElse: () => const Text("저장", style: onSaveTextStyle),
+                loading: () => const CircularProgressIndicator()),
           ),
         ],
       ),

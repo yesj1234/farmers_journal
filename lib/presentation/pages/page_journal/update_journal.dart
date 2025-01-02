@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:farmers_journal/presentation/controller/journal_controller.dart';
+import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 
 import 'package:farmers_journal/presentation/components/styles/text.dart';
 
@@ -143,7 +143,10 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                     }
                   },
                   style: onSaveButtonStyle,
-                  child: const Text("저장", style: onSaveTextStyle),
+                  child: ref.watch(journalControllerProvider).maybeWhen(
+                        orElse: () => const Text("저장", style: onSaveTextStyle),
+                        loading: () => const CircularProgressIndicator(),
+                      ),
                 ),
               ],
             ),

@@ -1,4 +1,4 @@
-import 'package:farmers_journal/presentation/controller/user_controller.dart';
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:farmers_journal/presentation/pages/page_initial_setting/place_autocomplete.dart'
     show PlaceAutoComplete;

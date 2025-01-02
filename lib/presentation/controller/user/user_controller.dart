@@ -21,6 +21,7 @@ class UserController extends _$UserController {
     final Plant plant =
         Plant.fromJson({'id': uuid.v4(), 'name': plantName, 'place': place});
     repository.setPlantAndPlace(plant: plant);
+    ref.invalidateSelf();
   }
 
   Future<void> setPlant(

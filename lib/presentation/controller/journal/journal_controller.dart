@@ -1,30 +1,22 @@
 import 'dart:collection';
-
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/utils.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
-
+import 'package:farmers_journal/presentation/controller/journal/journal_state.dart';
 part 'journal_controller.g.dart';
 
 @riverpod
 class JournalController extends _$JournalController {
   @override
   Future<List<Journal?>> build() async {
-    // 1. Fetch the current user's repo.
-    // 2. get the journals of that user.
     final repository = ref.read(userRepositoryProvider);
     List<Journal?> journals = await repository.getJournals();
     if (journals.isNotEmpty) {
       journals.sort((a, b) => b!.createdAt!.compareTo(a!.createdAt!));
     }
     return journals;
-  }
-
-  int getJournalCount() {
-    return state.when(
-        data: (data) => data.length, loading: () => 0, error: (e, st) => 0);
   }
 
   Future<Map<DateTime, List<Journal?>>> getDayViewJournals() async {

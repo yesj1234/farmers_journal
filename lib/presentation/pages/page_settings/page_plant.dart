@@ -1,6 +1,6 @@
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:farmers_journal/presentation/components/profile_banner.dart';
-import 'package:farmers_journal/presentation/controller/user_controller.dart';
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

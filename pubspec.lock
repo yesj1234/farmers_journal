@@ -286,6 +286,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.7"
+  desktop_webview_auth:
+    dependency: transitive
+    description:
+      name: desktop_webview_auth
+      sha256: c4dce73346a7be7243c90ac3b1a68586d9f0e2c2710e81e07d758e80a6ebd920
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.15"
+  email_validator:
+    dependency: transitive
+    description:
+      name: email_validator
+      sha256: e9a90f27ab2b915a27d7f9c2a7ddda5dd752d6942616ee83529b686fc086221b
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.17"
   equatable:
     dependency: transitive
     description:
@@ -390,6 +406,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.19.0"
+  firebase_dynamic_links:
+    dependency: transitive
+    description:
+      name: firebase_dynamic_links
+      sha256: "3560e0e9ae91fa96d8ee70faa260b12c49524de283a32d47583b1b0a4f73761a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.11"
+  firebase_dynamic_links_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_dynamic_links_platform_interface
+      sha256: de7c990154d9164edf9524c18bf98f869f079a962198d80a1dcef3e0b69cea8f
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.6+47"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -414,6 +446,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.10.6"
+  firebase_ui_auth:
+    dependency: "direct main"
+    description:
+      name: firebase_ui_auth
+      sha256: "66fbbd52b608e6647b6454db23cfd612e9e9be9df6fb633f2aa65479bde29b30"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.16.0"
+  firebase_ui_localizations:
+    dependency: transitive
+    description:
+      name: firebase_ui_localizations
+      sha256: "7c0d9f59a7f8dfe728019bc7ac5dc85e119f59ec9ede2e01b128b39b8492090b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.13.0"
+  firebase_ui_oauth:
+    dependency: transitive
+    description:
+      name: firebase_ui_oauth
+      sha256: "26fc29107b5ec0c8b1e8a9eb2234f544a5340e87ca4a9741ba2d5ecec0c39e10"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.6.0"
+  firebase_ui_shared:
+    dependency: transitive
+    description:
+      name: firebase_ui_shared
+      sha256: f1d07c130a39104d32fba1dab274b7bcb13be2bf4e652624a4ccabb58f9781f1
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.1"
   fixnum:
     dependency: transitive
     description:
@@ -475,6 +539,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -509,8 +578,16 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed:
+    dependency: "direct main"
+    description:
+      name: freezed
+      sha256: "44c19278dd9d89292cf46e97dc0c1e52ce03275f40a97c5a348e802a924bf40e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.7"
   freezed_annotation:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: freezed_annotation
       sha256: c2e2d632dd9b8a2b7751117abcfc2b4888ecfe181bd9fca7170d9ef02e595fe2

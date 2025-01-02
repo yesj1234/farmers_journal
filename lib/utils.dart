@@ -1,7 +1,15 @@
 import 'dart:collection';
 import 'package:intl/intl.dart';
-
+import 'package:flutter/material.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
+
+void showSnackBar(BuildContext context, String text) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(text),
+    ),
+  );
+}
 
 class WeeklyGroup<T> {
   final String weekLabel;

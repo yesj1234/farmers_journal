@@ -1,9 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/data/interfaces.dart';
+import 'package:farmers_journal/domain/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
-  FirebaseAuthRepository({required this.instance});
+  FirebaseAuthRepository.setLanguage({required this.instance}) {
+    instance.setLanguageCode('kr');
+  }
+
   final FirebaseAuth instance;
+  final _fireStore = FirebaseFirestore.instance;
+  @override
+  User? getCurrentUser() {
+    return instance.currentUser;
+  }
 
   @override
   Future<void> deleteAccount() async {
@@ -72,6 +82,7 @@ class FirebaseAuthRepository implements AuthRepository {
         default:
           errorMessage = error.message ?? '알 수 없는 오류가 발생했습니다.';
       }
+      throw Exception(errorMessage);
     } catch (error) {
       errorMessage = '알 수 없는 오류가 발생했습니다.';
     }
@@ -93,11 +104,24 @@ class FirebaseAuthRepository implements AuthRepository {
   Future<void> signUpWithEmail(
       {required String email, required String password, String? name}) async {
     String? errorMessage;
+
     try {
-      await instance.createUserWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential userCredential = await instance
+          .createUserWithEmailAndPassword(email: email, password: password);
       await instance.currentUser?.updateDisplayName(name);
       await instance.currentUser?.sendEmailVerification();
+      AppUser user = AppUser(
+        email: email,
+        createdAt:
+            Timestamp.fromDate(userCredential.user!.metadata.creationTime!),
+        journals: [],
+        plants: [],
+        isInitialSettingRequired: true,
+      );
+      await _fireStore
+          .collection('users')
+          .doc(userCredential.user?.uid)
+          .set(user.toJson());
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case 'weak-password':
@@ -109,14 +133,19 @@ class FirebaseAuthRepository implements AuthRepository {
         case 'invalid-email':
           errorMessage = '유효하지 않은 이메일입니다.';
           break;
+        case 'network-request-failed':
+          errorMessage = '인터넷 연결 상태를 확인해주세요.';
+          break;
         default:
-          errorMessage = error.message ?? '알 수 없는 에러 발생';
+          errorMessage = error.message ?? '';
       }
-    } catch (error) {
-      errorMessage = '알 수 없는 에러 발생';
-    }
-    if (errorMessage != null) {
       throw Exception(errorMessage);
+    } catch (error) {
+      if (errorMessage!.isNotEmpty) {
+        throw Exception(errorMessage);
+      } else {
+        throw Exception(error);
+      }
     }
   }
 }
