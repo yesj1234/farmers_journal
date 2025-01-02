@@ -1,6 +1,7 @@
 import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:farmers_journal/domain/model/geocoding_response.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/enums.dart';
 import 'package:farmers_journal/domain/model/places_autocomplete_response.dart';
@@ -21,6 +22,12 @@ class DateFilter extends _$DateFilter {
   changeDateFilter(DateView view) {
     state = view;
   }
+}
+
+@riverpod
+Future<DefaultImage> defaultImage(Ref ref) async {
+  final repository = ref.read(defaultImageRepositoryProvider);
+  return await repository.getDefaultImage();
 }
 
 @riverpod

@@ -20,75 +20,66 @@ class CreateJournalForm extends StatefulHookConsumerWidget {
 class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
   final ImagePicker _imagePicker = ImagePicker();
 
+  DateTime? createdAt = DateTime.now();
+  String? title;
+  String? content;
+  List<XFile> images = [];
+  void onDatePicked(DateTime? value) {
+    createdAt = value;
+  }
+
+  void updateJournalTitle(String? value) {
+    title = value;
+  }
+
+  void updateJournalContent(String? value) {
+    content = value;
+  }
+
+  void pickImage() {
+    _imagePicker.pickMultiImage().then((image) {
+      setState(() => images = [...images, ...image]);
+    });
+  }
+
+  void deleteImage(int id) {
+    setState(() {
+      images.removeAt(id);
+      if (images.isEmpty) {
+        images = [];
+      }
+    });
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final datePicked = useState<DateTime>(DateTime.now());
-    final newJournalTitle = useState<String>('');
-    final newJournalContent = useState<String>('');
-    final xFileList = useState<List<XFile>?>(null);
-
-    void pickImage() {
-      _imagePicker.pickMultiImage().then((image) {
-        setState(() => xFileList.value = image);
-      });
-    }
-
-    void deleteImage(int id) {
-      setState(() {
-        xFileList.value?.removeAt(id);
-        if (xFileList.value!.isEmpty) {
-          xFileList.value = null;
-        }
-      });
-    }
-
-    void updatePickedDate(DateTime? pickedDate) {
-      datePicked.value = pickedDate ?? DateTime.now();
-    }
-
-    void updateJournalTitle(String? title) {
-      newJournalTitle.value = title?.isNotEmpty == true ? title! : '';
-    }
-
-    void updateJournalContent(String? content) {
-      newJournalContent.value = content?.isNotEmpty == true ? content! : '';
-    }
-
     return Form(
       key: _formKey,
       child: Column(
         children: [
           const SizedBox(height: 10),
           _DateForm(
-            datePicked: datePicked.value,
-            onDatePicked: updatePickedDate,
+            datePicked: createdAt,
+            onDatePicked: onDatePicked,
           ),
-          xFileList.value == null
-              ? const SizedBox.shrink()
-              : Flexible(
+          images.isNotEmpty
+              ? Flexible(
                   child: SizedBox(
                     width: MediaQuery.sizeOf(context).width / 1.1,
                     height: MediaQuery.sizeOf(context).height / 4,
-                    child: xFileList.value != null
-                        ? ImageWidgetLayout(
-                            images: xFileList.value!.map((item) {
-                              if (item is String) {
-                                return UrlImage(item as String);
-                              } else {
-                                return XFileImage(item);
-                              }
-                            }).toList(),
-                            isEditMode: true,
-                            onDelete: deleteImage,
-                          )
-                        : const SizedBox.shrink(),
+                    child: ImageWidgetLayout(
+                      images: images.map((item) => XFileImage(item)).toList(),
+                      isEditMode: true,
+                      onDelete: deleteImage,
+                    ),
                   ),
-                ),
+                )
+              : const SizedBox.shrink(),
           const SizedBox(height: 5),
           _TitleForm(
-            title: newJournalTitle.value,
+            title: title,
             onUpdateJournalTitle: updateJournalTitle,
           ),
           const SizedBox(
@@ -96,7 +87,7 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
           ),
           Flexible(
             child: _ContentForm(
-              content: newJournalContent.value,
+              content: content,
               onUpdateContent: updateJournalContent,
               onImagePick: pickImage,
             ),
@@ -105,10 +96,11 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
             onPressed: () async {
               _formKey.currentState?.save();
               await ref.read(journalControllerProvider.notifier).createJournal(
-                  title: newJournalContent.value,
-                  content: newJournalContent.value,
-                  date: datePicked.value,
-                  images: xFileList.value?.map((xFile) => xFile.path).toList());
+                  title: title ?? '',
+                  content: content ?? '',
+                  date: createdAt ?? DateTime.now(),
+                  images: images.map((item) => item.path).toList()
+                      as List<String>?);
               if (context.mounted) {
                 context.go('/main');
               }

@@ -169,16 +169,7 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(authControllerProvider, (previous, next) {
-      next.maybeWhen(
-          orElse: () => null,
-          unauthenticated: (message) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(message!),
-              behavior: SnackBarBehavior.floating,
-            ));
-          });
-    });
+    final AsyncValue<void> state = ref.watch(authControllerProvider);
     return Form(
       key: _formKey,
       child: Column(
@@ -201,22 +192,21 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
           Flexible(
             child: ElevatedButton(
               style: loginButtonStyle,
-              onPressed: () {
-                if (_formKey.currentState?.validate() ?? false) {
-                  _formKey.currentState?.save();
-                  ref
-                      .read(authControllerProvider.notifier)
-                      .signInWithEmail(email: email!, password: password!)
-                      .then((_) {
-                    context.go('/');
-                  });
-                }
-              },
+              onPressed: state.isLoading
+                  ? null
+                  : () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        _formKey.currentState?.save();
+                        ref
+                            .read(authControllerProvider.notifier)
+                            .signInWithEmail(email: email!, password: password!)
+                            .then((_) {
+                          context.go('/');
+                        });
+                      }
+                    },
               child: _CustomText(
-                status: ref.watch(authControllerProvider).maybeWhen(
-                      loading: () => true,
-                      orElse: () => false,
-                    ),
+                status: state.isLoading ? true : false,
               ),
             ),
           ),

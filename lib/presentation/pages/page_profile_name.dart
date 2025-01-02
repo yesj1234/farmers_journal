@@ -1,4 +1,4 @@
-import 'package:farmers_journal/presentation/components/profile_banner.dart';
+import 'package:farmers_journal/presentation/pages/page_settings/profile_banner.dart';
 import 'package:flutter/material.dart';
 
 class PageProfileName extends StatelessWidget {

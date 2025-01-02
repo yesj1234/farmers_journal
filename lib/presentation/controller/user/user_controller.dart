@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:uuid/uuid.dart';
 
+
 part 'user_controller.g.dart';
 
 @riverpod

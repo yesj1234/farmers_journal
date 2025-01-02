@@ -82,7 +82,7 @@ class _TopNavTemp extends ConsumerWidget {
     // ref.watch(userControllerProvider).maybeWhen(loading: ()=> null, orElse: () => {});
 
     final user = ref.watch(userControllerProvider);
-
+    final journal = ref.watch(journalControllerProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -110,8 +110,8 @@ class _TopNavTemp extends ConsumerWidget {
                 ),
                 ButtonStatus(
                   status: "일지",
-                  statusValue: user.value != null
-                      ? '${user.value?.journals.length} 개'
+                  statusValue: journal.value != null
+                      ? '${journal.value?.length} 개'
                       : '0 개',
                   statusIcon: Icons.local_fire_department_sharp,
                   statusIconColor: Colors.red,

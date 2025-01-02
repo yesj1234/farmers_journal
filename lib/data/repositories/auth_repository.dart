@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/data/interfaces.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
   FirebaseAuthRepository.setLanguage({required this.instance}) {
@@ -146,6 +149,38 @@ class FirebaseAuthRepository implements AuthRepository {
       } else {
         throw Exception(error);
       }
+    }
+  }
+
+  Future<String> _uploadImage(Uint8List bytes) async {
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference storageRef =
+        FirebaseStorage.instance.ref().child("profile_images/$fileName");
+
+    UploadTask uploadTask = storageRef.putData(bytes);
+
+    TaskSnapshot snapshot = await uploadTask;
+
+    String downloadURL = await snapshot.ref.getDownloadURL();
+    return downloadURL;
+  }
+
+  @override
+  Future<void> setProfileImage({required Uint8List bytes}) async {
+    try {
+      String photoURL = await _uploadImage(bytes);
+      await instance.currentUser?.updatePhotoURL(photoURL);
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
+  @override
+  Future<void> setProfileName({required String name}) async {
+    try {
+      await instance.currentUser?.updateDisplayName(name);
+    } catch (error) {
+      throw Exception(error);
     }
   }
 }

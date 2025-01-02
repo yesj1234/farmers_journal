@@ -1,15 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:farmers_journal/presentation/controller/auth/auth_state.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 part 'auth_controller.g.dart';
 
 @riverpod
 class AuthController extends _$AuthController {
   @override
-  AuthenticationState build() {
-    return const AuthenticationState.initial();
+  FutureOr<User?> build() {
+    return ref.read(authRepositoryProvider).getCurrentUser();
   }
 
   Future<void> signUpWithEmail({
@@ -17,59 +17,51 @@ class AuthController extends _$AuthController {
     required String password,
     String? name,
   }) async {
-    state = const AuthenticationState.loading();
-    try {
-      await ref
-          .read(authRepositoryProvider)
-          .signUpWithEmail(email: email, password: password);
-      state = const AuthenticationState.authenticated();
-    } catch (error) {
-      state = AuthenticationState.unauthenticated(message: error.toString());
-    }
+    state = const AsyncLoading();
+    await ref
+        .read(authRepositoryProvider)
+        .signUpWithEmail(email: email, password: password);
+    ref.invalidateSelf();
   }
 
   Future<void> signInWithEmail(
       {required String email, required String password}) async {
-    state = const AuthenticationState.loading();
-    try {
-      await ref
-          .read(authRepositoryProvider)
-          .signInWithEmail(email: email, password: password);
-      state = const AuthenticationState.authenticated();
-    } catch (error) {
-      state = AuthenticationState.unauthenticated(message: error.toString());
-    }
+    state = const AsyncLoading();
+    await ref
+        .read(authRepositoryProvider)
+        .signInWithEmail(email: email, password: password);
+    ref.invalidateSelf();
   }
 
   Future<void> signOut() async {
-    state = const AuthenticationState.loading();
-    try {
-      await ref.read(authRepositoryProvider).signOut();
-      state = const AuthenticationState.authenticated();
-    } catch (error) {
-      state = AuthenticationState.unauthenticated(message: error.toString());
-    }
+    state = const AsyncLoading();
+    await ref.read(authRepositoryProvider).signOut();
+    ref.invalidateSelf();
   }
 
   Future<void> resetPassword({
     required String email,
   }) async {
-    state = const AuthenticationState.loading();
-    try {
-      await ref.read(authRepositoryProvider).resetPassword(email: email);
-      state = const AuthenticationState.authenticated();
-    } catch (error) {
-      state = AuthenticationState.unauthenticated(message: error.toString());
-    }
+    state = const AsyncLoading();
+    await ref.read(authRepositoryProvider).resetPassword(email: email);
+    ref.invalidateSelf();
   }
 
   Future<void> deleteAccount() async {
-    state = const AuthenticationState.loading();
-    try {
-      await ref.read(authRepositoryProvider).deleteAccount();
-      state = const AuthenticationState.authenticated();
-    } catch (error) {
-      state = AuthenticationState.unauthenticated(message: error.toString());
-    }
+    state = const AsyncLoading();
+    await ref.read(authRepositoryProvider).deleteAccount();
+    ref.invalidateSelf();
+  }
+
+  Future<void> setProfileImage({required XFile image}) async {
+    state = const AsyncLoading();
+    Uint8List bytes = await image.readAsBytes();
+    await ref.read(authRepositoryProvider).setProfileImage(bytes: bytes);
+    ref.invalidateSelf();
+  }
+
+  Future<void> setProfileName({required String name}) async {
+    await ref.read(authRepositoryProvider).setProfileName(name: name);
+    ref.invalidateSelf();
   }
 }

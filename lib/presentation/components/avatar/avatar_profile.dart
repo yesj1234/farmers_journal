@@ -1,11 +1,8 @@
+import 'package:farmers_journal/presentation/controller/auth/auth_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
-// import 'package:farmers_journal/data/firestore_service.dart';
-import 'package:farmers_journal/presentation/controller/default_image_controller.dart';
 
-/// TODO
-/// 2. consider the user has update the profile image. (foreground image url must change)
 class AvatarProfile extends ConsumerWidget {
   final double width;
   final double height;
@@ -23,21 +20,23 @@ class AvatarProfile extends ConsumerWidget {
   // 이를 개선하기 위해선 CircleAvatar보다는 렌더링단에서 에러를 처리해주는 다른 widget을 사용하는걸 고려하는 것이 좋아보임.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<DefaultImage> defaultImage =
-        ref.watch(defaultImageControllerProvider);
+    final AsyncValue<User?> user = ref.watch(authControllerProvider);
     return GestureDetector(
       onTap: onNavigateTap,
       child: SizedBox(
-        width: width,
-        height: height,
-        child: CircleAvatar(
-          backgroundImage: switch (defaultImage) {
-            AsyncData(:final value) => NetworkImage(value.downloadURL!),
-            AsyncError() => const AssetImage('assets/avatars/default.png'),
-            _ => const AssetImage('assets/avatars/default.png'),
-          },
-        ),
-      ),
+          width: width,
+          height: height,
+          child: user.isLoading
+              ? const CircularProgressIndicator()
+              : CircleAvatar(
+                  backgroundImage: switch (user) {
+                  AsyncData(:final value) => value!.photoURL != null
+                      ? NetworkImage(value.photoURL!)
+                      : const AssetImage('assets/avatars/default.png'),
+                  AsyncError() =>
+                    const AssetImage('assets/avatars/default.png'),
+                  _ => const AssetImage('assets/avatars/default.png'),
+                })),
     );
   }
 }

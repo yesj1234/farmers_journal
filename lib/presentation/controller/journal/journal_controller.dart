@@ -4,7 +4,7 @@ import 'package:farmers_journal/utils.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
-import 'package:farmers_journal/presentation/controller/journal/journal_state.dart';
+
 part 'journal_controller.g.dart';
 
 @riverpod

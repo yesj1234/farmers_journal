@@ -3,6 +3,7 @@ import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/plant.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 abstract class DefaultImageRepository {
   Future<DefaultImage> getDefaultImage();
@@ -22,6 +23,8 @@ abstract class AuthRepository {
     required String email,
   });
   Future<void> deleteAccount();
+  Future<void> setProfileImage({required Uint8List bytes});
+  Future<void> setProfileName({required String name});
 }
 
 abstract class UserRepository {
