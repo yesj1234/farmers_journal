@@ -3,18 +3,20 @@ import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/data/interfaces.dart';
 import 'package:farmers_journal/domain/model/user.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart'
+    as kakao_auth;
 
 class FirebaseAuthRepository implements AuthRepository {
   FirebaseAuthRepository.setLanguage({required this.instance}) {
     instance.setLanguageCode('kr');
   }
 
-  final FirebaseAuth instance;
+  final firebase_auth.FirebaseAuth instance;
   final _fireStore = FirebaseFirestore.instance;
   @override
-  User? getCurrentUser() {
+  firebase_auth.User? getCurrentUser() {
     return instance.currentUser;
   }
 
@@ -22,7 +24,7 @@ class FirebaseAuthRepository implements AuthRepository {
   Future<void> deleteAccount() async {
     try {
       await instance.currentUser?.delete();
-    } on FirebaseAuthException catch (e) {
+    } on firebase_auth.FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
         rethrow; // 재인증 로직 호출
       } else {
@@ -40,7 +42,7 @@ class FirebaseAuthRepository implements AuthRepository {
     try {
       await instance.sendPasswordResetEmail(email: email);
       print('비밀번호 재설정 이메일이 전송되었습니다.');
-    } on FirebaseAuthException catch (error) {
+    } on firebase_auth.FirebaseAuthException catch (error) {
       String? errorMessage;
 
       switch (error.code) {
@@ -68,7 +70,7 @@ class FirebaseAuthRepository implements AuthRepository {
     try {
       await instance.signInWithEmailAndPassword(
           email: email, password: password);
-    } on FirebaseAuthException catch (error) {
+    } on firebase_auth.FirebaseAuthException catch (error) {
       switch (error.code) {
         case 'user-not-found':
           errorMessage = '해당 이메일로 가입된 사용자가 없습니다.';
@@ -103,29 +105,27 @@ class FirebaseAuthRepository implements AuthRepository {
     }
   }
 
-  @override
-  Future<void> signUpWithEmail(
-      {required String email, required String password, String? name}) async {
+  Future<void> _createAppUser(
+      {String? email,
+      String? password,
+      String? name,
+      required firebase_auth.UserCredential credential}) async {
     String? errorMessage;
-
     try {
-      UserCredential userCredential = await instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      await instance.currentUser?.updateDisplayName(name);
-      await instance.currentUser?.sendEmailVerification();
       AppUser user = AppUser(
-        email: email,
-        createdAt:
-            Timestamp.fromDate(userCredential.user!.metadata.creationTime!),
+        email: email ?? '',
+        createdAt: Timestamp.fromDate(credential.user!.metadata.creationTime!),
+        name: name,
         journals: [],
         plants: [],
         isInitialSettingRequired: true,
+        profileImage: '',
       );
       await _fireStore
           .collection('users')
-          .doc(userCredential.user?.uid)
+          .doc(credential.user?.uid)
           .set(user.toJson());
-    } on FirebaseAuthException catch (error) {
+    } on firebase_auth.FirebaseAuthException catch (error) {
       switch (error.code) {
         case 'weak-password':
           errorMessage = '취약한 패스워드입니다. 최소 6자리 이상의 문자를 입력하세요.';
@@ -149,6 +149,66 @@ class FirebaseAuthRepository implements AuthRepository {
       } else {
         throw Exception(error);
       }
+    }
+  }
+
+  @override
+  Future<void> signInWithKakaoTalk() async {
+    var provider = firebase_auth.OAuthProvider("oidc.kakao");
+    try {
+      // Login with kakao auth sdk
+      kakao_auth.OAuthToken? token;
+      if (await kakao_auth.isKakaoTalkInstalled()) {
+        token = await kakao_auth.UserApi.instance.loginWithKakaoTalk();
+      } else {
+        token = await kakao_auth.UserApi.instance.loginWithKakaoAccount();
+      }
+      // login with the firebase auth provider for firebase auth integration
+      var credential = provider.credential(
+          idToken: token.idToken, accessToken: token.accessToken);
+      firebase_auth.UserCredential userCredential =
+          await instance.signInWithCredential(credential);
+
+      try {
+        var docSnapshot = await _fireStore
+            .collection('users')
+            .doc(userCredential.user?.uid)
+            .get();
+        if (!docSnapshot.exists) {
+          // if the user has logged in for the first time, meaning sign up,
+          // create new user with the uid
+          var user = await kakao_auth.UserApi.instance.me();
+          await _createAppUser(
+              email: user.kakaoAccount?.email,
+              name: user.kakaoAccount?.name,
+              credential: userCredential);
+          await userCredential.user?.updateProfile(
+              displayName:
+                  '${user.id}${user.kakaoAccount?.profile?.nickname ?? user.kakaoAccount?.name}');
+        }
+      } catch (error) {
+        throw Exception(error);
+      }
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
+  @override
+  Future<void> signUpWithEmail(
+      {required String email, required String password, String? name}) async {
+    try {
+      firebase_auth.UserCredential userCredential = await instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      await instance.currentUser?.updateDisplayName(name);
+      await instance.currentUser?.sendEmailVerification();
+      await _createAppUser(
+          email: email,
+          password: password,
+          name: name,
+          credential: userCredential);
+    } catch (error) {
+      throw Exception(error);
     }
   }
 

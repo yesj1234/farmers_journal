@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +10,8 @@ import 'dart:math';
 import 'package:farmers_journal/data/providers.dart';
 
 class RecordBarChart extends StatelessWidget {
-  const RecordBarChart({super.key});
-
+  const RecordBarChart({super.key, required this.journalCount});
+  final LinkedHashMap<int, int> journalCount;
   FlTitlesData get flTitlesData => FlTitlesData(
         show: true,
         leftTitles: const AxisTitles(
@@ -50,14 +52,13 @@ class RecordBarChart extends StatelessWidget {
   FlBorderData get flBorderData => FlBorderData(show: false);
   @override
   Widget build(BuildContext context) {
-    var random = Random();
-    List<BarChartGroupData> barChartGroupData = List.generate(
-      12,
-      (index) => BarChartGroupData(
-        x: index + 1,
+    List<BarChartGroupData> barChartGroupData1 =
+        journalCount.entries.map((entry) {
+      return BarChartGroupData(
+        x: entry.key,
         barRods: <BarChartRodData>[
           BarChartRodData(
-            toY: (5 + random.nextInt(45)).toDouble(),
+            toY: entry.value.toDouble(),
             width: 15,
             color: const Color.fromRGBO(54, 91, 55, 1),
             borderRadius: BorderRadius.circular(3),
@@ -68,12 +69,12 @@ class RecordBarChart extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
+      );
+    }).toList();
 
     return BarChart(
       BarChartData(
-        barGroups: barChartGroupData,
+        barGroups: barChartGroupData1,
         alignment: BarChartAlignment.center,
         titlesData: flTitlesData,
         gridData: flGridData,
@@ -148,7 +149,7 @@ class PriceLineChart extends ConsumerWidget {
     List<LineChartBarData> lineChartBarData = [
       LineChartBarData(
         barWidth: 4.0,
-        color: Colors.white,
+        color: const Color.fromRGBO(54, 91, 55, 1),
         spots: List.generate(
           10,
           (index) => FlSpot(
@@ -263,7 +264,7 @@ class PriceBarChart extends ConsumerWidget {
             BarChartRodData(
               toY: price[index].toDouble(),
               width: 20,
-              color: const Color.fromRGBO(52, 75, 253, 1),
+              color: const Color.fromRGBO(255, 0, 0, 0.65),
               borderRadius: BorderRadius.circular(3),
             )
           ],

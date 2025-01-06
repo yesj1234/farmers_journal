@@ -22,24 +22,7 @@ class JournalController extends _$JournalController {
   Future<Map<DateTime, List<Journal?>>> getDayViewJournals() async {
     final repository = ref.read(userRepositoryProvider);
     List<Journal?> journals = await repository.getJournals();
-    Map<DateTime, List<Journal?>> map = {};
-    if (journals.isNotEmpty) {
-      journals.sort((a, b) => b!.createdAt!.compareTo(a!.createdAt!));
-      for (var journal in journals) {
-        int? year = journal?.createdAt?.year;
-        int? month = journal?.createdAt?.month;
-        int? day = journal?.createdAt?.day;
-        if (year != null && month != null && day != null) {
-          var createdDate = DateTime(year, month, day);
-          if (map.containsKey(createdDate)) {
-            map[createdDate]?.add(journal);
-          } else {
-            map[createdDate] = [journal];
-          }
-        }
-      }
-    }
-    return map;
+    return CustomDateUtils.groupItemsByDay(journals);
   }
 
   Future<List<WeeklyGroup<Journal>>> getWeekViewJournals() async {
@@ -52,6 +35,37 @@ class JournalController extends _$JournalController {
     final repository = ref.read(userRepositoryProvider);
     List<Journal?> journals = await repository.getJournals();
     return CustomDateUtils.getMonthlyJournal(journals);
+  }
+
+  Future<LinkedHashMap<int, int>> getJournalCountByYear(
+      {required int year}) async {
+    final repository = ref.read(userRepositoryProvider);
+    List<Journal?> journals = await repository.getJournalsByYear(year: year);
+
+    final monthlyJournals = CustomDateUtils.getMonthlyJournal(
+        journals); // Actually its monthly view journal.
+    LinkedHashMap<int, int> res = LinkedHashMap.fromIterable(
+      List.generate(12, (index) => index + 1),
+      key: (i) => i,
+      value: (_) => 0,
+    );
+    for (var entry in monthlyJournals.entries) {
+      res.update(entry.key.month, (v) => v + entry.value.length);
+    }
+    return res;
+  }
+
+  Future<Set<int>> getYearsOfJournals() async {
+    final repository = ref.read(userRepositoryProvider);
+    List<Journal?> journals = await repository.getJournals();
+    Set<int> res = {};
+    if (journals.isNotEmpty) {
+      for (var journal in journals) {
+        Journal item = journal as Journal;
+        res.add(item.date!.year);
+      }
+    }
+    return res;
   }
 
   Future<Journal> getJournal(String id) async {

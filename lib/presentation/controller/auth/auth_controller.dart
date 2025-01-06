@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 part 'auth_controller.g.dart';
 
+// TODO: handle the error state when login fails. Currently, the loading status does not change.
 @riverpod
 class AuthController extends _$AuthController {
   @override
@@ -18,19 +20,38 @@ class AuthController extends _$AuthController {
     String? name,
   }) async {
     state = const AsyncLoading();
-    await ref
-        .read(authRepositoryProvider)
-        .signUpWithEmail(email: email, password: password);
+    try {
+      await ref
+          .read(authRepositoryProvider)
+          .signUpWithEmail(email: email, password: password);
+      ref.invalidateSelf();
+    } catch (error) {
+      state = const AsyncData(null);
+    }
+  }
+
+  Future<void> signInWithKakaoTalk() async {
+    state = const AsyncLoading();
+    try {
+      ref.read(authRepositoryProvider).signInWithKakaoTalk();
+    } catch (error) {
+      state = const AsyncData(null);
+    }
     ref.invalidateSelf();
   }
 
   Future<void> signInWithEmail(
       {required String email, required String password}) async {
     state = const AsyncLoading();
-    await ref
-        .read(authRepositoryProvider)
-        .signInWithEmail(email: email, password: password);
-    ref.invalidateSelf();
+    try {
+      await ref
+          .read(authRepositoryProvider)
+          .signInWithEmail(email: email, password: password);
+      ref.invalidateSelf();
+    } catch (error) {
+      state = const AsyncData(null);
+      rethrow;
+    }
   }
 
   Future<void> signOut() async {

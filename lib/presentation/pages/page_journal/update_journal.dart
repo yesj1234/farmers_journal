@@ -25,7 +25,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
   late final Future<Journal> _journal;
   String? title;
   String? content;
-  DateTime? createdAt;
+  DateTime? date;
   List<dynamic>? images;
 
   @override
@@ -37,14 +37,14 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
       setState(() {
         title = journal.title;
         content = journal.content;
-        createdAt = journal.createdAt;
+        date = journal.createdAt;
         images = journal.images ?? [];
       });
     });
   }
 
   void onDatePicked(DateTime? value) {
-    createdAt = value;
+    date = value;
   }
 
   void updateJournalTitle(String? value) {
@@ -85,7 +85,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
               children: [
                 const SizedBox(height: 10),
                 _DateForm(
-                  datePicked: createdAt,
+                  datePicked: date,
                   onDatePicked: onDatePicked,
                 ),
                 images!.isEmpty
@@ -135,7 +135,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                             id: widget.id!,
                             title: title ?? '',
                             content: content ?? '',
-                            date: createdAt ?? snapshot.data!.createdAt!,
+                            date: date ?? snapshot.data!.createdAt!,
                             images: imagePaths as List<String?>? ??
                                 snapshot.data!.images!);
                     if (context.mounted) {

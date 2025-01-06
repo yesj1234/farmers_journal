@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:farmers_journal/data/interfaces.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
@@ -9,7 +10,9 @@ import 'package:farmers_journal/domain/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class FireStoreUserRepository implements UserRepository {
@@ -28,12 +31,65 @@ class FireStoreUserRepository implements UserRepository {
     }
   }
 
+  Future<String> _uploadBytes(Uint8List bytes) async {
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference storageRef =
+        FirebaseStorage.instance.ref().child("profile_images/$fileName");
+
+    UploadTask uploadTask = storageRef.putData(bytes);
+
+    TaskSnapshot snapshot = await uploadTask;
+
+    String downloadURL = await snapshot.ref.getDownloadURL();
+    return downloadURL;
+  }
+
+  @override
+  Future<void> setProfileImage({required Uint8List bytes}) async {
+    try {
+      final user = await _fetchUserRef();
+      String photoURL = await _uploadBytes(bytes);
+      await user.update({
+        'profileImage': photoURL,
+      });
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
+  @override
+  Future<void> editProfile(
+      {String? name, String? nickName, XFile? profileImage}) async {
+    try {
+      final user = await _fetchUserRef();
+      Map<Object, Object> updateRef = {};
+      if (name != null) {
+        updateRef.update('name', (_) => name, ifAbsent: () => name);
+      }
+      if (nickName != null) {
+        updateRef.update('nickName', (_) => nickName, ifAbsent: () => nickName);
+      }
+      if (profileImage != null) {
+        String downloadURL =
+            await _uploadBytes(await profileImage.readAsBytes());
+        updateRef.update('profileImage', (_) => downloadURL,
+            ifAbsent: () => downloadURL);
+      }
+      if (updateRef.keys.isNotEmpty) {
+        await user.update(updateRef);
+      }
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
   @override
   Future<void> setPlantAndPlace({required Plant plant}) async {
     try {
       final user = await _fetchUserRef();
       await user.update({
         'isInitialSettingRequired': false,
+        'nickName': '${plant.name} 농부',
         'plants': FieldValue.arrayUnion([plant.toJson()])
       });
     } catch (error) {
@@ -82,7 +138,6 @@ class FireStoreUserRepository implements UserRepository {
       final result = await userRef.get().then((DocumentSnapshot doc) {
         final json = doc.data() as Map<String, dynamic>;
         final userModel = AppUser.fromJson(json);
-        print(userModel);
         return userModel;
       });
       return result;
@@ -115,7 +170,34 @@ class FireStoreUserRepository implements UserRepository {
     }
   }
 
-  Future<String> _uploadImage(File imageFile) async {
+  @override
+  Future<List<Journal?>> getJournalsByYear({required int year}) async {
+    try {
+      final userRef = await _fetchUserRef();
+      final journalRef = instance.collection("journals");
+
+      final journals = await userRef.get().then((DocumentSnapshot doc) {
+        final json = doc.data() as Map<String, dynamic>;
+        final userModel = AppUser.fromJson(json);
+        return userModel.journals;
+      });
+      List<Journal?> res = [];
+
+      for (String id in journals) {
+        Journal journal = await journalRef.doc(id).get().then((docSnapshot) {
+          return Journal.fromJson(docSnapshot.data() as Map<String, dynamic>);
+        });
+        if (journal.date?.year == year) {
+          res.add(journal);
+        }
+      }
+      return res;
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
+  Future<String> _uploadFile(File imageFile) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Reference storageRef =
         FirebaseStorage.instance.ref().child("images/$fileName");
@@ -142,26 +224,26 @@ class FireStoreUserRepository implements UserRepository {
       if (images != null) {
         List<String>? imageURLs = [];
         for (String path in images) {
-          String downloadURL = await _uploadImage(File(path));
+          String downloadURL = await _uploadFile(File(path));
           imageURLs.add(downloadURL);
         }
+
+
+
         final newJournal = Journal(
-            id: id,
-            title: title,
-            content: content,
-            images: imageURLs,
-            createdAt: date);
+          id: id,
+          title: title,
+          content: content,
+          images: imageURLs,
+          date: date,
+        );
         userRef.update({
           "journals": FieldValue.arrayUnion([id])
         });
         journalRef.doc(id).set(newJournal.toJson());
       } else {
         final newJournal = Journal(
-            id: id,
-            title: title,
-            content: content,
-            images: images,
-            createdAt: date);
+            id: id, title: title, content: content, images: images, date: date);
         userRef.update({
           "journals": FieldValue.arrayUnion([id])
         });
@@ -189,7 +271,7 @@ class FireStoreUserRepository implements UserRepository {
           if (path.startsWith('http')) {
             imageURLs.add(path);
           } else {
-            String downloadURL = await _uploadImage(File(path));
+            String downloadURL = await _uploadFile(File(path));
             imageURLs.add(downloadURL);
           }
         }

@@ -20,12 +20,12 @@ class CreateJournalForm extends StatefulHookConsumerWidget {
 class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
   final ImagePicker _imagePicker = ImagePicker();
 
-  DateTime? createdAt = DateTime.now();
+  DateTime? date = DateTime.now();
   String? title;
   String? content;
   List<XFile> images = [];
   void onDatePicked(DateTime? value) {
-    createdAt = value;
+    date = value;
   }
 
   void updateJournalTitle(String? value) {
@@ -61,7 +61,7 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
         children: [
           const SizedBox(height: 10),
           _DateForm(
-            datePicked: createdAt,
+            datePicked: date,
             onDatePicked: onDatePicked,
           ),
           images.isNotEmpty
@@ -98,7 +98,7 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
               await ref.read(journalControllerProvider.notifier).createJournal(
                   title: title ?? '',
                   content: content ?? '',
-                  date: createdAt ?? DateTime.now(),
+                  date: date ?? DateTime.now(),
                   images: images.map((item) => item.path).toList()
                       as List<String>?);
               if (context.mounted) {

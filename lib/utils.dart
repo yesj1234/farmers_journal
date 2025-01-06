@@ -50,17 +50,38 @@ class CustomDateUtils {
     }
   }
 
+  static Map<DateTime, List<Journal?>> groupItemsByDay(List<Journal?> items) {
+    Map<DateTime, List<Journal?>> map = {};
+    if (items.isNotEmpty) {
+      items.sort((a, b) => b!.date!.compareTo(a!.date!));
+      for (var journal in items) {
+        int? year = journal?.date?.year;
+        int? month = journal?.date?.month;
+        int? day = journal?.date?.day;
+        if (year != null && month != null && day != null) {
+          var createdDate = DateTime(year, month, day);
+          if (map.containsKey(createdDate)) {
+            map[createdDate]?.add(journal);
+          } else {
+            map[createdDate] = [journal];
+          }
+        }
+      }
+    }
+    return map;
+  }
+
   static List<WeeklyGroup<Journal>> groupItemsByWeek(List<Journal?> items) {
     items.sort((a, b) {
-      DateTime timeA = a?.createdAt as DateTime;
-      DateTime timeB = b?.createdAt as DateTime;
+      DateTime timeA = a?.date as DateTime;
+      DateTime timeB = b?.date as DateTime;
       return timeB.compareTo(timeA);
     });
 
     Map<String, List<Journal>> weeklyGroups = {};
     DateTime now = DateTime.now();
     for (var item in items) {
-      DateTime dateTime = item?.createdAt as DateTime;
+      DateTime dateTime = item?.date as DateTime;
 
       String weekLabel = _getWeekLabel(dateTime, now);
 
@@ -82,8 +103,8 @@ class CustomDateUtils {
       List<Journal?> journals) {
     Map<DateTime, List<Journal>> temp = {};
     for (var journal in journals) {
-      if (journal?.createdAt != null) {
-        DateTime formattedDateTime = formatDate(journal?.createdAt as DateTime);
+      if (journal?.date != null) {
+        DateTime formattedDateTime = formatDate(journal?.date as DateTime);
 
         if (temp.containsKey(formattedDateTime)) {
           temp[formattedDateTime]?.add(journal!);

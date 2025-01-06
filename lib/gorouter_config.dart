@@ -2,13 +2,15 @@ import 'package:farmers_journal/presentation/pages/page_journal/page_create_jour
 import 'package:farmers_journal/presentation/pages/page_login/auth_bridge.dart';
 
 import 'package:farmers_journal/presentation/pages/page_login/page_signup.dart';
+
 import 'package:farmers_journal/presentation/pages/page_settings/page_place.dart';
 import 'package:farmers_journal/presentation/pages/page_settings/page_plant.dart';
+import 'package:farmers_journal/presentation/pages/page_settings/page_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:farmers_journal/presentation/pages/page_initial_setting/page_initial_setting.dart';
 import 'package:farmers_journal/presentation/pages/page_main.dart';
 import 'package:farmers_journal/presentation/pages/page_settings/page_settings.dart';
-import 'package:farmers_journal/presentation/pages/page_statistics.dart';
+import 'package:farmers_journal/presentation/pages/page_statistics/page_statistics.dart';
 
 final router = GoRouter(
   routes: [
@@ -44,6 +46,9 @@ final router = GoRouter(
               builder: (context, state) => const PageSettings(),
               routes: [
                 GoRoute(
+                    path: '/edit_profile',
+                    builder: (context, state) => const PageProfile()),
+                GoRoute(
                   path: '/plant',
                   builder: (context, state) => const PagePlant(),
                 ),
@@ -52,10 +57,10 @@ final router = GoRouter(
                   builder: (context, state) => const PagePlace(),
                 )
               ]),
+          GoRoute(
+            path: '/statistics',
+            builder: (context, state) => const PageStatistics(),
+          ),
         ]),
-    GoRoute(
-      path: '/statistics',
-      builder: (context, state) => const PageStatistics(),
-    ),
   ],
 );

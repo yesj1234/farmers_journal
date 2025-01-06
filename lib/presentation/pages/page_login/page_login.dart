@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class PageLogin extends StatelessWidget {
+class PageLogin extends ConsumerWidget {
   const PageLogin({super.key});
   get registrationButtonStyle => ButtonStyle(
         padding: WidgetStateProperty.all<EdgeInsets>(EdgeInsets.zero),
       );
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -44,6 +44,17 @@ class PageLogin extends StatelessWidget {
                 ),
               ],
             ),
+            ElevatedButton(
+              onPressed: () async {
+                await ref
+                    .read(authControllerProvider.notifier)
+                    .signInWithKakaoTalk()
+                    .then((_) => null, onError: (error) {
+                  showSnackBar(context, error);
+                });
+              },
+              child: const Text('KakaoTalk'),
+            )
           ],
         ),
       ),
@@ -178,7 +189,7 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
         children: [
           _LoginFormTextField(
             text: 'Email',
-            subText: 'forgot your email?',
+            subText: '',
             onValidate: validateEmail,
             onSaved: onEmailSaved,
           ),
@@ -202,6 +213,8 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
                             .signInWithEmail(email: email!, password: password!)
                             .then((_) {
                           context.go('/');
+                        }, onError: (error) {
+                          showSnackBar(context, error.toString());
                         });
                       }
                     },
@@ -290,7 +303,7 @@ class _LoginFormTextField extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Expanded(
+          Flexible(
             child: TextFormField(
               validator: onValidate,
               onSaved: onSaved,
@@ -303,10 +316,12 @@ class _LoginFormTextField extends StatelessWidget {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(subText, style: helpTextStyle),
-          ),
+          subText.isNotEmpty
+              ? Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(subText, style: helpTextStyle),
+                )
+              : const SizedBox.shrink(),
         ],
       ),
     );

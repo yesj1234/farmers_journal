@@ -4,6 +4,7 @@ import 'package:farmers_journal/domain/model/plant.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 
 abstract class DefaultImageRepository {
   Future<DefaultImage> getDefaultImage();
@@ -16,6 +17,7 @@ abstract class AuthRepository {
     required String password,
     String? name,
   });
+  Future<void> signInWithKakaoTalk();
   Future<void> signInWithEmail(
       {required String email, required String password});
   Future<void> signOut();
@@ -29,6 +31,9 @@ abstract class AuthRepository {
 
 abstract class UserRepository {
   Future<AppUser?> getUser();
+  Future<void> setProfileImage({required Uint8List bytes});
+  Future<void> editProfile(
+      {String? name, String? nickName, XFile? profileImage});
   Future<void> setPlant({required String? id, required String? newPlantName});
   Future<void> setPlace({required String? id, required String? newPlantPlace});
   Future<void> setPlantAndPlace({required Plant plant});
@@ -49,6 +54,7 @@ abstract class UserRepository {
     required List<String?>? images,
   });
   Future<List<Journal?>> deleteJournal({required String id});
+  Future<List<Journal?>> getJournalsByYear({required int year});
 }
 
 abstract class JournalRepository {

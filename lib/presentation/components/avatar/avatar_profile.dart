@@ -1,11 +1,15 @@
-import 'package:farmers_journal/presentation/controller/auth/auth_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:farmers_journal/domain/model/user.dart';
+
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AvatarProfile extends ConsumerWidget {
   final double width;
   final double height;
+
   final VoidCallback onNavigateTap;
   const AvatarProfile({
     super.key,
@@ -20,23 +24,24 @@ class AvatarProfile extends ConsumerWidget {
   // 이를 개선하기 위해선 CircleAvatar보다는 렌더링단에서 에러를 처리해주는 다른 widget을 사용하는걸 고려하는 것이 좋아보임.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<User?> user = ref.watch(authControllerProvider);
+    final AsyncValue<AppUser?> user = ref.watch(userControllerProvider);
     return GestureDetector(
       onTap: onNavigateTap,
       child: SizedBox(
-          width: width,
-          height: height,
-          child: user.isLoading
-              ? const CircularProgressIndicator()
-              : CircleAvatar(
-                  backgroundImage: switch (user) {
-                  AsyncData(:final value) => value!.photoURL != null
-                      ? NetworkImage(value.photoURL!)
+        width: width,
+        height: height,
+        child: user.isLoading
+            ? const CircularProgressIndicator()
+            : CircleAvatar(
+                backgroundImage: switch (user) {
+                AsyncData(:final value) =>
+                  (value != null && value.profileImage!.isNotEmpty)
+                      ? NetworkImage(value.profileImage!)
                       : const AssetImage('assets/avatars/default.png'),
-                  AsyncError() =>
-                    const AssetImage('assets/avatars/default.png'),
-                  _ => const AssetImage('assets/avatars/default.png'),
-                })),
+                AsyncError() => const AssetImage('assets/avatars/default.png'),
+                _ => const AssetImage('assets/avatars/default.png'),
+              }),
+      ),
     );
   }
 }

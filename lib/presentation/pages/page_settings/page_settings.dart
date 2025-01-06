@@ -1,12 +1,8 @@
 import 'package:farmers_journal/data/firestore_service.dart';
-import 'package:farmers_journal/presentation/controller/auth/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:go_router/go_router.dart';
-
 import 'package:farmers_journal/presentation/pages/page_settings/profile_banner.dart';
-import 'package:image_picker/image_picker.dart';
 
 class PageSettings extends ConsumerStatefulWidget {
   const PageSettings({super.key});
@@ -46,18 +42,11 @@ class _PageSettingsState extends ConsumerState<PageSettings> {
             ),
             Expanded(
               child: ListView(
-                children: [
-                  const SizedBox(
+                children: const [
+                  SizedBox(
                     height: 20,
                   ),
-                  Center(
-                      child: _AccountSettings(
-                    onChangeDisplayName: onEdit,
-                  )),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Center(child: _PlantSettings()),
+                  Center(child: _PlantSettings()),
                 ],
               ),
             ),
@@ -126,37 +115,6 @@ class _SettingContainer extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-class _AccountSettings extends ConsumerStatefulWidget {
-  const _AccountSettings({super.key, this.onChangeDisplayName});
-  final VoidCallback? onChangeDisplayName;
-  @override
-  ConsumerState<_AccountSettings> createState() => _AccountSettingsState();
-}
-
-class _AccountSettingsState extends ConsumerState<_AccountSettings> {
-  final ImagePicker _imagePicker = ImagePicker();
-
-  void pickImage() {
-    _imagePicker.pickImage(source: ImageSource.gallery).then((image) {
-      ref.read(authControllerProvider.notifier).setProfileImage(image: image!);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _SettingContainer(settingTitle: "계정", items: [
-      _SelectionItemWithCallback(
-          callback: pickImage,
-          icon: Icons.linked_camera_outlined,
-          selectionName: "프로필 이미지 변경"),
-      _SelectionItemWithCallback(
-          callback: widget.onChangeDisplayName!,
-          icon: Icons.alternate_email,
-          selectionName: "프로필 이름 변경")
-    ]);
   }
 }
 
