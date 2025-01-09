@@ -109,22 +109,19 @@ class FirebaseAuthRepository implements AuthRepository {
       {String? email,
       String? password,
       String? name,
-      required firebase_auth.UserCredential credential}) async {
+      required String? uuid}) async {
     String? errorMessage;
     try {
       AppUser user = AppUser(
         email: email ?? '',
-        createdAt: Timestamp.fromDate(credential.user!.metadata.creationTime!),
+        createdAt: Timestamp.now(),
         name: name,
         journals: [],
         plants: [],
         isInitialSettingRequired: true,
         profileImage: '',
       );
-      await _fireStore
-          .collection('users')
-          .doc(credential.user?.uid)
-          .set(user.toJson());
+      await _fireStore.collection('users').doc(uuid).set(user.toJson());
     } on firebase_auth.FirebaseAuthException catch (error) {
       switch (error.code) {
         case 'weak-password':
@@ -163,31 +160,23 @@ class FirebaseAuthRepository implements AuthRepository {
       } else {
         token = await kakao_auth.UserApi.instance.loginWithKakaoAccount();
       }
-      // login with the firebase auth provider for firebase auth integration
-      var credential = provider.credential(
+      firebase_auth.OAuthCredential credential = provider.credential(
           idToken: token.idToken, accessToken: token.accessToken);
+
       firebase_auth.UserCredential userCredential =
           await instance.signInWithCredential(credential);
+      var kakaoUser = await kakao_auth.UserApi.instance.me();
 
-      try {
-        var docSnapshot = await _fireStore
-            .collection('users')
-            .doc(userCredential.user?.uid)
-            .get();
-        if (!docSnapshot.exists) {
-          // if the user has logged in for the first time, meaning sign up,
-          // create new user with the uid
-          var user = await kakao_auth.UserApi.instance.me();
-          await _createAppUser(
-              email: user.kakaoAccount?.email,
-              name: user.kakaoAccount?.name,
-              credential: userCredential);
-          await userCredential.user?.updateProfile(
-              displayName:
-                  '${user.id}${user.kakaoAccount?.profile?.nickname ?? user.kakaoAccount?.name}');
-        }
-      } catch (error) {
-        throw Exception(error);
+      var docSnapshot =
+          await _fireStore.collection('users').doc(kakaoUser.uuid).get();
+      if (!docSnapshot.exists) {
+        await _createAppUser(
+            email: kakaoUser.kakaoAccount?.email,
+            name: kakaoUser.kakaoAccount?.name,
+            uuid: userCredential.user?.uid);
+
+        await userCredential.user?.updateProfile(
+            displayName: '${kakaoUser.kakaoAccount?.profile?.nickname}');
       }
     } catch (error) {
       throw Exception(error);
@@ -200,13 +189,13 @@ class FirebaseAuthRepository implements AuthRepository {
     try {
       firebase_auth.UserCredential userCredential = await instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      await instance.currentUser?.updateDisplayName(name);
-      await instance.currentUser?.sendEmailVerification();
       await _createAppUser(
           email: email,
           password: password,
           name: name,
-          credential: userCredential);
+          uuid: userCredential.user?.uid);
+      await instance.currentUser?.updateDisplayName(name);
+      await instance.currentUser?.sendEmailVerification();
     } catch (error) {
       throw Exception(error);
     }

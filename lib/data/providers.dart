@@ -1,5 +1,8 @@
 import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/data/repositories/googleAPI.dart';
 import 'package:farmers_journal/domain/model/geocoding_response.dart';
+import 'package:farmers_journal/domain/model/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -37,33 +40,26 @@ List<int> price(Ref ref) {
   return List.generate(10, (index) => random.nextInt(6000));
 }
 
-@riverpod
-Future<GooglePlaceResponse> googlePlaceAPI(
-    Ref ref, String place, String token) async {
-  String? key = dotenv.env['GOOGLE_MAPS_API_KEY'];
-  String input = place;
-  String language = "ko";
-  String sessionToken = token; // to identify autocomplete session for billing
-  Uri url = Uri.parse(
-    'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&components=country:kr&language=$language&sessiontoken=$sessionToken&key=$key',
-  );
-  var response = await http.get(url);
-  var googlePlaceResponse = response.body;
-  var parsedJson = jsonDecode(googlePlaceResponse);
-  var googlePlaceResponseJson = GooglePlaceResponse.fromJson(parsedJson);
-  return googlePlaceResponseJson;
-}
+final googleAPIProvider = Provider<GoogleAPI>((ref) {
+  return GoogleAPI();
+});
 
-@riverpod
-Future<MyLatLng> geoCodingAPI(Ref ref, String address) async {
-  String? key = dotenv.env['GOOGLE_MAPS_API_KEY'];
-
-  Uri url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$key');
-  var response = await http.get(url);
-  var geoCodingResponse = response.body;
-  var parsedJson = jsonDecode(geoCodingResponse);
-  var geoCodingResponseJson = GeocodingResponse.fromJson(parsedJson);
-
-  return geoCodingResponseJson.results.first.geometry.location;
+@Riverpod(keepAlive: true)
+class AuthNotifier extends _$AuthNotifier {
+  @override
+  bool build() {
+    FirebaseAuth.instance.authStateChanges().listen((authUser) async {
+      if (authUser == null) {
+        state = false;
+      } else {
+        final AppUser? user = await ref.read(userRepositoryProvider).getUser();
+        if (user == null) {
+          state = false;
+        } else {
+          state = true;
+        }
+      }
+    });
+    return false;
+  }
 }

@@ -1,5 +1,5 @@
 import 'package:farmers_journal/domain/model/user.dart';
-import 'package:farmers_journal/presentation/pages/page_settings/profile_banner.dart';
+
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_settings/place_autocomplete.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +10,10 @@ import 'package:uuid/uuid.dart';
 class PagePlace extends ConsumerStatefulWidget {
   const PagePlace({super.key});
   @override
-  ConsumerState<PagePlace> createState() => _PagePlantState();
+  ConsumerState<PagePlace> createState() => _PagePlaceState();
 }
 
-class _PagePlantState extends ConsumerState<PagePlace> {
+class _PagePlaceState extends ConsumerState<PagePlace> {
   BoxDecoration get floatingActionButtonDecoration => BoxDecoration(
         color: const Color.fromRGBO(184, 230, 185, 0.5),
         borderRadius: BorderRadius.circular(10),
@@ -41,12 +41,11 @@ class _PagePlantState extends ConsumerState<PagePlace> {
     });
   }
 
-  void onChanged(value) {
+  void onChanged(String? value) {
     newPlantPlace = value;
   }
 
-  void onSaved(value) {
-    _formKey.currentState?.save();
+  void onSaved(String? value) {
     newPlantPlace = value;
   }
 
@@ -59,7 +58,7 @@ class _PagePlantState extends ConsumerState<PagePlace> {
                   content: SingleChildScrollView(
                     child: ListBody(
                       children: [
-                        Text('plant: $newPlantPlace'),
+                        Text('plant: ${newPlantPlace ?? plantPlace}'),
                       ],
                     ),
                   ),
@@ -87,13 +86,15 @@ class _PagePlantState extends ConsumerState<PagePlace> {
   }
 
   void onSubmitted() async {
-    await _showAlertDialog(context, () {
-      _updatePlace();
-    }).then((status) {
-      if (status) {
-        context.go('/main');
-      }
-    });
+    if (_formKey.currentState!.validate()) {
+      await _showAlertDialog(context, () {
+        _updatePlace();
+      }).then((status) {
+        if (status) {
+          context.go('/main');
+        }
+      });
+    }
   }
 
   @override
@@ -106,7 +107,7 @@ class _PagePlantState extends ConsumerState<PagePlace> {
           } else if (snapshot.hasData) {
             return Scaffold(
               appBar: AppBar(
-                title: const Text("작물 변경"),
+                title: const Text("위치 설정"),
                 actions: [
                   TextButton(
                     onPressed: onSubmitted,
@@ -125,14 +126,13 @@ class _PagePlantState extends ConsumerState<PagePlace> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      const ProfileBanner(),
                       const SizedBox(height: 40),
                       Flexible(
-                        child: PlaceAutoComplete(
+                        child: PlaceAutoComplete2(
                           sessionToken: const Uuid().v4(),
                           onChanged: onChanged,
                           onSaved: onSaved,
-                          placeInitialValue: plantPlace,
+                          place: plantPlace,
                         ),
                       ),
                     ],

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PlantSelection extends StatelessWidget {
-  const PlantSelection({super.key, required this.onFieldSubmitted});
-
+  const PlantSelection(
+      {super.key, required this.onChange, required this.onFieldSubmitted});
+  final void Function(String) onChange;
   final void Function(String) onFieldSubmitted;
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,8 @@ class PlantSelection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PlantTextField(onFieldSubmitted: onFieldSubmitted),
+          PlantTextField(
+              onFieldSubmitted: onFieldSubmitted, onChange: onChange),
           const SizedBox(height: 10),
         ],
       ),
@@ -19,23 +21,59 @@ class PlantSelection extends StatelessWidget {
   }
 }
 
-class PlantTextField extends StatelessWidget {
-  const PlantTextField({super.key, required this.onFieldSubmitted});
+class PlantTextField extends StatefulWidget {
+  const PlantTextField(
+      {super.key, required this.onFieldSubmitted, required this.onChange});
   final void Function(String) onFieldSubmitted;
+  final void Function(String) onChange;
+  @override
+  State<PlantTextField> createState() => _PlantTextFieldState();
+}
+
+class _PlantTextFieldState extends State<PlantTextField> {
   InputDecoration get inputDecoration => const InputDecoration(
         labelText: "작물 선택",
         fillColor: Colors.transparent,
         isDense: true,
       );
+  final TextEditingController textEditingController = TextEditingController();
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-        textInputAction: TextInputAction.done,
-        onFieldSubmitted: (String text) {
-          onFieldSubmitted(text);
-        },
-        decoration: inputDecoration);
+    return Row(
+      children: [
+        Expanded(
+          child: TextFormField(
+              validator: (inputValue) {
+                if (inputValue == null) {
+                  return 'Null not allowed';
+                }
+                if (inputValue.isEmpty) {
+                  return 'Empty value not allowed';
+                }
+                return null;
+              },
+              onChanged: widget.onChange,
+              controller: textEditingController,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (String text) {
+                widget.onFieldSubmitted(text);
+              },
+              decoration: inputDecoration),
+        ),
+        InkWell(
+          onTap: () {
+            widget.onFieldSubmitted(textEditingController.text);
+          },
+          child: const Icon(Icons.check),
+        )
+      ],
+    );
   }
 }
 

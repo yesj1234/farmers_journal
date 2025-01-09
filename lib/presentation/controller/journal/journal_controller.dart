@@ -12,11 +12,15 @@ class JournalController extends _$JournalController {
   @override
   Future<List<Journal?>> build() async {
     final repository = ref.read(userRepositoryProvider);
-    List<Journal?> journals = await repository.getJournals();
-    if (journals.isNotEmpty) {
-      journals.sort((a, b) => b!.createdAt!.compareTo(a!.createdAt!));
+    try {
+      List<Journal?> journals = await repository.getJournals();
+      if (journals.isNotEmpty) {
+        journals.sort((a, b) => b!.createdAt!.compareTo(a!.createdAt!));
+      }
+      return journals;
+    } catch (error) {
+      throw Exception(error);
     }
-    return journals;
   }
 
   Future<Map<DateTime, List<Journal?>>> getDayViewJournals() async {

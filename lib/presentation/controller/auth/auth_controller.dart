@@ -33,11 +33,12 @@ class AuthController extends _$AuthController {
   Future<void> signInWithKakaoTalk() async {
     state = const AsyncLoading();
     try {
-      ref.read(authRepositoryProvider).signInWithKakaoTalk();
+      await ref.read(authRepositoryProvider).signInWithKakaoTalk();
     } catch (error) {
-      state = const AsyncData(null);
+      state = AsyncError(error, StackTrace.current);
+    } finally {
+      ref.invalidateSelf();
     }
-    ref.invalidateSelf();
   }
 
   Future<void> signInWithEmail(

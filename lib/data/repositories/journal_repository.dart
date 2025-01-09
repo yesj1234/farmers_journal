@@ -23,11 +23,13 @@ class FireStoreJournalRepository implements JournalRepository {
   Future<List<Journal>> getJournals(List<String> ids) async {
     List<Journal> result = [];
     for (String id in ids) {
-      await instance.collection("journals").doc(id).get().then(
-          (docSnapshot) => result.add(
-                Journal.fromJson(docSnapshot.data() as Map<String, dynamic>),
-              ),
-          onError: (e) => print("Error completing : $e"));
+      await instance.collection("journals").doc(id).get().then((docSnapshot) {
+        if (docSnapshot.data() != null) {
+          result.add(
+            Journal.fromJson(docSnapshot.data() as Map<String, dynamic>),
+          );
+        }
+      }, onError: (e) => print("Error completing : $e"));
     }
     return result;
   }

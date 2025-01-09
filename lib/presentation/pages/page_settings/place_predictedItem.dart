@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:farmers_journal/domain/model/places_autocomplete_response.dart';
-import 'package:farmers_journal/data/providers.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PlaceAutoCompletePredictionItem extends StatelessWidget {
   const PlaceAutoCompletePredictionItem(
@@ -45,44 +41,6 @@ class PlaceAutoCompletePredictionItem extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class PlaceMap extends StatefulWidget {
-  const PlaceMap({super.key, required this.lat, required this.lng});
-  final num? lat;
-  final num? lng;
-
-  @override
-  State<PlaceMap> createState() => _PlaceMapState();
-}
-
-class _PlaceMapState extends State<PlaceMap> {
-  late GoogleMapController mapController;
-
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    mapController.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.sizeOf(context).width / 1.2,
-      height: MediaQuery.sizeOf(context).height / 3,
-      child: GoogleMap(
-        onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(widget.lat as double, widget.lng as double),
-          zoom: 15.0,
         ),
       ),
     );

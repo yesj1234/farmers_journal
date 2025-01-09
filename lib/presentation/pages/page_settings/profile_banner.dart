@@ -7,10 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileBanner extends StatelessWidget {
-  const ProfileBanner(
-      {super.key, this.editMode = false, this.toggleEdit, this.userName});
-  final bool editMode;
-  final VoidCallback? toggleEdit;
+  const ProfileBanner({super.key, this.userName});
+
   final String? userName;
 
   @override
@@ -97,7 +95,9 @@ class _UserDisplayNameState extends ConsumerState<_UserDisplayName> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('', style: displayNameTextStyle),
+          FittedBox(
+            child: Text('', style: displayNameTextStyle),
+          ),
           Text('' ?? '', style: subTextStyle),
         ],
       ),

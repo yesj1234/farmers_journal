@@ -1,45 +1,33 @@
-import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:farmers_journal/presentation/pages/page_settings/profile_banner.dart';
 
-class PageSettings extends ConsumerStatefulWidget {
-  const PageSettings({super.key});
+class PageProfile extends ConsumerStatefulWidget {
+  const PageProfile({super.key});
   @override
-  ConsumerState<PageSettings> createState() => _PageSettingsState();
+  ConsumerState<PageProfile> createState() => _PageSettingsState();
 }
 
-class _PageSettingsState extends ConsumerState<PageSettings> {
-  bool editMode = false;
-  void onEdit() {
-    setState(() {
-      editMode = !editMode;
-    });
-  }
-
+class _PageSettingsState extends ConsumerState<PageProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Settings "),
+        title: const Text("Profile"),
         actions: [
-          TextButton(
+          IconButton(
             onPressed: () {
-              ref.read(authRepositoryProvider).signOut();
-              context.go('/');
+              context.go('/main/settings/account');
             },
-            child: const Text("signOut"),
+            icon: const Icon(Icons.settings),
           )
         ],
       ),
       body: SafeArea(
         child: Column(
           children: [
-            ProfileBanner(
-              toggleEdit: onEdit,
-              editMode: editMode,
-            ),
+            const ProfileBanner(),
             Expanded(
               child: ListView(
                 children: const [

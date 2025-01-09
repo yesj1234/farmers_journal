@@ -57,7 +57,7 @@ class _PagePlantState extends ConsumerState<PagePlant> {
                   content: SingleChildScrollView(
                     child: ListBody(
                       children: [
-                        Text('plant: $newPlantName'),
+                        Text('plant: ${newPlantName ?? plantName}'),
                       ],
                     ),
                   ),
@@ -81,17 +81,19 @@ class _PagePlantState extends ConsumerState<PagePlant> {
   void _updatePlant() {
     ref
         .read(userControllerProvider.notifier)
-        .setPlant(id: plantId, newPlantName: newPlantName);
+        .setPlant(id: plantId, newPlantName: newPlantName ?? plantName);
   }
 
   void onSubmitted() async {
-    await _showAlertDialog(context, () {
-      _updatePlant();
-    }).then((status) {
-      if (status) {
-        context.go('/main');
-      }
-    });
+    if (_formKey.currentState!.validate()) {
+      await _showAlertDialog(context, () {
+        _updatePlant();
+      }).then((status) {
+        if (status) {
+          context.go('/main');
+        }
+      });
+    }
   }
 
   @override
@@ -121,31 +123,20 @@ class _PagePlantState extends ConsumerState<PagePlant> {
               body: SafeArea(
                 child: Form(
                   key: _formKey,
-                  child: Column(
-                    children: [
-                      const ProfileBanner(),
-                      const SizedBox(height: 40),
-                      _ProfilePlantForm(
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _ProfilePlantForm(
                           onSaved: onSaved,
                           onChanged: onChanged,
-                          plantName: plantName),
-                    ],
+                          plantName: plantName,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              floatingActionButton: Container(
-                width: 300,
-                height: 50,
-                decoration: floatingActionButtonDecoration,
-                child: Center(
-                  child: Text(
-                    "변경사항 저장",
-                    style: floatingActionButtonTextStyle,
-                  ),
-                ),
-              ),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerFloat,
             );
           } else {
             return const SizedBox.shrink();
@@ -162,6 +153,7 @@ class _ProfilePlantForm extends StatelessWidget {
     required this.onChanged,
   });
   final String? plantName;
+
   final void Function(String?) onSaved;
   final void Function(String?) onChanged;
   TextStyle get titleTextStyle => const TextStyle(
@@ -185,6 +177,16 @@ class _ProfilePlantForm extends StatelessWidget {
       children: [
         Text("작물 선택", style: titleTextStyle),
         TextFormField(
+          validator: (inputValue) {
+            if (inputValue == null) {
+              return 'Null not allowed';
+            }
+            if (inputValue.isEmpty) {
+              return 'Empty value not allowed';
+            }
+
+            return null;
+          },
           initialValue: plantName,
           onChanged: (value) => onChanged(value),
           onSaved: (value) => onSaved(value),

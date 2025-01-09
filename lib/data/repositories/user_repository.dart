@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,10 +23,10 @@ class FireStoreUserRepository implements UserRepository {
     this._ref, {
     required this.instance,
   });
-  Future<DocumentReference<Map<String, dynamic>>> _fetchUserRef() async {
+  Future<DocumentReference<Map<String, dynamic>>?> _fetchUserRef() async {
     final User? userData = _ref.read(authRepositoryProvider).getCurrentUser();
     if (userData == null) {
-      throw Exception('Auth Exception');
+      return null;
     } else {
       return instance.collection('users').doc(userData.uid);
     }
@@ -49,7 +50,7 @@ class FireStoreUserRepository implements UserRepository {
     try {
       final user = await _fetchUserRef();
       String photoURL = await _uploadBytes(bytes);
-      await user.update({
+      await user?.update({
         'profileImage': photoURL,
       });
     } catch (error) {
@@ -76,7 +77,7 @@ class FireStoreUserRepository implements UserRepository {
             ifAbsent: () => downloadURL);
       }
       if (updateRef.keys.isNotEmpty) {
-        await user.update(updateRef);
+        await user?.update(updateRef);
       }
     } catch (error) {
       throw Exception(error);
@@ -87,7 +88,7 @@ class FireStoreUserRepository implements UserRepository {
   Future<void> setPlantAndPlace({required Plant plant}) async {
     try {
       final user = await _fetchUserRef();
-      await user.update({
+      await user?.update({
         'isInitialSettingRequired': false,
         'nickName': '${plant.name} 농부',
         'plants': FieldValue.arrayUnion([plant.toJson()])
@@ -102,13 +103,13 @@ class FireStoreUserRepository implements UserRepository {
       {required String? id, required String? newPlantPlace}) async {
     try {
       final userRef = await _fetchUserRef();
-      final user = await userRef.get();
-      List plants = user.data()?['plants'] ?? [];
+      final user = await userRef?.get();
+      List plants = user?.data()?['plants'] ?? [];
       int index = plants.indexWhere((plant) => plant['id'] == id);
       Map<String, dynamic> plant = plants[index];
       plant.update('place', (_) => newPlantPlace);
       plants[index] = plant;
-      await userRef.update({'plants': plants});
+      await userRef?.update({'plants': plants});
     } catch (error) {
       throw Exception(error);
     }
@@ -119,13 +120,13 @@ class FireStoreUserRepository implements UserRepository {
       {required String? id, required String? newPlantName}) async {
     try {
       final userRef = await _fetchUserRef();
-      final user = await userRef.get();
-      List plants = user.data()?['plants'] ?? [];
+      final user = await userRef?.get();
+      List plants = user?.data()?['plants'] ?? [];
       int index = plants.indexWhere((plant) => plant['id'] == id);
       Map<String, dynamic> plant = plants[index];
       plant.update('name', (_) => newPlantName);
       plants[index] = plant;
-      await userRef.update({'plants': plants});
+      await userRef?.update({'plants': plants});
     } catch (error) {
       throw Exception(error);
     }
@@ -135,10 +136,12 @@ class FireStoreUserRepository implements UserRepository {
   Future<AppUser?> getUser() async {
     try {
       final userRef = await _fetchUserRef();
-      final result = await userRef.get().then((DocumentSnapshot doc) {
-        final json = doc.data() as Map<String, dynamic>;
-        final userModel = AppUser.fromJson(json);
-        return userModel;
+      final result = await userRef?.get().then((DocumentSnapshot doc) {
+        final json = doc.data();
+        if (json != null) {
+          final userModel = AppUser.fromJson(json as Map<String, dynamic>);
+          return userModel;
+        }
       });
       return result;
     } catch (error) {
@@ -152,17 +155,23 @@ class FireStoreUserRepository implements UserRepository {
       final userRef = await _fetchUserRef();
       final journalRef = instance.collection("journals");
 
-      final journals = await userRef.get().then((DocumentSnapshot doc) {
-        final json = doc.data() as Map<String, dynamic>;
-        final userModel = AppUser.fromJson(json);
-        return userModel.journals;
+      final journals = await userRef?.get().then((DocumentSnapshot doc) {
+        if (doc.data() != null) {
+          final json = doc.data() as Map<String, dynamic>;
+          final userModel = AppUser.fromJson(json);
+          return userModel.journals;
+        } else {
+          return [];
+        }
       });
       List<Journal?> res = [];
-      for (String id in journals) {
-        Journal journal = await journalRef.doc(id).get().then((docSnapshot) {
-          return Journal.fromJson(docSnapshot.data() as Map<String, dynamic>);
-        });
-        res.add(journal);
+      if (journals != null) {
+        for (String id in journals) {
+          Journal journal = await journalRef.doc(id).get().then((docSnapshot) {
+            return Journal.fromJson(docSnapshot.data() as Map<String, dynamic>);
+          });
+          res.add(journal);
+        }
       }
       return res;
     } catch (error) {
@@ -176,19 +185,21 @@ class FireStoreUserRepository implements UserRepository {
       final userRef = await _fetchUserRef();
       final journalRef = instance.collection("journals");
 
-      final journals = await userRef.get().then((DocumentSnapshot doc) {
+      final journals = await userRef?.get().then((DocumentSnapshot doc) {
         final json = doc.data() as Map<String, dynamic>;
         final userModel = AppUser.fromJson(json);
         return userModel.journals;
       });
       List<Journal?> res = [];
 
-      for (String id in journals) {
-        Journal journal = await journalRef.doc(id).get().then((docSnapshot) {
-          return Journal.fromJson(docSnapshot.data() as Map<String, dynamic>);
-        });
-        if (journal.date?.year == year) {
-          res.add(journal);
+      if (journals != null) {
+        for (String id in journals) {
+          Journal journal = await journalRef.doc(id).get().then((docSnapshot) {
+            return Journal.fromJson(docSnapshot.data() as Map<String, dynamic>);
+          });
+          if (journal.date?.year == year) {
+            res.add(journal);
+          }
         }
       }
       return res;
@@ -228,8 +239,6 @@ class FireStoreUserRepository implements UserRepository {
           imageURLs.add(downloadURL);
         }
 
-
-
         final newJournal = Journal(
           id: id,
           title: title,
@@ -237,14 +246,14 @@ class FireStoreUserRepository implements UserRepository {
           images: imageURLs,
           date: date,
         );
-        userRef.update({
+        userRef?.update({
           "journals": FieldValue.arrayUnion([id])
         });
         journalRef.doc(id).set(newJournal.toJson());
       } else {
         final newJournal = Journal(
             id: id, title: title, content: content, images: images, date: date);
-        userRef.update({
+        userRef?.update({
           "journals": FieldValue.arrayUnion([id])
         });
         journalRef.doc(id).set(newJournal.toJson());
@@ -301,10 +310,10 @@ class FireStoreUserRepository implements UserRepository {
       final userRef = await _fetchUserRef();
       final journalRef = instance.collection("journals").doc(id);
       final user =
-          await userRef.get().then((doc) => AppUser.fromJson(doc.data()!));
-      final previousJournalList = user.journals;
-      previousJournalList.remove(id);
-      await userRef.update({'journals': previousJournalList});
+          await userRef?.get().then((doc) => AppUser.fromJson(doc.data()!));
+      final previousJournalList = user?.journals;
+      previousJournalList?.remove(id);
+      await userRef?.update({'journals': previousJournalList});
       await journalRef.delete();
       return await getJournals();
     } catch (error) {

@@ -23,14 +23,14 @@ class ButtonStatus extends StatelessWidget {
     final ColorScheme colorScheme = themeData.colorScheme;
 
     return SizedBox(
-      width: 95,
-      height: 80,
+      width: 80,
+      height: 60,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 statusIcon,
@@ -41,24 +41,27 @@ class ButtonStatus extends StatelessWidget {
                 status,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 15,
+                  fontSize: 18,
                 ),
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 5.0),
-            child: TextButton(
-              onPressed: onNavigateTap,
-              style: TextButton.styleFrom(
-                  padding: const EdgeInsets.all(0.0),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-              child: Text(
-                statusValue,
-                style: TextStyle(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 5.0),
+              child: TextButton(
+                onPressed: onNavigateTap,
+                style: TextButton.styleFrom(
+                    padding: const EdgeInsets.all(0.0),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  statusValue,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColorDark,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),

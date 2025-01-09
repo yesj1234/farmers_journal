@@ -49,9 +49,12 @@ class PageLogin extends ConsumerWidget {
                 await ref
                     .read(authControllerProvider.notifier)
                     .signInWithKakaoTalk()
-                    .then((_) => null, onError: (error) {
+                    .then((_) {}, onError: (error) {
                   showSnackBar(context, error);
                 });
+                if (context.mounted) {
+                  context.go('/');
+                }
               },
               child: const Text('KakaoTalk'),
             )

@@ -6,14 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-class PageProfile extends ConsumerStatefulWidget {
-  const PageProfile({super.key});
+class PageEditProfile extends ConsumerStatefulWidget {
+  const PageEditProfile({super.key});
 
   @override
-  ConsumerState<PageProfile> createState() => _PageProfileState();
+  ConsumerState<PageEditProfile> createState() => _PageProfileState();
 }
 
-class _PageProfileState extends ConsumerState<PageProfile> {
+class _PageProfileState extends ConsumerState<PageEditProfile> {
   BoxDecoration get floatingActionButtonDecoration => BoxDecoration(
         color: const Color.fromRGBO(184, 230, 185, 0.5),
         borderRadius: BorderRadius.circular(10),
