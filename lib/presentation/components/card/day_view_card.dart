@@ -72,8 +72,11 @@ class DayViewCard extends ConsumerWidget {
           maxWidth: cardMaxWidth,
           minHeight: cardMinHeight,
           maxHeight: cardMaxHeight),
-      child: Card(
-        color: colorScheme.surface.withValues(alpha: 0.5),
+      child: Card.outlined(
+        // color: colorScheme.surface.withValues(alpha: 0.5),
+        shape: ContinuousRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         elevation: 2.0,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +85,7 @@ class DayViewCard extends ConsumerWidget {
             journal.images != null && journal.images!.isNotEmpty
                 ? Expanded(
                     flex: 4,
-                    child: ImageWidgetLayout(
+                    child: TestImageWidgetLayout(
                         images: journal.images!.map((item) {
                       if (item is String) {
                         return UrlImage(item);

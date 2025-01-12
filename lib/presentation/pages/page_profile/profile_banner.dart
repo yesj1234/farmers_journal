@@ -28,7 +28,7 @@ class ProfileBanner extends StatelessWidget {
           AvatarProfile(
             width: 100,
             height: 100,
-            onNavigateTap: () => context.go('/main/settings'),
+            onNavigateTap: () => context.go('/main/profile/edit_profile'),
           ),
           ConstrainedBox(
             constraints: const BoxConstraints(
@@ -41,7 +41,7 @@ class ProfileBanner extends StatelessWidget {
           const Spacer(),
           IconButton(
             onPressed: () {
-              context.go('/main/settings/edit_profile');
+              context.go('/main/profile/edit_profile');
             },
             icon: const Icon(
               Icons.edit_rounded,

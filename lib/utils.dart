@@ -11,6 +11,49 @@ void showSnackBar(BuildContext context, String text) {
   );
 }
 
+class MyButtonType {
+  MyButtonType({required this.onPressed, required this.child});
+  final Function onPressed;
+  final Text child;
+}
+
+Future<bool> showAlertDialog(context,
+    {required String title,
+    required String message,
+    required MyButtonType onCancel,
+    required MyButtonType onConfirm}) async {
+  return await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                title: Text(title),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: [
+                      Text(message),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                      onCancel.onPressed();
+                    },
+                    child: onCancel.child,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                      onConfirm.onPressed();
+                    },
+                    child: onConfirm.child,
+                  )
+                ]);
+          }) ??
+      false;
+}
+
 class WeeklyGroup<T> {
   final String weekLabel;
   final List<T> items;

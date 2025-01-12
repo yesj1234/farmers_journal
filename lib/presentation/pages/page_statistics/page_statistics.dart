@@ -79,10 +79,6 @@ class PageStatistics extends ConsumerWidget {
                       Center(
                         child: JournalRecord(),
                       ),
-                      SizedBox(height: 20),
-                      Center(
-                        child: PriceRecord(),
-                      )
                     ],
                   ),
                 ),

@@ -1,23 +1,23 @@
 import 'dart:developer';
 import 'package:farmers_journal/data/providers.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
-import 'package:farmers_journal/presentation/pages/page_settings/place_map.dart';
-import 'package:farmers_journal/presentation/pages/page_settings/place_predictedItem.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/place_map.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/place_predictedItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
-class PageTemp extends ConsumerStatefulWidget {
-  const PageTemp(
+class PagePlaceSearch extends ConsumerStatefulWidget {
+  const PagePlaceSearch(
       {super.key, required this.actionText, required this.actionIcon});
   final String actionText;
   final IconData actionIcon;
   @override
-  ConsumerState<PageTemp> createState() => _PageTempState();
+  ConsumerState<PagePlaceSearch> createState() => _PageTempState();
 }
 
-class _PageTempState extends ConsumerState<PageTemp> {
+class _PageTempState extends ConsumerState<PagePlaceSearch> {
   String selectedPlace = '';
   void onSelect(String value) {
     setState(() {

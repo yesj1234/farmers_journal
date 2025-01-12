@@ -1,6 +1,6 @@
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
-import 'package:farmers_journal/presentation/pages/page_settings/place_map.dart';
-import 'package:farmers_journal/presentation/pages/page_settings/place_search.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/place_map.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/place_search.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

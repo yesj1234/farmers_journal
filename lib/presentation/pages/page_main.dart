@@ -130,7 +130,7 @@ class _TopNavTemp extends ConsumerWidget {
                 AvatarProfile(
                   width: 60,
                   height: 60,
-                  onNavigateTap: () => context.go('/main/settings'),
+                  onNavigateTap: () => context.go('/main/profile'),
                 ),
               ],
             ),
@@ -310,7 +310,9 @@ class _WeekViewState extends ConsumerState<ConsumerStatefulWidget> {
                       ),
                     ),
                     SizedBox(
-                        height: 200, child: MyCarousel(journals: items.items))
+                      height: 200,
+                      child: MyCarousel(journals: items.items),
+                    )
                   ],
                 )
             ]);

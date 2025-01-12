@@ -70,8 +70,11 @@ class WeekViewCard extends ConsumerWidget {
           maxWidth: cardMaxWidth,
           minHeight: cardMinHeight,
           maxHeight: cardMaxHeight),
-      child: Card(
+      child: Card.outlined(
         color: colorScheme.surface.withValues(alpha: 0.5),
+        shape: ContinuousRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
         elevation: 2.0,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +83,7 @@ class WeekViewCard extends ConsumerWidget {
             journal.images != null && journal.images!.isNotEmpty
                 ? Expanded(
                     flex: 4,
-                    child: ImageWidgetLayout(
+                    child: TestImageWidgetLayout(
                         images: journal.images!.map((item) {
                       if (item is String) {
                         return UrlImage(item);

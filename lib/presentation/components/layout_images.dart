@@ -1,7 +1,110 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
+import 'package:farmers_journal/presentation/components/layout_images_detail_screen.dart';
+
+class TestImageWidgetLayout extends StatelessWidget {
+  const TestImageWidgetLayout({
+    super.key,
+    required this.images,
+    this.isEditMode = false,
+    this.onDelete,
+  });
+  final bool isEditMode;
+  final void Function(int id)? onDelete;
+  final List<ImageType> images;
+
+  int _getCrossAxisCount(int imageCount) {
+    if (imageCount == 1) return 1;
+    if (imageCount <= 4) return 2;
+    if (imageCount <= 9) return 3;
+    return 4;
+  }
+
+  int _getRowCount(int imageCount, int crossAxisCount) {
+    return (imageCount / crossAxisCount).ceil();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    timeDilation = 1.5;
+    if (images.isNotEmpty) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          int crossAxisCount = _getCrossAxisCount(images.length);
+
+          double totalHorizontalPadding = 8.0 * (crossAxisCount + 1);
+          double availableWidth = constraints.maxWidth - totalHorizontalPadding;
+          double tileWidth = availableWidth / crossAxisCount;
+
+          double totalVerticalPadding =
+              8.0 * ((_getRowCount(images.length, crossAxisCount)) + 1);
+          double availableHeight = constraints.maxHeight - totalVerticalPadding;
+          double tileHeight =
+              availableHeight / _getRowCount(images.length, crossAxisCount);
+
+          return GridView.builder(
+            padding: const EdgeInsets.all(8.0),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
+              childAspectRatio: tileWidth / tileHeight, // Dynamic aspect ratio
+            ),
+            itemCount: images.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              switch (images[index]) {
+                case UrlImage(:final value):
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => LayoutImagesDetailScreen(
+                              tags: images as List<UrlImage>),
+                        ),
+                      );
+                    },
+                    child: Hero(
+                      tag: value,
+                      child: _URLImageTile(
+                        id: index,
+                        url: value,
+                        onDelete: () {
+                          onDelete!(index);
+                        },
+                        width: tileWidth,
+                        height: tileHeight,
+                        isEditMode: isEditMode,
+                      ),
+                    ),
+                  );
+
+                case XFileImage(:final value):
+                  return _XFileImageTile(
+                    id: index,
+                    image: value,
+                    onDelete: () {
+                      onDelete!(index);
+                    },
+                    width: tileWidth,
+                    height: tileHeight,
+                    isEditMode: isEditMode,
+                  );
+              }
+            },
+          );
+        },
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+}
 
 class ImageWidgetLayout extends StatelessWidget {
   const ImageWidgetLayout({
@@ -60,7 +163,6 @@ class ImageWidgetLayout extends StatelessWidget {
                     id: index,
                     url: value,
                     onDelete: () {
-                      debugPrint(index.toString());
                       onDelete!(index);
                     },
                     width: tileWidth,
@@ -72,7 +174,9 @@ class ImageWidgetLayout extends StatelessWidget {
                   return _XFileImageTile(
                     id: index,
                     image: value,
-                    onDelete: () => {onDelete!(index)},
+                    onDelete: () {
+                      onDelete!(index);
+                    },
                     width: tileWidth,
                     height: tileHeight,
                     isEditMode: isEditMode,

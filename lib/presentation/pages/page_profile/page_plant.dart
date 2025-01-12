@@ -1,5 +1,4 @@
 import 'package:farmers_journal/domain/model/user.dart';
-import 'package:farmers_journal/presentation/pages/page_settings/profile_banner.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -20,6 +20,7 @@ class AuthController extends _$AuthController {
     String? name,
   }) async {
     state = const AsyncLoading();
+
     try {
       await ref
           .read(authRepositoryProvider)

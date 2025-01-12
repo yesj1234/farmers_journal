@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:farmers_journal/presentation/pages/page_settings/profile_banner.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/profile_banner.dart';
 
 class PageProfile extends ConsumerStatefulWidget {
   const PageProfile({super.key});
   @override
-  ConsumerState<PageProfile> createState() => _PageSettingsState();
+  ConsumerState<PageProfile> createState() => _PageProfileState();
 }
 
-class _PageSettingsState extends ConsumerState<PageProfile> {
+class _PageProfileState extends ConsumerState<PageProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +18,7 @@ class _PageSettingsState extends ConsumerState<PageProfile> {
         actions: [
           IconButton(
             onPressed: () {
-              context.go('/main/settings/account');
+              context.go('/main/profile/setting');
             },
             icon: const Icon(Icons.settings),
           )
@@ -113,11 +113,11 @@ class _PlantSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return _SettingContainer(settingTitle: "작물", items: [
       _SelectionItemWithCallback(
-          callback: () => context.go('/main/settings/plant/'),
+          callback: () => context.go('/main/profile/plant/'),
           icon: Icons.apple_rounded,
           selectionName: "작물 변경"),
       _SelectionItemWithCallback(
-          callback: () => context.go("/main/settings/place"),
+          callback: () => context.go("/main/profile/place"),
           icon: Icons.place_outlined,
           selectionName: "위치 변경"),
     ]);

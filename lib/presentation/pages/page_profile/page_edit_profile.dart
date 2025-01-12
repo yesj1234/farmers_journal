@@ -26,6 +26,7 @@ class _PageProfileState extends ConsumerState<PageEditProfile> {
 
   String? newName;
   String? newNickName;
+  bool isLoading = false;
 
   final ImagePicker _imagePicker = ImagePicker();
   XFile? selectedImage;
@@ -47,10 +48,23 @@ class _PageProfileState extends ConsumerState<PageEditProfile> {
 
   void onSave() async {
     try {
-      await ref.read(userControllerProvider.notifier).editProfile(
-          name: newName, nickName: newNickName, profileImage: selectedImage);
-      context.go('/main/settings');
+      setState(() {
+        isLoading = true;
+      });
+      await ref
+          .read(userControllerProvider.notifier)
+          .editProfile(
+              name: newName, nickName: newNickName, profileImage: selectedImage)
+          .then((v) {
+        setState(() {
+          isLoading = false;
+        });
+        context.go('/main/profile');
+      });
     } catch (error) {
+      setState(() {
+        isLoading = false;
+      });
       showSnackBar(context, error.toString());
     }
   }
@@ -124,15 +138,17 @@ class _PageProfileState extends ConsumerState<PageEditProfile> {
                         .colorScheme
                         ?.secondaryContainer),
                   ),
-                  child: Text(
-                    "Save",
-                    style: TextStyle(
-                      color: Theme.of(context)
-                          .buttonTheme
-                          .colorScheme
-                          ?.onSecondaryFixedVariant,
-                    ),
-                  ),
+                  child: isLoading
+                      ? const CircularProgressIndicator()
+                      : Text(
+                          "Save",
+                          style: TextStyle(
+                            color: Theme.of(context)
+                                .buttonTheme
+                                .colorScheme
+                                ?.onSecondaryFixedVariant,
+                          ),
+                        ),
                 ),
               ],
             ),

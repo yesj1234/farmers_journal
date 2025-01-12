@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class TextPortion extends StatelessWidget {
@@ -43,7 +45,7 @@ class DatePortion extends StatelessWidget {
     int day = localDateTime.day;
     int weekDay = localDateTime.weekday;
 
-    return '$month월 $day일 ${weekDayOrder[weekDay]}';
+    return '$month월 $day일 ${weekDayOrder[weekDay - 1]}';
   }
 
   @override

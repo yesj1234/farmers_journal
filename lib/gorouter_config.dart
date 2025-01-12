@@ -1,18 +1,16 @@
-import 'package:farmers_journal/presentation/pages/page_account.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/page_setting/page_settings.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/page_create_journal.dart';
 import 'package:farmers_journal/presentation/pages/page_login/auth_bridge.dart';
-
 import 'package:farmers_journal/presentation/pages/page_login/page_signup.dart';
-
-import 'package:farmers_journal/presentation/pages/page_settings/page_place.dart';
-import 'package:farmers_journal/presentation/pages/page_settings/page_plant.dart';
-import 'package:farmers_journal/presentation/pages/page_settings/page_profile.dart';
-import 'package:farmers_journal/presentation/pages/page_settings/place_search.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/page_plant.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/page_edit_profile.dart'; //
+import 'package:farmers_journal/presentation/pages/page_profile/place_search.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/page_setting/page_terms_and_policy.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:farmers_journal/presentation/pages/page_initial_setting/page_initial_setting.dart';
 import 'package:farmers_journal/presentation/pages/page_main.dart';
-import 'package:farmers_journal/presentation/pages/page_settings/page_settings.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/page_profile.dart'; //
 import 'package:farmers_journal/presentation/pages/page_statistics/page_statistics.dart';
 
 final router = GoRouter(
@@ -45,12 +43,18 @@ final router = GoRouter(
         builder: (context, state) => const PageMain(),
         routes: [
           GoRoute(
-              path: '/settings',
+              path: '/profile',
               builder: (context, state) => const PageProfile(),
               routes: [
                 GoRoute(
-                    path: '/account',
-                    builder: (context, state) => const PageAccount()),
+                    path: '/setting',
+                    builder: (context, state) => const PageSettings(),
+                    routes: [
+                      GoRoute(
+                        path: '/terms_and_policy',
+                        builder: (context, state) => const PageTermsAndPolicy(),
+                      ),
+                    ]),
                 GoRoute(
                   path: '/edit_profile',
                   builder: (context, state) => const PageEditProfile(),
@@ -61,8 +65,8 @@ final router = GoRouter(
                 ),
                 GoRoute(
                   path: '/place',
-                  builder: (context, state) =>
-                      const PageTemp(actionText: '저장', actionIcon: Icons.save),
+                  builder: (context, state) => const PagePlaceSearch(
+                      actionText: '저장', actionIcon: Icons.save),
                 )
               ]),
           GoRoute(
