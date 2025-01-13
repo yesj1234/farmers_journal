@@ -1,3 +1,4 @@
+import 'package:farmers_journal/presentation/pages/page_login/page_reset_password.dart';
 import 'package:farmers_journal/presentation/pages/page_profile/page_setting/page_settings.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/page_create_journal.dart';
 import 'package:farmers_journal/presentation/pages/page_login/auth_bridge.dart';
@@ -19,6 +20,10 @@ final router = GoRouter(
       path: '/',
       builder: (context, state) => const AuthBridge(),
       routes: [
+        GoRoute(
+          path: '/reset_password',
+          builder: (context, state) => const PageResetPassword(),
+        ),
         GoRoute(
           path: '/registration',
           builder: (context, state) => const PageSignup(),

@@ -336,7 +336,12 @@ class _LoginFormTextField extends StatelessWidget {
           subText.isNotEmpty
               ? Align(
                   alignment: Alignment.centerRight,
-                  child: Text(subText, style: helpTextStyle),
+                  child: GestureDetector(
+                    onTap: () {
+                      context.go('/reset_password');
+                    },
+                    child: Text(subText, style: helpTextStyle),
+                  ),
                 )
               : const SizedBox.shrink(),
         ],
