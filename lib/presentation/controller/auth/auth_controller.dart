@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
-import 'package:flutter/material.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:firebase_auth/firebase_auth.dart';

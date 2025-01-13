@@ -4,7 +4,6 @@ import 'package:farmers_journal/presentation/controller/user/user_controller.dar
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 
 class AvatarProfile extends ConsumerWidget {
   final double width;

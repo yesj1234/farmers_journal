@@ -1,17 +1,13 @@
 import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:farmers_journal/data/repositories/googleAPI.dart';
-import 'package:farmers_journal/domain/model/geocoding_response.dart';
+
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/enums.dart';
-import 'package:farmers_journal/domain/model/places_autocomplete_response.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:math';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 part 'providers.g.dart';
 

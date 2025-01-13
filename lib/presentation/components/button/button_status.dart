@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 
 class ButtonStatus extends StatelessWidget {
   final String status;
@@ -19,9 +18,6 @@ class ButtonStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
-    final ColorScheme colorScheme = themeData.colorScheme;
-
     return SizedBox(
       width: 80,
       height: 60,

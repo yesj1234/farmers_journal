@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:farmers_journal/domain/model/places_autocomplete_response.dart';
-import 'package:farmers_journal/data/providers.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PlaceAutoCompletePredictionItem extends StatelessWidget {
   const PlaceAutoCompletePredictionItem(

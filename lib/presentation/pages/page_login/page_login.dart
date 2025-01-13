@@ -1,4 +1,3 @@
-import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/auth/auth_controller.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ class PageLogin extends ConsumerWidget {
   get registrationButtonStyle => ButtonStyle(
         padding: WidgetStateProperty.all<EdgeInsets>(EdgeInsets.zero),
       );
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -44,7 +44,7 @@ class PageLogin extends ConsumerWidget {
                 ),
               ],
             ),
-            ElevatedButton(
+            IconButton(
               onPressed: () async {
                 await ref
                     .read(authControllerProvider.notifier)
@@ -56,9 +56,10 @@ class PageLogin extends ConsumerWidget {
                   context.go('/');
                 }
               },
-              child: const Text('KakaoTalk'),
+              padding: EdgeInsets.zero,
+              icon: Image.asset('assets/icons/kakao_login_medium_narrow.png'),
             ),
-            ElevatedButton(
+            TextButton.icon(
               onPressed: () async {
                 await ref
                     .read(authControllerProvider.notifier)
@@ -70,7 +71,31 @@ class PageLogin extends ConsumerWidget {
                   context.go('/');
                 }
               },
-              child: const Text('Apple'),
+              style: ButtonStyle(
+                fixedSize: const WidgetStatePropertyAll(
+                  Size(185, 44),
+                ),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                iconColor: const WidgetStatePropertyAll(Colors.white),
+                backgroundColor: const WidgetStatePropertyAll(Colors.black),
+              ),
+              icon: const Icon(
+                Icons.apple,
+                size: 20,
+              ),
+              iconAlignment: IconAlignment.start,
+              label: const Text(
+                "애플 로그인",
+                style: TextStyle(
+                  fontSize: 19,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
         ),

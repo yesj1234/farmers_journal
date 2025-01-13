@@ -1,7 +1,7 @@
 import 'package:farmers_journal/presentation/components/avatar/avatar_profile.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_statistics/journal_record.dart';
-import 'package:farmers_journal/presentation/pages/page_statistics/price_record.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,7 +1,7 @@
 import 'package:farmers_journal/data/providers.dart';
 import 'package:farmers_journal/presentation/pages/page_login/page_login.dart';
 import 'package:farmers_journal/presentation/pages/page_main.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

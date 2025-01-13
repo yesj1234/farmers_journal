@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
