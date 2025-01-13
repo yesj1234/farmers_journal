@@ -31,6 +31,17 @@ class AuthController extends _$AuthController {
     }
   }
 
+  Future<void> signInWithApple() async {
+    state = const AsyncLoading();
+    try {
+      await ref.read(authRepositoryProvider).signInWithApple();
+    } catch (error) {
+      state = AsyncError(error, StackTrace.current);
+    } finally {
+      ref.invalidateSelf();
+    }
+  }
+
   Future<void> signInWithKakaoTalk() async {
     state = const AsyncLoading();
     try {

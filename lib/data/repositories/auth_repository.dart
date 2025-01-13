@@ -1,3 +1,5 @@
+import 'dart:math' hide log;
+import 'dart:developer';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,8 +7,10 @@ import 'package:farmers_journal/data/interfaces.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart'
     as kakao_auth;
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
   FirebaseAuthRepository.setLanguage({required this.instance}) {
@@ -109,6 +113,7 @@ class FirebaseAuthRepository implements AuthRepository {
       {String? email,
       String? password,
       String? name,
+      String? nickName,
       required String? uuid}) async {
     String? errorMessage;
     try {
@@ -116,6 +121,7 @@ class FirebaseAuthRepository implements AuthRepository {
         email: email ?? '',
         createdAt: Timestamp.now(),
         name: name,
+        nickName: nickName,
         journals: [],
         plants: [],
         isInitialSettingRequired: true,
@@ -150,6 +156,50 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> signInWithApple() async {
+    try {
+      final AuthorizationCredentialAppleID appleCredential =
+          await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final firebase_auth.OAuthCredential credential =
+          firebase_auth.OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      final userCredential = await firebase_auth.FirebaseAuth.instance
+          .signInWithCredential(credential);
+      var docSnapshot = await _fireStore
+          .collection('users')
+          .doc(userCredential.user?.uid)
+          .get();
+      if (!docSnapshot.exists) {
+        final NumberFormat formatter = NumberFormat('00000');
+        final random = Random();
+        await _createAppUser(
+            email: appleCredential.email,
+            name: appleCredential.givenName ??
+                'Farmer${formatter.format(random.nextInt(10001))}',
+            nickName: 'Anonymous Farmer',
+            uuid: userCredential.user?.uid);
+
+        await userCredential.user
+            ?.updateProfile(displayName: '${appleCredential.email}');
+      }
+    } on SignInWithAppleAuthorizationException catch (appleError) {
+      throw Exception(
+          'SignInWithAppleAuthorizationException Authentication failed: ${appleError.message}'); // 에러를 던짐
+    } catch (error) {
+      throw Exception('Apple Authentication failed: $error');
+    }
+  }
+
+  @override
   Future<void> signInWithKakaoTalk() async {
     var provider = firebase_auth.OAuthProvider("oidc.kakao");
     try {
@@ -167,16 +217,25 @@ class FirebaseAuthRepository implements AuthRepository {
           await instance.signInWithCredential(credential);
       var kakaoUser = await kakao_auth.UserApi.instance.me();
 
-      var docSnapshot =
-          await _fireStore.collection('users').doc(kakaoUser.uuid).get();
+      var docSnapshot = await _fireStore
+          .collection('users')
+          .doc(userCredential.user?.uid)
+          .get();
       if (!docSnapshot.exists) {
+        final NumberFormat formatter = NumberFormat('00000');
+        final random = Random();
         await _createAppUser(
             email: kakaoUser.kakaoAccount?.email,
-            name: kakaoUser.kakaoAccount?.name,
+            name: kakaoUser.kakaoAccount?.name ??
+                formatter.format(random.nextInt(10001)),
+            nickName: 'Anonymous Farmer',
             uuid: userCredential.user?.uid);
 
         await userCredential.user?.updateProfile(
             displayName: '${kakaoUser.kakaoAccount?.profile?.nickname}');
+
+        await instance.signOut();
+        await instance.signInWithCredential(credential);
       }
     } catch (error) {
       throw Exception(error);
@@ -193,6 +252,7 @@ class FirebaseAuthRepository implements AuthRepository {
           email: email,
           password: password,
           name: name,
+          nickName: 'Anonymous Farmer',
           uuid: userCredential.user?.uid);
       await instance.currentUser?.updateDisplayName(name);
       await instance.currentUser?.sendEmailVerification();

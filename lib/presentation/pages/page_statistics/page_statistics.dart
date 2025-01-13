@@ -40,7 +40,7 @@ class PageStatistics extends ConsumerWidget {
                   AvatarProfile(
                     width: 60,
                     height: 60,
-                    onNavigateTap: () => context.go('/settings'),
+                    onNavigateTap: () => context.go('/main/profile'),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,

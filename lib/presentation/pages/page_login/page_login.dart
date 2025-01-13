@@ -57,7 +57,21 @@ class PageLogin extends ConsumerWidget {
                 }
               },
               child: const Text('KakaoTalk'),
-            )
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await ref
+                    .read(authControllerProvider.notifier)
+                    .signInWithApple()
+                    .then((_) {}, onError: (error) {
+                  showSnackBar(context, error);
+                });
+                if (context.mounted) {
+                  context.go('/');
+                }
+              },
+              child: const Text('Apple'),
+            ),
           ],
         ),
       ),

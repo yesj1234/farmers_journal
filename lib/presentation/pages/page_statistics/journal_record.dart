@@ -72,18 +72,20 @@ class _JournalRecordState extends ConsumerState<JournalRecord> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       spacing: 10,
-                      children: List.from(snapshot.data!)
-                          .map(
-                            (e) => TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  year = e;
-                                });
-                              },
-                              child: Text('$e'),
-                            ),
-                          )
-                          .toList(),
+                      children: snapshot.data!.isEmpty
+                          ? const [Text("일지를 작성해보세요")]
+                          : List.from(snapshot.data!)
+                              .map(
+                                (e) => TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      year = e;
+                                    });
+                                  },
+                                  child: Text('$e'),
+                                ),
+                              )
+                              .toList(),
                     ),
                   ),
                 ),

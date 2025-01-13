@@ -17,6 +17,7 @@ abstract class AuthRepository {
     required String password,
     String? name,
   });
+  Future<void> signInWithApple();
   Future<void> signInWithKakaoTalk();
   Future<void> signInWithEmail(
       {required String email, required String password});

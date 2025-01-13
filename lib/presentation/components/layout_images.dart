@@ -29,7 +29,6 @@ class TestImageWidgetLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    timeDilation = 1.5;
     if (images.isNotEmpty) {
       return LayoutBuilder(
         builder: (context, constraints) {

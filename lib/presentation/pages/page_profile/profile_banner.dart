@@ -109,7 +109,7 @@ class _UserDisplayNameState extends ConsumerState<_UserDisplayName> {
             fit: BoxFit.fitWidth,
             child: Text(value?.name ?? '', style: displayNameTextStyle),
           ),
-          Text('${value?.nickName}', style: subTextStyle),
+          Text(value?.nickName ?? '', style: subTextStyle),
         ],
       ),
     );

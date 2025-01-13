@@ -48,6 +48,18 @@ final googleAPIProvider = Provider<GoogleAPI>((ref) {
 class AuthNotifier extends _$AuthNotifier {
   @override
   bool build() {
+    FirebaseAuth.instance.userChanges().listen((authUser) async {
+      if (authUser == null) {
+        state = false;
+      } else {
+        final AppUser? user = await ref.read(userRepositoryProvider).getUser();
+        if (user == null) {
+          state = false;
+        } else {
+          state = true;
+        }
+      }
+    });
     FirebaseAuth.instance.authStateChanges().listen((authUser) async {
       if (authUser == null) {
         state = false;
