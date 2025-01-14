@@ -60,7 +60,13 @@ class _PageTempState extends ConsumerState<PagePlaceSearch> {
     final userRef = ref.watch(userControllerProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("작물 위치 설정"),
+        title: Text(
+          "작물 위치 설정",
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         actions: [
           TextButton.icon(
             onPressed: () {

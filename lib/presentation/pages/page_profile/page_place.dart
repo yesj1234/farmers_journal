@@ -107,7 +107,13 @@ class _PagePlaceState extends ConsumerState<PagePlace> {
           } else if (snapshot.hasData) {
             return Scaffold(
               appBar: AppBar(
-                title: const Text("위치 설정"),
+                title: Text(
+                  "위치 설정",
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 actions: [
                   TextButton(
                     onPressed: onSubmitted,

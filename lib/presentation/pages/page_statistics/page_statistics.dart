@@ -15,9 +15,10 @@ class PageStatistics extends ConsumerWidget {
     final userRef = ref.watch(userControllerProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "통계",
           style: TextStyle(
+            color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.bold,
           ),
         ),

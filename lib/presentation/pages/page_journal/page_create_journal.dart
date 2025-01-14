@@ -17,7 +17,13 @@ class PageCreateJournal extends StatelessWidget {
         leading: BackButton(
           onPressed: () => context.go('/main'),
         ),
-        title: const Text("일지 쓰기"),
+        title: Text(
+          "일지 쓰기",
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: SafeArea(
         child: Center(

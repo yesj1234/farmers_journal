@@ -105,7 +105,13 @@ class _PagePlantState extends ConsumerState<PagePlant> {
           } else if (snapshot.hasData) {
             return Scaffold(
               appBar: AppBar(
-                title: const Text("작물 변경"),
+                title: Text(
+                  "작물 변경",
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 actions: [
                   TextButton(
                     onPressed: onSubmitted,

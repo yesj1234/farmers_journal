@@ -33,7 +33,13 @@ class _ResetPasswordPageState extends ConsumerState<PageResetPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('비밀번호 재설정'),
+        title: Text(
+          '비밀번호 재설정',
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

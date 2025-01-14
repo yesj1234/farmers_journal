@@ -32,7 +32,13 @@ class _PageInitialSettingPlantState extends State<PageInitialSettingPlant> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('작물 선택'),
+        title: Text(
+          '작물 선택',
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: SafeArea(
         child: Column(
