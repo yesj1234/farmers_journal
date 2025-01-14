@@ -94,6 +94,7 @@ flutter:
     - assets/icons/
     - assets/avatars/
     - assets/svgs/
+    - assets/xls/
     - .env
   # To add assets to your application, add an assets section, like this:
   # assets:
