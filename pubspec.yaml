@@ -58,6 +58,7 @@ dependencies:
   kakao_flutter_sdk_user: ^1.9.5
   json_annotation: ^4.9.0
   sign_in_with_apple: ^6.1.4
+  excel: ^4.0.6
 
 
 
