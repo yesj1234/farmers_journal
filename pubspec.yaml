@@ -78,7 +78,26 @@ dev_dependencies:
   riverpod_generator: ^2.6.2
   custom_lint: ^0.7.0
   riverpod_lint: ^2.6.2
+  flutter_launcher_icons: ^0.14.2
+  flutter_native_splash: ^2.4.0
 
+flutter_launcher_icons:
+  ios: true
+  android: "launcher_icon"
+  remove_alpha_ios: true
+  image_path: "assets/icons/app_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icons/app_icon.png"
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: "assets/icons/app_icon_splash.png"
+  android_gravity: center
+  ios_content_mode: center
+  fullscreen: true
+  android_12:
+    color: "#FFFFFF"
+    image: "assets/icons/app_icon_splash.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

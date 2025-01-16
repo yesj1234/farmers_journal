@@ -42,9 +42,7 @@ void main() async {
     (_) => runApp(
       ProviderScope(
         observers: [MyObserver()],
-        child: const MaterialApp(
-          home: MyApp(),
-        ),
+        child: const MyApp(),
       ),
     ),
   );
@@ -55,9 +53,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return MaterialApp.router(
       routerConfig: router,
+      debugShowCheckedModeBanner: true,
       theme: FlexThemeData.light(
         scheme: FlexScheme.green,
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,

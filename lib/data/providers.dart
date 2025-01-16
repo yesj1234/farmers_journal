@@ -1,4 +1,5 @@
 import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/data/repositories/excel_repository.dart';
 import 'package:farmers_journal/data/repositories/googleAPI.dart';
 
 import 'package:farmers_journal/domain/model/user.dart';
@@ -10,6 +11,11 @@ import 'package:farmers_journal/enums.dart';
 import 'dart:math';
 
 part 'providers.g.dart';
+
+@Riverpod(keepAlive: true)
+HSCodeRepository hsCodeRepository(Ref ref) => HSCodeRepository(
+    filePath:
+        '/Users/yangseungjun/AndroidStudioProjects/farmers_journal/assets/xls/hs_code.xlsx');
 
 @Riverpod(keepAlive: true)
 class DateFilter extends _$DateFilter {
