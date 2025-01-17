@@ -22,7 +22,7 @@ class ButtonCreatePost extends StatelessWidget {
       child: const Icon(
         Icons.add,
         size: 40,
-        color: Colors.black,
+        color: Colors.white,
       ),
     );
   }

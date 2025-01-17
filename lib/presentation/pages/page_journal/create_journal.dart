@@ -1,6 +1,7 @@
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/components/styles/text.dart';
 import 'package:farmers_journal/presentation/components/styles/button.dart';
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
@@ -228,7 +229,7 @@ class _TitleForm extends StatelessWidget {
   }
 }
 
-class _ContentForm extends StatelessWidget {
+class _ContentForm extends ConsumerWidget {
   const _ContentForm(
       {super.key,
       required this.content,
@@ -239,38 +240,74 @@ class _ContentForm extends StatelessWidget {
   final void Function(String?) onUpdateContent;
   final void Function() onImagePick;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userRef = ref.watch(userControllerProvider);
+    AsyncValue<Widget> tag = userRef.whenData((appUser) {
+      if (appUser!.plants.isNotEmpty) {
+        return FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text.rich(
+            TextSpan(
+              text: '${appUser.plants.first.name}, ',
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+              children: [
+                TextSpan(
+                  text: appUser.plants.first.place,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      } else {
+        return const SizedBox.shrink();
+      }
+    });
     return SizedBox(
       width: MediaQuery.sizeOf(context).width / 1.2,
       height: MediaQuery.sizeOf(context).height / 3.1,
-      child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextFormField(
-            initialValue: content,
-            onChanged: (value) => onUpdateContent(value),
-            decoration: const InputDecoration(
-              hintText: '글쓰기 시작',
-              fillColor: Colors.white,
-              disabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide.none,
-              ),
-            ),
-            minLines: 5,
-            maxLines: 10,
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: IconButton(
-              onPressed: () {
-                onImagePick();
-              },
-              icon: const Icon(Icons.camera_alt_rounded, size: 40),
+          tag.isLoading ? const SizedBox.shrink() : tag.value!,
+          Expanded(
+            child: Stack(
+              children: [
+                TextFormField(
+                  initialValue: content,
+                  onChanged: (value) => onUpdateContent(value),
+                  decoration: const InputDecoration(
+                    hintText: '글쓰기 시작...',
+                    fillColor: Colors.white,
+                    disabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  minLines: 5,
+                  maxLines: 10,
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: IconButton(
+                    onPressed: () {
+                      onImagePick();
+                    },
+                    icon: const Icon(Icons.camera_alt_rounded, size: 40),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

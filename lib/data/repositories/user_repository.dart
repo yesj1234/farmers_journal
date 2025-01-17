@@ -117,7 +117,9 @@ class FireStoreUserRepository implements UserRepository {
 
   @override
   Future<void> setPlant(
-      {required String? id, required String? newPlantName}) async {
+      {required String? id,
+      required String? newPlantName,
+      required String code}) async {
     try {
       final userRef = await _fetchUserRef();
       final user = await userRef?.get();
@@ -125,6 +127,7 @@ class FireStoreUserRepository implements UserRepository {
       int index = plants.indexWhere((plant) => plant['id'] == id);
       Map<String, dynamic> plant = plants[index];
       plant.update('name', (_) => newPlantName);
+      plant.update('code', (_) => code);
       plants[index] = plant;
       await userRef?.update({'plants': plants});
     } catch (error) {
@@ -229,6 +232,14 @@ class FireStoreUserRepository implements UserRepository {
       required List<String>? images}) async {
     try {
       final userRef = await _fetchUserRef();
+      final userInfo = await userRef?.get().then((doc) {
+        final json = doc.data() as Map<String, dynamic>;
+        final userInfo = AppUser.fromJson(json);
+        return userInfo;
+      });
+      final plant = userInfo?.plants.first.name;
+      final place = userInfo?.plants.first.place;
+
       final journalRef = instance.collection("journals");
       var uuid = const Uuid();
       String id = uuid.v4();
@@ -243,6 +254,8 @@ class FireStoreUserRepository implements UserRepository {
           id: id,
           title: title,
           content: content,
+          plant: plant,
+          place: place,
           images: imageURLs,
           date: date,
         );
@@ -252,7 +265,13 @@ class FireStoreUserRepository implements UserRepository {
         journalRef.doc(id).set(newJournal.toJson());
       } else {
         final newJournal = Journal(
-            id: id, title: title, content: content, images: images, date: date);
+            id: id,
+            title: title,
+            content: content,
+            plant: plant,
+            place: place,
+            images: images,
+            date: date);
         userRef?.update({
           "journals": FieldValue.arrayUnion([id])
         });

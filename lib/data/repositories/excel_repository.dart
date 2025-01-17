@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:excel/excel.dart';
+import 'package:logger/logger.dart';
 
 class ExcelRepository {
   final String filePath;
@@ -25,6 +26,7 @@ class HSCodeRepository extends ExcelRepository {
   }
   late final List<TextCellValue?> varieties;
   late final List<dynamic> subCategories;
+
   List<TextCellValue?> _setHSCodeVarieties() {
     if (excel == null) {
       return [];
@@ -84,6 +86,25 @@ class HSCodeRepository extends ExcelRepository {
           }).map((matched) => matched.last.value.text),
         ],
       };
+    }
+  }
+
+  String? getHsCode({required String variety}) {
+    final trimmed = variety.trim();
+    final currentTable = excel!.tables[excel!.tables.keys.first];
+    final firstMatch = currentTable!.rows.indexWhere((row) {
+      final textCellValue = row.last?.value as TextCellValue;
+      return textCellValue.value.text == trimmed;
+    });
+    if (firstMatch < 0) {
+      return null;
+    } else {
+      final matchRow = currentTable.rows[firstMatch];
+      final major = matchRow[0]?.value.toString();
+      final mid = matchRow[2]?.value.toString();
+      final minor = matchRow[4]?.value.toString();
+
+      return '$major$mid$minor';
     }
   }
 }

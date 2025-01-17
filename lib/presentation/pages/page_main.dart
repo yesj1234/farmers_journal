@@ -1,5 +1,6 @@
 // packages
 import 'dart:collection';
+import 'dart:developer';
 import 'package:farmers_journal/presentation/components/card/day_view_card.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:flutter/material.dart';
@@ -103,14 +104,14 @@ class _TopNavTemp extends ConsumerWidget {
                                 statusIcon: Icons.eco,
                                 statusIconColor: Colors.green,
                                 onNavigateTap: () =>
-                                    context.go('/initialSetting'),
+                                    context.go('/initial_setting'),
                               )
                         : ButtonStatus(
                             status: "작물",
                             statusValue: '설정 필요',
                             statusIcon: Icons.eco,
                             statusIconColor: Colors.green,
-                            onNavigateTap: () => context.go('/initialSetting'),
+                            onNavigateTap: () => context.go('/initial_setting'),
                           ),
                     const VerticalDivider(
                       thickness: 2,
@@ -147,6 +148,7 @@ class _Content extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final journals = ref.watch(journalControllerProvider);
+
     return journals.when(
       data: (data) {
         return _UserContent(journals: data);

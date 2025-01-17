@@ -41,19 +41,25 @@ class UserController extends _$UserController {
   }
 
   Future<void> setPlantAndPlace(
-      {required String plantName, required String place}) async {
+      {required String plantName,
+      required String place,
+      required String code}) async {
     final repository = ref.read(userRepositoryProvider);
     const uuid = Uuid();
-    final Plant plant =
-        Plant.fromJson({'id': uuid.v4(), 'name': plantName, 'place': place});
+    final Plant plant = Plant.fromJson(
+        {'id': uuid.v4(), 'name': plantName, 'place': place, 'code': code});
     repository.setPlantAndPlace(plant: plant);
     ref.invalidateSelf();
   }
 
   Future<void> setPlant(
-      {required String? id, required String? newPlantName}) async {
+      {required String? id,
+      required String? newPlantName,
+      required String code}) async {
     final repository = ref.read(userRepositoryProvider);
-    await repository.setPlant(id: id, newPlantName: newPlantName);
+
+    await repository.setPlant(id: id, newPlantName: newPlantName, code: code);
+
     ref.invalidateSelf();
   }
 

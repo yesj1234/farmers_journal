@@ -1,3 +1,4 @@
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -112,18 +113,31 @@ class _SettingContainer extends StatelessWidget {
   }
 }
 
-class _PlantSettings extends StatelessWidget {
+class _PlantSettings extends ConsumerWidget {
   const _PlantSettings({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userRef = ref.watch(userControllerProvider);
     return _SettingContainer(settingTitle: "작물", items: [
       _SelectionItemWithCallback(
-          callback: () => context.go('/main/profile/plant/'),
+          callback: () {
+            if (userRef.value!.isInitialSettingRequired == false) {
+              context.go('/main/profile/plant/');
+            } else {
+              context.go('/initial_setting');
+            }
+          },
           icon: Icons.apple_rounded,
           selectionName: "작물 변경"),
       _SelectionItemWithCallback(
-          callback: () => context.go("/main/profile/place"),
+          callback: () {
+            if (userRef.value!.isInitialSettingRequired == false) {
+              context.go('/main/profile/place/');
+            } else {
+              context.go('/initial_setting');
+            }
+          },
           icon: Icons.place_outlined,
           selectionName: "위치 변경"),
     ]);

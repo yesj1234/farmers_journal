@@ -4,99 +4,11 @@ import 'package:farmers_journal/presentation/pages/page_profile/place_search.dar
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:farmers_journal/presentation/pages/page_initial_setting/plant_selection.dart'
-    show PlantSelection;
+import 'package:farmers_journal/presentation/components/plant_selection.dart'
+    show PlantSelection, PlantSelection2;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:go_router/go_router.dart';
-
-class PageInitialSettingPlant extends StatefulWidget {
-  const PageInitialSettingPlant({
-    super.key,
-    required this.selectedPlant,
-    required this.onSelectPlant,
-    required this.onChangePlant,
-    required this.saveSetting,
-  });
-  final String selectedPlant;
-  final void Function(String) onSelectPlant;
-  final void Function(String) onChangePlant;
-  final VoidCallback saveSetting;
-  @override
-  State<StatefulWidget> createState() => _PageInitialSettingPlantState();
-}
-
-class _PageInitialSettingPlantState extends State<PageInitialSettingPlant> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: Text(
-          '작물 선택',
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Column(
-          spacing: 10,
-          children: [
-            PlantSelection(
-              onChange: widget.onChangePlant,
-              onFieldSubmitted: widget.onSelectPlant,
-            ),
-            TextButton.icon(
-              onPressed: () {
-                widget.saveSetting();
-              },
-              label: Text("저장"),
-              icon: Icon(Icons.save),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class PageInitialSettingPlace extends StatefulWidget {
-  const PageInitialSettingPlace(
-      {super.key, required this.selectedPlace, required this.onPlaceSelected});
-  final String selectedPlace;
-  final void Function(String) onPlaceSelected;
-
-  @override
-  State<PageInitialSettingPlace> createState() =>
-      _PageInitialSettingPlaceState();
-}
-
-class _PageInitialSettingPlaceState extends State<PageInitialSettingPlace> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: const Text('작물 위치 설정'),
-      ),
-      body: SafeArea(
-        child: Column(
-          spacing: 10,
-          children: [
-            PlaceSearch(onSelect: widget.onPlaceSelected),
-            widget.selectedPlace.isNotEmpty
-                ? PlaceMap2(
-                    finalAddress: widget.selectedPlace,
-                  )
-                : const SizedBox.shrink(),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class PageInitialSetting2 extends ConsumerStatefulWidget {
   const PageInitialSetting2({super.key});
@@ -129,9 +41,8 @@ class _PageViewExampleState extends ConsumerState<PageInitialSetting2>
   }
 
   void _setPlantAndPlace() {
-    ref
-        .read(userControllerProvider.notifier)
-        .setPlantAndPlace(plantName: selectedPlant, place: selectedPlace);
+    ref.read(userControllerProvider.notifier).setPlantAndPlace(
+        plantName: selectedPlant, place: selectedPlace, code: '');
   }
 
   void onSaveSetting() async {
@@ -214,16 +125,19 @@ class _PageViewExampleState extends ConsumerState<PageInitialSetting2>
               selectedPlant: selectedPlant,
               onSelectPlant: onSelectPlant,
               onChangePlant: onChangePlant,
-              saveSetting: onSaveSetting,
             ),
           ],
         ),
-        PageIndicator(
-          tabController: _tabController,
-          currentPageIndex: _currentPageIndex,
-          onUpdateCurrentPageIndex: _updateCurrentPageIndex,
-          isOnDesktopAndWeb: _isOnDesktopAndWeb,
-        ),
+        Padding(
+            padding: const EdgeInsets.only(
+              bottom: 20,
+            ),
+            child: PageIndicator(
+              tabController: _tabController,
+              currentPageIndex: _currentPageIndex,
+              onUpdateCurrentPageIndex: _updateCurrentPageIndex,
+              isOnDesktopAndWeb: _isOnDesktopAndWeb,
+            )),
       ],
     );
   }
@@ -290,40 +204,89 @@ class PageIndicator extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          IconButton(
-            splashRadius: 16.0,
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              if (currentPageIndex == 0) {
-                return;
-              }
-              onUpdateCurrentPageIndex(currentPageIndex - 1);
-            },
-            icon: const Icon(
-              Icons.arrow_left_rounded,
-              size: 32.0,
-            ),
-          ),
           TabPageSelector(
             controller: tabController,
             color: colorScheme.surface,
             selectedColor: colorScheme.primary,
           ),
-          IconButton(
-            splashRadius: 16.0,
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              if (currentPageIndex == 2) {
-                return;
-              }
-              onUpdateCurrentPageIndex(currentPageIndex + 1);
-            },
-            icon: const Icon(
-              Icons.arrow_right_rounded,
-              size: 32.0,
-            ),
-          ),
         ],
+      ),
+    );
+  }
+}
+
+class PageInitialSettingPlant extends StatefulWidget {
+  const PageInitialSettingPlant({
+    super.key,
+    required this.selectedPlant,
+    required this.onSelectPlant,
+    required this.onChangePlant,
+  });
+  final String selectedPlant;
+  final void Function(String) onSelectPlant;
+  final void Function(String) onChangePlant;
+
+  @override
+  State<StatefulWidget> createState() => _PageInitialSettingPlantState();
+}
+
+class _PageInitialSettingPlantState extends State<PageInitialSettingPlant> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        title: Text(
+          '작물 선택',
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: Column(
+          spacing: 10,
+          children: [
+            PlantSelection2(onChange: widget.onChangePlant),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PageInitialSettingPlace extends StatefulWidget {
+  const PageInitialSettingPlace(
+      {super.key, required this.selectedPlace, required this.onPlaceSelected});
+  final String selectedPlace;
+  final void Function(String) onPlaceSelected;
+
+  @override
+  State<PageInitialSettingPlace> createState() =>
+      _PageInitialSettingPlaceState();
+}
+
+class _PageInitialSettingPlaceState extends State<PageInitialSettingPlace> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        title: const Text('작물 위치 설정'),
+      ),
+      body: SafeArea(
+        child: Column(
+          spacing: 10,
+          children: [
+            PlaceSearch(onSelect: widget.onPlaceSelected),
+            widget.selectedPlace.isNotEmpty
+                ? PlaceMap2(
+                    finalAddress: widget.selectedPlace,
+                  )
+                : const SizedBox.shrink(),
+          ],
+        ),
       ),
     );
   }

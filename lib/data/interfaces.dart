@@ -35,7 +35,10 @@ abstract class UserRepository {
   Future<void> setProfileImage({required Uint8List bytes});
   Future<void> editProfile(
       {String? name, String? nickName, XFile? profileImage});
-  Future<void> setPlant({required String? id, required String? newPlantName});
+  Future<void> setPlant(
+      {required String? id,
+      required String? newPlantName,
+      required String code});
   Future<void> setPlace({required String? id, required String? newPlantPlace});
   Future<void> setPlantAndPlace({required Plant plant});
 

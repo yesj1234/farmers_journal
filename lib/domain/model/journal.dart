@@ -7,7 +7,8 @@ class Journal {
   final List<String?>? images;
   final DateTime? createdAt;
   final DateTime? date;
-
+  final String? plant;
+  final String? place;
   Journal({
     this.id,
     this.title,
@@ -15,6 +16,8 @@ class Journal {
     this.images,
     this.createdAt,
     this.date,
+    this.plant,
+    this.place,
   });
 
   // model은 외부 패키지에 종속성이 생기지 않도록 dart로만 구성하도록 변경하자!
@@ -32,6 +35,8 @@ class Journal {
         id: map['id'],
         title: map['title'],
         content: map['content'],
+        plant: map['plant'],
+        place: map['place'],
         images: images,
         date: dateDateTime,
         createdAt: createdAtDateTime);
@@ -42,6 +47,8 @@ class Journal {
       "id": id ?? '',
       "title": title ?? '',
       "content": content ?? '',
+      "plant": plant ?? '',
+      'place': place ?? '',
       "images": images ?? [],
       "date": date ?? DateTime.now(),
       "createdAt": createdAt ?? DateTime.now(),

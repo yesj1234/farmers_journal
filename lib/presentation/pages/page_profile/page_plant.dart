@@ -1,8 +1,12 @@
+import 'package:farmers_journal/data/providers.dart';
 import 'package:farmers_journal/domain/model/user.dart';
+import 'package:farmers_journal/presentation/components/plant_selection.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../utils.dart';
 
 class PagePlant extends ConsumerStatefulWidget {
   const PagePlant({super.key});
@@ -11,42 +15,6 @@ class PagePlant extends ConsumerStatefulWidget {
 }
 
 class _PagePlantState extends ConsumerState<PagePlant> {
-  BoxDecoration get floatingActionButtonDecoration => BoxDecoration(
-        color: const Color.fromRGBO(184, 230, 185, 0.5),
-        borderRadius: BorderRadius.circular(10),
-      );
-
-  TextStyle get floatingActionButtonTextStyle => const TextStyle(
-        fontSize: 25,
-        fontWeight: FontWeight.bold,
-      );
-  late final Future<AppUser?> _user;
-  final _formKey = GlobalKey<FormState>();
-  String? plantId;
-  String? plantName;
-  String? newPlantName;
-
-  @override
-  void initState() {
-    super.initState();
-    _user = ref.read(userControllerProvider.notifier).build();
-    _user.then((user) {
-      setState(() {
-        plantName = user?.plants.first.name ?? '';
-        plantId = user?.plants.first.id ?? '';
-      });
-    });
-  }
-
-  void onChanged(value) {
-    newPlantName = value;
-  }
-
-  void onSaved(value) {
-    _formKey.currentState?.save();
-    newPlantName = value;
-  }
-
   Future<bool> _showAlertDialog(context, cb) async {
     return await showDialog<bool>(
             context: context,
@@ -56,7 +24,7 @@ class _PagePlantState extends ConsumerState<PagePlant> {
                   content: SingleChildScrollView(
                     child: ListBody(
                       children: [
-                        Text('plant: ${newPlantName ?? plantName}'),
+                        Text('작물: $plant'),
                       ],
                     ),
                   ),
@@ -77,130 +45,60 @@ class _PagePlantState extends ConsumerState<PagePlant> {
         false;
   }
 
-  void _updatePlant() {
-    ref
-        .read(userControllerProvider.notifier)
-        .setPlant(id: plantId, newPlantName: newPlantName ?? plantName);
-  }
-
-  void onSubmitted() async {
-    if (_formKey.currentState!.validate()) {
-      await _showAlertDialog(context, () {
-        _updatePlant();
-      }).then((status) {
-        if (status) {
-          context.go('/main');
-        }
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _user,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasData) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  "작물 변경",
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: onSubmitted,
-                    child: const Text(
-                      '저장',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              body: SafeArea(
-                child: Form(
-                  key: _formKey,
-                  child: Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _ProfilePlantForm(
-                          onSaved: onSaved,
-                          onChanged: onChanged,
-                          plantName: plantName,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          } else {
-            return const SizedBox.shrink();
-          }
-        });
-  }
-}
-
-class _ProfilePlantForm extends StatelessWidget {
-  const _ProfilePlantForm({
-    super.key,
-    required this.plantName,
-    required this.onSaved,
-    required this.onChanged,
-  });
-  final String? plantName;
-
-  final void Function(String?) onSaved;
-  final void Function(String?) onChanged;
-  TextStyle get titleTextStyle => const TextStyle(
-        fontSize: 25,
-        fontWeight: FontWeight.bold,
-      );
-
-  InputDecoration get inputDecoration => const InputDecoration(
-        filled: false,
-        hintStyle: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Color.fromRGBO(0, 0, 0, 0.5),
-        ),
-      );
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("작물 선택", style: titleTextStyle),
-        TextFormField(
-          validator: (inputValue) {
-            if (inputValue == null) {
-              return 'Null not allowed';
-            }
-            if (inputValue.isEmpty) {
-              return 'Empty value not allowed';
-            }
-
-            return null;
-          },
-          initialValue: plantName,
-          onChanged: (value) => onChanged(value),
-          onSaved: (value) => onSaved(value),
-          decoration: inputDecoration.copyWith(
-            constraints:
-                BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 40),
+    return Scaffold(
+      appBar: AppBar(
+          title: Text(
+            '작물 변경',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColor,
+            ),
           ),
-        ),
-      ],
+          actions: [
+            TextButton(
+              onPressed: onSave,
+              child: const Text(
+                '저장',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ]),
+      body: PlantSelection2(onChange: setPlant),
     );
+  }
+
+  String plant = '';
+  void setPlant(value) {
+    plant = value;
+    _setCode(value);
+  }
+
+  String? code;
+  void _setCode(String? value) {
+    code = ref.read(hsCodeRepositoryProvider).getHsCode(variety: plant);
+  }
+
+  bool _isCode(String? value) {
+    return value == null;
+  }
+
+  void onSave() async {
+    if (_isCode(code)) {
+      showSnackBar(context, '$plant는 등록되지 않은 작물입니다. 검색 결과 중에 선택해주세요.');
+    } else {
+      bool isCompleted = await _showAlertDialog(context, () async {
+        final userRef = ref.read(userControllerProvider);
+        await ref.read(userControllerProvider.notifier).setPlant(
+            id: userRef.value!.plants[0].id, newPlantName: plant, code: code!);
+      });
+      if (isCompleted) {
+        context.go('/main/profile');
+      }
+    }
   }
 }

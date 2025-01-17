@@ -23,6 +23,9 @@ class _PlantSelection2State extends ConsumerState<PlantSelection2> {
   Widget build(BuildContext context) {
     return SearchAnchor(
       searchController: searchController,
+      viewOnChanged: (value) {
+        widget.onChange(value);
+      },
       builder: (BuildContext context, SearchController controller) {
         return SearchBar(
           controller: controller,
@@ -31,7 +34,6 @@ class _PlantSelection2State extends ConsumerState<PlantSelection2> {
             controller.openView();
           },
           onChanged: (value) {
-            widget.onChange(value);
             controller.openView();
           },
         );
@@ -44,6 +46,7 @@ class _PlantSelection2State extends ConsumerState<PlantSelection2> {
               return ListTile(
                 title: Text(suggestion.toString()),
                 onTap: () {
+                  widget.onChange(suggestion);
                   setState(() {
                     controller.closeView(suggestion);
                   });
@@ -58,6 +61,7 @@ class _PlantSelection2State extends ConsumerState<PlantSelection2> {
                     title: Text(suggestion.toString()),
                     onTap: () {
                       widget.onChange(suggestion);
+
                       setState(() {
                         controller.closeView(suggestion);
                       });
