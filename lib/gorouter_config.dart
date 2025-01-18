@@ -12,7 +12,7 @@ import 'package:go_router/go_router.dart';
 import 'package:farmers_journal/presentation/pages/page_initial_setting/page_initial_setting.dart'
     hide PageInitialSetting2;
 import 'package:farmers_journal/presentation/pages/page_initial_setting/page_initial_setting2.dart';
-import 'package:farmers_journal/presentation/pages/page_main.dart';
+import 'package:farmers_journal/presentation/pages/page_main/page_main.dart';
 import 'package:farmers_journal/presentation/pages/page_profile/page_profile.dart'; //
 import 'package:farmers_journal/presentation/pages/page_statistics/page_statistics.dart';
 
