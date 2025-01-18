@@ -291,6 +291,7 @@ class _ContentForm extends ConsumerWidget {
         return FittedBox(
           fit: BoxFit.fitWidth,
           child: Text.rich(
+            overflow: TextOverflow.ellipsis,
             TextSpan(
               text: '${appUser.plants.first.name}, ',
               style: TextStyle(

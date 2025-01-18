@@ -75,7 +75,7 @@ class _PlantSelection2State extends ConsumerState<PlantSelection2> {
               ? const SizedBox.shrink()
               : ListTile(
                   title: Text(
-                    "${controller.text}의 품종",
+                    "'${controller.text}'가 포함된 품목의 품종",
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.bold,

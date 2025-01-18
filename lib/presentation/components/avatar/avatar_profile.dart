@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
@@ -35,7 +36,7 @@ class AvatarProfile extends ConsumerWidget {
                 backgroundImage: switch (user) {
                 AsyncData(:final value) =>
                   (value != null && value.profileImage!.isNotEmpty)
-                      ? NetworkImage(value.profileImage!)
+                      ? CachedNetworkImageProvider(value.profileImage!)
                       : const AssetImage('assets/avatars/default.png'),
                 AsyncError() => const AssetImage('assets/avatars/default.png'),
                 _ => const AssetImage('assets/avatars/default.png'),

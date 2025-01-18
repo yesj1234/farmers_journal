@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -215,14 +216,15 @@ class _URLImageTile extends StatelessWidget {
         child: SizedBox(
           width: width,
           height: height,
-          child: Image.network(
-            url,
+          child: CachedNetworkImage(
+            imageUrl: url,
             width: width,
             height: height,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return const Center(child: Icon(Icons.broken_image, size: 50));
-            },
+            errorWidget: (context, url, error) => const Icon(
+              Icons.broken_image,
+              size: 50,
+            ),
           ),
         ),
       ),
