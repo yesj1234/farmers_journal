@@ -1,36 +1,21 @@
 // packages
-import 'dart:collection';
-import 'dart:developer';
-import 'package:farmers_journal/presentation/components/card/day_view_card.dart';
-import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_main/day_view.dart';
 import 'package:farmers_journal/presentation/pages/page_main/month_view.dart';
+import 'package:farmers_journal/presentation/pages/page_main/top_nav.dart';
 import 'package:farmers_journal/presentation/pages/page_main/week_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:table_calendar/table_calendar.dart';
-
 //Riverpod
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/data/providers.dart';
-
 // custom components
 import 'package:farmers_journal/presentation/components/button/button_create_post.dart';
-import 'package:farmers_journal/presentation/components/button/button_status.dart';
 import 'package:farmers_journal/presentation/components/button/button_filter_date.dart';
-import 'package:farmers_journal/presentation/components/avatar/avatar_profile.dart';
-import 'package:farmers_journal/presentation/components/carousel/carousel.dart';
-
 // enums
 import 'package:farmers_journal/enums.dart';
-
 // models
 import 'package:farmers_journal/domain/model/journal.dart';
-
-// utils
-import 'package:farmers_journal/utils.dart';
 
 class PageMain extends ConsumerWidget {
   const PageMain({super.key});
@@ -58,7 +43,7 @@ class PageMain extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               const SizedBox(height: 10),
-              const _TopNavTemp(),
+              const TopNav(),
               Divider(
                 thickness: 0.5,
                 indent: 10,
@@ -68,7 +53,7 @@ class PageMain extends ConsumerWidget {
               journalRef.hasValue && journalRef.value!.isNotEmpty
                   ? const Align(
                       alignment: Alignment.centerLeft,
-                      child: ButtonFilterDate(),
+                      child: ButtonMainViewFilter(),
                     )
                   : const SizedBox.shrink(),
               const Expanded(child: _Content()),
@@ -80,79 +65,6 @@ class PageMain extends ConsumerWidget {
         onClick: () => context.go('/create'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
-  }
-}
-
-class _TopNavTemp extends ConsumerWidget {
-  const _TopNavTemp({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userControllerProvider);
-    final journal = ref.watch(journalControllerProvider);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IntrinsicHeight(
-          child: SizedBox(
-            height: 60,
-            child: Row(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    user.value != null
-                        ? user.value!.plants.isNotEmpty
-                            ? ButtonStatus(
-                                status: "작물",
-                                statusValue: user.value?.plants[0].name,
-                                statusIcon: Icons.eco,
-                                statusIconColor: Colors.green,
-                                onNavigateTap: () =>
-                                    context.go('/main/statistics'),
-                              )
-                            : ButtonStatus(
-                                status: "작물",
-                                statusValue: '설정 필요',
-                                statusIcon: Icons.eco,
-                                statusIconColor: Colors.green,
-                                onNavigateTap: () =>
-                                    context.go('/initial_setting'),
-                              )
-                        : ButtonStatus(
-                            status: "작물",
-                            statusValue: '설정 필요',
-                            statusIcon: Icons.eco,
-                            statusIconColor: Colors.green,
-                            onNavigateTap: () => context.go('/initial_setting'),
-                          ),
-                    const VerticalDivider(
-                      thickness: 2,
-                    ),
-                    ButtonStatus(
-                      status: "일지",
-                      statusValue: journal.value != null
-                          ? '${journal.value?.length} 개'
-                          : '0 개',
-                      statusIcon: Icons.local_fire_department_sharp,
-                      statusIconColor: Colors.red,
-                      onNavigateTap: () => context.go('/main/statistics'),
-                    )
-                  ],
-                ),
-                const Spacer(),
-                AvatarProfile(
-                  width: 60,
-                  height: 60,
-                  onNavigateTap: () => context.go('/main/profile'),
-                ),
-              ],
-            ),
-          ),
-        )
-      ],
     );
   }
 }

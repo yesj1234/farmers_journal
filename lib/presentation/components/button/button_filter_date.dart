@@ -4,8 +4,8 @@ import 'package:farmers_journal/enums.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/data/providers.dart';
 
-class ButtonFilterDate extends ConsumerWidget {
-  const ButtonFilterDate({
+class ButtonMainViewFilter extends ConsumerWidget {
+  const ButtonMainViewFilter({
     super.key,
     this.backgroundColor = Colors.white,
   });
@@ -51,6 +51,10 @@ class ButtonFilterDate extends ConsumerWidget {
             value: MainView.month,
             label: Text('월간'),
             icon: Icon(Icons.calendar_view_month)),
+        ButtonSegment<MainView>(
+            value: MainView.community,
+            label: Text('커뮤니티'),
+            icon: Icon(Icons.people)),
       ],
       selected: <MainView>{currentMainView},
       onSelectionChanged: (Set<MainView> newSelection) {
