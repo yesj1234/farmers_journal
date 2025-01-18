@@ -106,6 +106,19 @@ flutter_native_splash:
 
 # The following section is specific to Flutter packages.
 flutter:
+  fonts:
+    - family: Pretandard
+      fonts:
+        - asset: assets/fonts/Pretendard-Black.otf
+        - asset: assets/fonts/Pretendard-Bold.otf
+        - asset: assets/fonts/Pretendard-ExtraBold.otf
+        - asset: assets/fonts/Pretendard-ExtraLight.otf
+        - asset: assets/fonts/Pretendard-Light.otf
+        - asset: assets/fonts/Pretendard-Medium.otf
+        - asset: assets/fonts/Pretendard-Regular.otf
+        - asset: assets/fonts/Pretendard-SemiBold.otf
+        - asset: assets/fonts/Pretendard-Thin.otf
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -116,6 +129,7 @@ flutter:
     - assets/avatars/
     - assets/svgs/
     - assets/xls/
+    - assets/fonts/
     - .env
   # To add assets to your application, add an assets section, like this:
   # assets:

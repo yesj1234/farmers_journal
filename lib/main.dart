@@ -60,6 +60,7 @@ class MyApp extends StatelessWidget {
         scheme: FlexScheme.green,
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
         blendLevel: 7,
+        fontFamily: 'Pretandard',
         subThemesData: const FlexSubThemesData(
           blendOnLevel: 10,
           blendOnColors: false,
