@@ -180,6 +180,26 @@ class _Content extends ConsumerWidget {
   }
 }
 
+class _UserContent extends ConsumerWidget {
+  const _UserContent({super.key, required this.journals});
+  final List<Journal?> journals;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mainViewFilter = ref.watch(mainViewFilterProvider);
+    if (journals.isNotEmpty) {
+      return switch (mainViewFilter) {
+        MainView.day => const DayView(),
+        MainView.week => const WeekView(),
+        MainView.month => const MonthView(),
+        MainView.community => const Placeholder(),
+      };
+    } else {
+      return const _DefaultContent();
+    }
+  }
+}
+
 class _DefaultContent extends StatelessWidget {
   const _DefaultContent({super.key});
 
@@ -201,24 +221,5 @@ class _DefaultContent extends StatelessWidget {
         const Spacer(flex: 3),
       ],
     );
-  }
-}
-
-class _UserContent extends ConsumerWidget {
-  const _UserContent({super.key, required this.journals});
-  final List<Journal?> journals;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final dateFilter = ref.watch(dateFilterProvider);
-    if (journals.isNotEmpty) {
-      return switch (dateFilter) {
-        DateView.day => const DayView(),
-        DateView.week => const WeekView(),
-        DateView.month => const MonthView(),
-      };
-    } else {
-      return const _DefaultContent();
-    }
   }
 }

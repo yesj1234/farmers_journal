@@ -18,13 +18,13 @@ HSCodeRepository hsCodeRepository(Ref ref) => HSCodeRepository(
         '/Users/yangseungjun/AndroidStudioProjects/farmers_journal/assets/xls/hs_code.xlsx');
 
 @Riverpod(keepAlive: true)
-class DateFilter extends _$DateFilter {
+class MainViewFilter extends _$MainViewFilter {
   @override
-  DateView build() {
-    return DateView.day;
+  MainView build() {
+    return MainView.day;
   }
 
-  changeDateFilter(DateView view) {
+  changeDateFilter(MainView view) {
     state = view;
   }
 }

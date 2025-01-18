@@ -35,27 +35,27 @@ class ButtonFilterDate extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentDateView = ref.watch(dateFilterProvider);
-    return SegmentedButton<DateView>(
+    final currentMainView = ref.watch(mainViewFilterProvider);
+    return SegmentedButton<MainView>(
       style: buttonStyle,
-      segments: const <ButtonSegment<DateView>>[
-        ButtonSegment<DateView>(
-            value: DateView.day,
+      segments: const <ButtonSegment<MainView>>[
+        ButtonSegment<MainView>(
+            value: MainView.day,
             label: Text('일간'),
             icon: Icon(Icons.calendar_view_day)),
-        ButtonSegment<DateView>(
-            value: DateView.week,
+        ButtonSegment<MainView>(
+            value: MainView.week,
             label: Text('주간'),
             icon: Icon(Icons.calendar_view_week)),
-        ButtonSegment<DateView>(
-            value: DateView.month,
+        ButtonSegment<MainView>(
+            value: MainView.month,
             label: Text('월간'),
             icon: Icon(Icons.calendar_view_month)),
       ],
-      selected: <DateView>{currentDateView},
-      onSelectionChanged: (Set<DateView> newSelection) {
+      selected: <MainView>{currentMainView},
+      onSelectionChanged: (Set<MainView> newSelection) {
         ref
-            .read(dateFilterProvider.notifier)
+            .read(mainViewFilterProvider.notifier)
             .changeDateFilter(newSelection.first);
       },
     );
