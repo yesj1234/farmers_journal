@@ -35,6 +35,18 @@ class PageMain extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final journalRef = ref.watch(journalControllerProvider);
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(30),
+        child: AppBar(
+          title: Text(
+            '농업 일지',
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5.0),
