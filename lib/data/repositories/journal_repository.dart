@@ -33,4 +33,24 @@ class FireStoreJournalRepository implements JournalRepository {
     }
     return result;
   }
+
+  @override
+  Future<List<Journal>> getPaginatedJournals(
+      {required int pageSize,
+      required DocumentSnapshot<Object?>? lastDocument}) async {
+    try {
+      final CollectionReference journalRef = instance.collection('journals');
+      Query query = journalRef.orderBy('createAt');
+      if (lastDocument != null) {
+        query = query.startAfterDocument(lastDocument);
+      }
+      QuerySnapshot querySnapshot = await query.limit(pageSize).get();
+      final data = querySnapshot.docs
+          .map((doc) => Journal.fromJson(doc as Map<String, dynamic>))
+          .toList();
+      return data;
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
 }

@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:farmers_journal/data/repositories/excel_repository.dart';
 import 'package:farmers_journal/data/repositories/googleAPI.dart';
-
+import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +12,14 @@ import 'package:farmers_journal/enums.dart';
 import 'dart:math';
 
 part 'providers.g.dart';
+
+@riverpod
+Future<List<Journal>> getPaginatedJournals(Ref ref,
+    {required DocumentSnapshot? lastDocument, required int pageSize}) {
+  final journalRef = ref.watch(journalRepositoryProvider);
+  return journalRef.getPaginatedJournals(
+      pageSize: pageSize, lastDocument: lastDocument);
+}
 
 @Riverpod(keepAlive: true)
 HSCodeRepository hsCodeRepository(Ref ref) => HSCodeRepository(
