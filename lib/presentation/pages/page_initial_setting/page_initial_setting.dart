@@ -1,73 +1,159 @@
+import 'package:farmers_journal/data/providers.dart';
+import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
-import 'package:farmers_journal/presentation/pages/page_profile/place_map.dart';
-import 'package:farmers_journal/presentation/pages/page_profile/place_search.dart';
-import 'package:flutter/foundation.dart';
+import 'package:farmers_journal/presentation/pages/page_initial_setting/place_autocomplete.dart';
+import 'package:farmers_journal/presentation/components/plant_selection.dart';
 import 'package:flutter/material.dart';
-
-import 'package:farmers_journal/presentation/components/plant_selection.dart'
-    show PlantSelection, PlantSelection2;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:uuid/uuid.dart';
 import 'package:go_router/go_router.dart';
 
-class PageInitialSetting2 extends ConsumerStatefulWidget {
-  const PageInitialSetting2({super.key});
+class PageInitialSetting extends ConsumerStatefulWidget {
+  const PageInitialSetting({super.key});
 
   @override
-  ConsumerState<PageInitialSetting2> createState() => _PageViewExampleState();
+  ConsumerState<PageInitialSetting> createState() => _PageInitialSettingState();
 }
 
-class _PageViewExampleState extends ConsumerState<PageInitialSetting2>
-    with TickerProviderStateMixin {
-  late PageController _pageViewController;
-  late TabController _tabController;
-  int _currentPageIndex = 0;
-  String selectedPlace = '';
-  void onSelectPlace(String value) {
-    setState(() {
-      selectedPlace = value;
-    });
+class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
+  int _index = 0;
+
+  // plant related states
+  String? code;
+  void _setCode(String? value) {
+    code = ref.read(hsCodeRepositoryProvider).getHsCode(variety: plant);
   }
 
-  String selectedPlant = '';
-  void onChangePlant(String value) {
-    selectedPlant = value;
+  bool _isCode(String? value) {
+    return value == null;
   }
 
-  void onSelectPlant(String value) {
-    setState(() {
-      selectedPlant = value;
-    });
+  String place = '';
+  void setPlace(value) {
+    place = value;
   }
 
-  void _setPlantAndPlace() {
-    ref.read(userControllerProvider.notifier).setPlantAndPlace(
-        plantName: selectedPlant, place: selectedPlace, code: '');
+  //plant related states
+  String plant = '';
+  void setPlant(value) {
+    plant = value;
+    _setCode(value);
   }
 
-  void onSaveSetting() async {
-    await _showDeleteAlertDialog(context, () {
-      _setPlantAndPlace();
-    }).then((status) {
-      if (status) {
-        context.go('/main');
-      }
-    });
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("초기 설정"),
+      ),
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: Stepper(
+          currentStep: _index,
+          onStepCancel: onStepCancel,
+          onStepContinue: onStepContinue,
+          onStepTapped: onStepTapped,
+          steps: [
+            Step(
+              title: const Text("위치 설정"),
+              content: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height,
+                ),
+                child: PlaceSetting(
+                    sessionToken: Uuid().v4(), onChanged: setPlace),
+              ),
+              isActive: _index >= 0,
+              state: _index == 0 ? StepState.editing : StepState.indexed,
+            ),
+            Step(
+              title: const Text("작물 설정"),
+              content: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height,
+                ),
+                child: PlantSelection2(
+                  onChange: setPlant,
+                ),
+              ),
+              isActive: _index >= 1,
+              state: _index == 1 ? StepState.editing : StepState.indexed,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  Future<bool> _showDeleteAlertDialog(context, cb) async {
+  //internal functions
+  Future<bool> _completeSetting(context) async {
+    if (_isCode(code)) {
+      showSnackBar(context, '$plant는 등록되지 않은 작물입니다. 검색 결과 중에 선택해주세요.');
+      return false;
+    } else {
+      return await _showAlertDialog(context, () {
+        ref
+            .read(userControllerProvider.notifier)
+            .setPlantAndPlace(plantName: plant, place: place, code: code!);
+      });
+    }
+  }
+
+  Future<bool> _showAlertDialog(context, cb) async {
     return await showDialog<bool>(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('확정', style: TextStyle(color: Colors.red)),
-                content: SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Text('Plant: $selectedPlant'),
-                      Text('Place: $selectedPlace'),
-                    ],
+                title: const Text(
+                  '확정',
+                  style: TextStyle(
+                    color: Colors.redAccent,
                   ),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 5,
+                  children: <Widget>[
+                    RichText(
+                      text: TextSpan(
+                        text: '작물: ',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: plant,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        text: '위치:',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: place,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 actions: <Widget>[
                   TextButton(
@@ -96,198 +182,120 @@ class _PageViewExampleState extends ConsumerState<PageInitialSetting2>
         false;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _pageViewController = PageController();
-    _tabController = TabController(length: 2, vsync: this);
+  //Stepper related callbacks
+  void onStepCancel() {
+    if (_index > 0) {
+      setState(() {
+        _index -= 1;
+      });
+    }
   }
+
+  void onStepContinue() async {
+    if (_index == 1) {
+      bool isCompleted = await _completeSetting(context);
+      if (isCompleted) {
+        context.go('/');
+      }
+    }
+    if (_index <= 0) {
+      setState(() {
+        _index += 1;
+      });
+    }
+  }
+
+  void onStepTapped(int index) {
+    setState(() {
+      _index = index;
+    });
+  }
+}
+
+class PlaceSetting extends ConsumerStatefulWidget {
+  const PlaceSetting(
+      {super.key, required this.sessionToken, required this.onChanged});
+  final String sessionToken;
+  final void Function(String? value) onChanged;
+  @override
+  ConsumerState<PlaceSetting> createState() => _PlaceSetting();
+}
+
+class _PlaceSetting extends ConsumerState<PlaceSetting> {
+  SearchController searchController = SearchController();
 
   @override
   void dispose() {
+    searchController.dispose();
     super.dispose();
-    _pageViewController.dispose();
-    _tabController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: <Widget>[
-        PageView(
-          controller: _pageViewController,
-          onPageChanged: _handlePageViewChanged,
-          children: <Widget>[
-            PageInitialSettingPlace(
-                selectedPlace: selectedPlace, onPlaceSelected: onSelectPlace),
-            PageInitialSettingPlant(
-              selectedPlant: selectedPlant,
-              onSelectPlant: onSelectPlant,
-              onChangePlant: onChangePlant,
-            ),
-          ],
-        ),
-        Padding(
-            padding: const EdgeInsets.only(
-              bottom: 20,
-            ),
-            child: PageIndicator(
-              tabController: _tabController,
-              currentPageIndex: _currentPageIndex,
-              onUpdateCurrentPageIndex: _updateCurrentPageIndex,
-              isOnDesktopAndWeb: _isOnDesktopAndWeb,
-            )),
-      ],
-    );
-  }
-
-  void _handlePageViewChanged(int currentPageIndex) {
-    if (!_isOnDesktopAndWeb) {
-      return;
-    }
-    _tabController.index = currentPageIndex;
-    setState(() {
-      _currentPageIndex = currentPageIndex;
-    });
-  }
-
-  void _updateCurrentPageIndex(int index) {
-    _tabController.index = index;
-    _pageViewController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  bool get _isOnDesktopAndWeb {
-    if (kIsWeb) {
-      return true;
-    }
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.macOS:
-      case TargetPlatform.linux:
-      case TargetPlatform.windows:
-        return true;
-      case TargetPlatform.android:
-      case TargetPlatform.iOS:
-      case TargetPlatform.fuchsia:
-        return true;
-    }
-  }
-}
-
-class PageIndicator extends StatelessWidget {
-  const PageIndicator({
-    super.key,
-    required this.tabController,
-    required this.currentPageIndex,
-    required this.onUpdateCurrentPageIndex,
-    required this.isOnDesktopAndWeb,
-  });
-
-  final int currentPageIndex;
-  final TabController tabController;
-  final void Function(int) onUpdateCurrentPageIndex;
-  final bool isOnDesktopAndWeb;
-
-  @override
-  Widget build(BuildContext context) {
-    if (!isOnDesktopAndWeb) {
-      return const SizedBox.shrink();
-    }
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          TabPageSelector(
-            controller: tabController,
-            color: colorScheme.surface,
-            selectedColor: colorScheme.primary,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PageInitialSettingPlant extends StatefulWidget {
-  const PageInitialSettingPlant({
-    super.key,
-    required this.selectedPlant,
-    required this.onSelectPlant,
-    required this.onChangePlant,
-  });
-  final String selectedPlant;
-  final void Function(String) onSelectPlant;
-  final void Function(String) onChangePlant;
-
-  @override
-  State<StatefulWidget> createState() => _PageInitialSettingPlantState();
-}
-
-class _PageInitialSettingPlantState extends State<PageInitialSettingPlant> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: Text(
-          '작물 선택',
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Column(
-          spacing: 10,
+    return SearchAnchor(
+      searchController: searchController,
+      builder: (context, SearchController controller) {
+        return Column(
+          spacing: 15,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            PlantSelection2(onChange: widget.onChangePlant),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class PageInitialSettingPlace extends StatefulWidget {
-  const PageInitialSettingPlace(
-      {super.key, required this.selectedPlace, required this.onPlaceSelected});
-  final String selectedPlace;
-  final void Function(String) onPlaceSelected;
-
-  @override
-  State<PageInitialSettingPlace> createState() =>
-      _PageInitialSettingPlaceState();
-}
-
-class _PageInitialSettingPlaceState extends State<PageInitialSettingPlace> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: const Text('작물 위치 설정'),
-      ),
-      body: SafeArea(
-        child: Column(
-          spacing: 10,
-          children: [
-            PlaceSearch(onSelect: widget.onPlaceSelected),
-            widget.selectedPlace.isNotEmpty
-                ? PlaceMap2(
-                    finalAddress: widget.selectedPlace,
+            Flexible(
+              child: SearchBar(
+                controller: controller,
+                onTap: () {
+                  controller.openView();
+                },
+                onChanged: (value) {
+                  controller.openView();
+                  widget.onChanged(value);
+                },
+                leading: const Icon(Icons.search),
+              ),
+            ),
+            isMapVisible
+                ? FutureBuilder(
+                    future: ref
+                        .read(googleAPIProvider)
+                        .geoCodingAPI(controller.text),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: PlaceMap(
+                              lat: snapshot.data?.lat, lng: snapshot.data?.lng),
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
                   )
-                : const SizedBox.shrink(),
+                : const Flexible(
+                    child: SizedBox.shrink(),
+                  ),
           ],
-        ),
-      ),
+        );
+      },
+      suggestionsBuilder: (context, SearchController controller) async {
+        final predictedItems = await ref
+            .read(googleAPIProvider)
+            .googlePlaceAPI(controller.text, widget.sessionToken);
+        return predictedItems.predictions
+            .map(
+              (prediction) => ListTile(
+                title: Text(prediction.description),
+                onTap: () {
+                  controller.closeView(prediction.description);
+                  widget.onChanged(prediction.description);
+                  setState(() {
+                    isMapVisible = true;
+                  });
+                },
+              ),
+            )
+            .toList();
+      },
     );
   }
+
+  bool isMapVisible = false;
 }
