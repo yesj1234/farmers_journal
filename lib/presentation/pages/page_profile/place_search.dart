@@ -61,7 +61,7 @@ class _PageTempState extends ConsumerState<PagePlaceSearch> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "작물 위치 설정",
+          "위치 변경",
           style: TextStyle(
             color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.bold,

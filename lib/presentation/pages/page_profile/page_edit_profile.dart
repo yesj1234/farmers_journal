@@ -74,7 +74,7 @@ class _PageProfileState extends ConsumerState<PageEditProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Edit Profile",
+          "프로필 수정",
           style: TextStyle(
             color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.bold,

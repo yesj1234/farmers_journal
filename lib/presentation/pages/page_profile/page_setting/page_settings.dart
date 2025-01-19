@@ -11,7 +11,11 @@ class PageSettings extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text('설정',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColor,
+            )),
       ),
       body: const Center(
         child: Padding(
