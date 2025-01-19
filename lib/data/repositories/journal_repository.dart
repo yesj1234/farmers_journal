@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmers_journal/data/interfaces.dart';
+import 'package:farmers_journal/data/interface/journal_interface.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 
 class FireStoreJournalRepository implements JournalRepository {

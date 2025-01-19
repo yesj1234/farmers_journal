@@ -1,4 +1,7 @@
-import 'package:farmers_journal/data/interfaces.dart';
+import 'package:farmers_journal/data/interface/auth_interface.dart';
+import 'package:farmers_journal/data/interface/default_image_interface.dart';
+import 'package:farmers_journal/data/interface/journal_interface.dart';
+import 'package:farmers_journal/data/interface/user_interface.dart';
 import 'package:farmers_journal/data/repositories/auth_repository.dart';
 import 'package:farmers_journal/data/repositories/default_image_repository.dart';
 import 'package:farmers_journal/data/repositories/journal_repository.dart';

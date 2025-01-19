@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmers_journal/data/interfaces.dart';
+import 'package:farmers_journal/data/interface/default_image_interface.dart';
 import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
 
 class FireStoreDefaultImageRepository implements DefaultImageRepository {
