@@ -53,7 +53,12 @@ class ButtonMainViewFilter extends ConsumerWidget {
             icon: Icon(Icons.calendar_view_month)),
         ButtonSegment<MainView>(
             value: MainView.community,
-            label: Text('커뮤니티'),
+            label: Text(
+              '커뮤니티',
+              style: TextStyle(
+                fontSize: 14,
+              ),
+            ),
             icon: Icon(Icons.people)),
       ],
       selected: <MainView>{currentMainView},
