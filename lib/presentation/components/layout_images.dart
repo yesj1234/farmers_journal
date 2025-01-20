@@ -6,8 +6,8 @@ import 'dart:io';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:farmers_journal/presentation/components/layout_images_detail_screen.dart';
 
-class TestImageWidgetLayout extends StatelessWidget {
-  const TestImageWidgetLayout({
+class HeroImageWidgetLayout extends StatelessWidget {
+  const HeroImageWidgetLayout({
     super.key,
     required this.images,
     this.isEditMode = false,
