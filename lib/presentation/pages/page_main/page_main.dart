@@ -1,4 +1,5 @@
 // packages
+import 'package:farmers_journal/presentation/pages/page_main/community_view.dart';
 import 'package:farmers_journal/presentation/pages/page_main/day_view.dart';
 import 'package:farmers_journal/presentation/pages/page_main/month_view.dart';
 import 'package:farmers_journal/presentation/pages/page_main/top_nav.dart';
@@ -104,7 +105,7 @@ class _UserContent extends ConsumerWidget {
         MainView.day => const DayView(),
         MainView.week => const WeekView(),
         MainView.month => const MonthView(),
-        MainView.community => const Placeholder(),
+        MainView.community => const CommunityView(),
       };
     } else {
       return const _DefaultContent();

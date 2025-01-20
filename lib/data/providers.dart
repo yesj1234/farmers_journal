@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/data/interface/journal_interface.dart';
 import 'package:farmers_journal/data/repositories/excel_repository.dart';
 import 'package:farmers_journal/data/repositories/googleAPI.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
@@ -14,7 +15,7 @@ import 'dart:math';
 part 'providers.g.dart';
 
 @riverpod
-Future<List<Journal>> getPaginatedJournals(Ref ref,
+Future<PaginatedJournalResponse> getPaginatedJournals(Ref ref,
     {required DocumentSnapshot? lastDocument, required int pageSize}) {
   final journalRef = ref.watch(journalRepositoryProvider);
   return journalRef.getPaginatedJournals(
