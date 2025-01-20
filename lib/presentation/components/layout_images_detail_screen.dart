@@ -8,8 +8,10 @@ class LayoutImagesDetailScreen extends StatelessWidget {
   const LayoutImagesDetailScreen({
     super.key,
     required this.tags,
+    required this.initialIndex,
   });
   final List<UrlImage> tags;
+  final int initialIndex;
   @override
   Widget build(BuildContext context) {
     final heroWidgets = tags
@@ -28,6 +30,7 @@ class LayoutImagesDetailScreen extends StatelessWidget {
       body: Center(
         child: DetailScreenPageView(
           widgets: heroWidgets,
+          initialIndex: initialIndex,
         ),
       ),
     );
@@ -35,8 +38,10 @@ class LayoutImagesDetailScreen extends StatelessWidget {
 }
 
 class DetailScreenPageView extends StatefulWidget {
-  const DetailScreenPageView({super.key, required this.widgets});
+  const DetailScreenPageView(
+      {super.key, required this.widgets, required this.initialIndex});
   final List<Widget> widgets;
+  final int initialIndex;
   @override
   State<DetailScreenPageView> createState() => _DetailScreenPageView();
 }
@@ -49,8 +54,12 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
   @override
   void initState() {
     super.initState();
-    _pageViewController = PageController();
-    _tabController = TabController(length: widget.widgets.length, vsync: this);
+    _pageViewController = PageController(initialPage: widget.initialIndex);
+
+    _tabController = TabController(
+        initialIndex: widget.initialIndex,
+        length: widget.widgets.length,
+        vsync: this);
   }
 
   @override

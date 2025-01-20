@@ -65,7 +65,9 @@ class TestImageWidgetLayout extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) => LayoutImagesDetailScreen(
-                              tags: images as List<UrlImage>),
+                            tags: images as List<UrlImage>,
+                            initialIndex: index,
+                          ),
                         ),
                       );
                     },
