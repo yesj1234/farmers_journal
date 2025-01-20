@@ -4,6 +4,7 @@ import 'package:farmers_journal/data/providers.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/card/day_view_card.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
+import 'package:farmers_journal/presentation/pages/page_main/day_view_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,7 +32,7 @@ class _CommunityViewState extends ConsumerState<CommunityView> {
       return responseAsync.when(
           error: (err, stack) =>
               indexInPage == 0 ? Text(err.toString()) : const SizedBox.shrink(),
-          loading: () => const CircularProgressIndicator(),
+          loading: () => const DayViewShimmer(),
           data: (response) {
             lastDocument = response.lastDocument;
             if (indexInPage >= response.journals.length) {

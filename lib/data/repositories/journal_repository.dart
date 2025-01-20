@@ -40,7 +40,7 @@ class FireStoreJournalRepository implements JournalRepository {
       required DocumentSnapshot<Object?>? lastDocument}) async {
     try {
       final CollectionReference journalRef = instance.collection('journals');
-      Query query = journalRef.orderBy('createdAt');
+      Query query = journalRef.orderBy('createdAt', descending: true);
       if (lastDocument != null) {
         query = query.startAfterDocument(lastDocument);
       }
