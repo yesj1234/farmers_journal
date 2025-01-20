@@ -14,7 +14,7 @@ import 'dart:math';
 
 part 'providers.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<PaginatedJournalResponse> getPaginatedJournals(Ref ref,
     {required DocumentSnapshot? lastDocument, required int pageSize}) {
   final journalRef = ref.watch(journalRepositoryProvider);
