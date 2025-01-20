@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:farmers_journal/presentation/components/avatar/avatar_profile.dart';
 
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
@@ -117,13 +118,12 @@ class _UserDisplayNameState extends ConsumerState<_UserDisplayName> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          FittedBox(
-            fit: BoxFit.fitWidth,
-            child: Text(
-              value?.plants[0].place ?? '',
-              style: subTextStyle,
-              overflow: TextOverflow.ellipsis,
-            ),
+          AutoSizeText(
+            value?.plants[0].place ?? '',
+            style: subTextStyle,
+            maxLines: 2,
+            minFontSize: 10,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
