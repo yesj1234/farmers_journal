@@ -7,11 +7,12 @@ class TextPortion extends StatelessWidget {
   final double verticalPadding;
   final Widget? child;
 
-  const TextPortion(
-      {super.key,
-      required this.child,
-      required this.horizontalPadding,
-      required this.verticalPadding});
+  const TextPortion({
+    super.key,
+    required this.child,
+    required this.horizontalPadding,
+    required this.verticalPadding,
+  });
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,7 +29,7 @@ class DatePortion extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final double fontSize;
-
+  final bool editable;
   const DatePortion(
       {super.key,
       required this.horizontalPadding,
@@ -36,7 +37,8 @@ class DatePortion extends StatelessWidget {
       required this.date,
       required this.onEdit,
       required this.onDelete,
-      required this.fontSize});
+      required this.fontSize,
+      this.editable = true});
 
   String? _formatDate(DateTime date) {
     final localDateTime = date.toLocal();
@@ -69,9 +71,11 @@ class DatePortion extends StatelessWidget {
             '${_formatDate(date)}',
             style: textStyle,
           ),
-          Flexible(
-            child: MyCascadingMenu(onEdit: onEdit, onDelete: onDelete),
-          ),
+          editable
+              ? Flexible(
+                  child: MyCascadingMenu(onEdit: onEdit, onDelete: onDelete),
+                )
+              : const SizedBox.shrink(),
         ],
       ),
     );

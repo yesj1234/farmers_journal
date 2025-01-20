@@ -12,6 +12,7 @@ class DayViewCard extends ConsumerWidget {
   const DayViewCard({
     super.key,
     required this.journal,
+    this.editable = true,
     this.cardMinHeight = 0,
     this.cardMaxHeight = 300,
     this.cardMaxWidth = 270,
@@ -21,6 +22,7 @@ class DayViewCard extends ConsumerWidget {
     this.dateFontSize = 12,
   });
   final Journal journal;
+  final bool editable;
   final double cardMinHeight;
   final double cardMaxHeight;
   final double cardMaxWidth;
@@ -133,6 +135,7 @@ class DayViewCard extends ConsumerWidget {
                 horizontalPadding: horizontalPadding,
                 verticalPadding: verticalPadding,
                 date: journal.createdAt!,
+                editable: editable,
                 onEdit: () => context.go('/update/${journal.id}'),
                 onDelete: () => _showDeleteAlertDialog(
                     context,

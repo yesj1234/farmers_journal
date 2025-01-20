@@ -29,7 +29,8 @@ class _CommunityViewState extends ConsumerState<CommunityView> {
               pageSize: pageSize, lastDocument: lastDocument));
 
       return responseAsync.when(
-          error: (err, stack) => Text(err.toString()),
+          error: (err, stack) =>
+              indexInPage == 0 ? Text(err.toString()) : const SizedBox.shrink(),
           loading: () => const CircularProgressIndicator(),
           data: (response) {
             lastDocument = response.lastDocument;
@@ -54,6 +55,7 @@ class _DayViewCard extends StatelessWidget {
         child: DayViewCard(
           verticalPadding: 0,
           journal: journal,
+          editable: false,
         ),
       ),
     );
