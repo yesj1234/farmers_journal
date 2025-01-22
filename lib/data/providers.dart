@@ -14,14 +14,12 @@ import 'dart:math';
 
 part 'providers.g.dart';
 
-@Riverpod(keepAlive: true)
-Future<PaginatedJournalResponse> getPaginatedJournals(Ref ref,
-    {required DocumentSnapshot? lastDocument, required int pageSize}) {
+Future<List<Journal>> paginatedJournals(Ref ref) async {
   final journalRef = ref.watch(journalRepositoryProvider);
-  return journalRef.getPaginatedJournals(
-      pageSize: pageSize, lastDocument: lastDocument);
+  return journalRef.fetchPaginatedJournals();
 }
 
+// TODO: save the file in remote database(firebase firestorage)
 @Riverpod(keepAlive: true)
 HSCodeRepository hsCodeRepository(Ref ref) => HSCodeRepository(
     filePath:

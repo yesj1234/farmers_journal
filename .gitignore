@@ -50,6 +50,6 @@ app.*.map.json
 
 # code generators generated files
 *.g.*
-
+*.freezed.*
 # env config
 *.env

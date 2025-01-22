@@ -1,47 +1,180 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmers_journal/data/interface/journal_interface.dart';
-import 'package:farmers_journal/data/providers.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/card/day_view_card.dart';
-import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
+import 'package:farmers_journal/presentation/controller/journal/pagination_controller.dart';
+import 'package:farmers_journal/presentation/controller/journal/pagination_state.dart';
 import 'package:farmers_journal/presentation/pages/page_main/day_view_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CommunityView extends ConsumerStatefulWidget {
-  const CommunityView({super.key});
-  static const pageSize = 20;
-
+class CommunityView2 extends ConsumerWidget {
+  CommunityView2({super.key});
+  final ScrollController scrollController = ScrollController();
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CommunityViewState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    scrollController.addListener(() {
+      double maxScroll = scrollController.position.maxScrollExtent;
+      double currentScroll = scrollController.position.pixels;
+      double delta = MediaQuery.of(context).size.width * 0.2;
+      if (maxScroll - currentScroll <= delta) {
+        ref.read(paginationControllerProvider.notifier).fetchNextBatch();
+      }
+    });
+
+    return Stack(children: [
+      CustomScrollView(
+          controller: scrollController,
+          restorationId: "journals List",
+          slivers: const [
+            ItemsList(),
+            NoMoreItems(),
+            OnGoingBottomWidget(),
+          ]),
+      Align(
+        alignment: Alignment.bottomRight,
+        child: ScrollToTopButton(scrollController: scrollController),
+      ),
+    ]);
+  }
 }
 
-class _CommunityViewState extends ConsumerState<CommunityView> {
-  final int pageSize = 20;
-  DocumentSnapshot? lastDocument;
+class ItemsList extends ConsumerWidget {
+  const ItemsList({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final PaginationState state = ref.watch(paginationControllerProvider);
+
+    return state.when(
+        initial: () =>
+            const SliverToBoxAdapter(child: Center(child: DayViewShimmer())),
+        data: (items) {
+          return items.isEmpty
+              ? SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          ref
+                              .read(paginationControllerProvider.notifier)
+                              .fetchFirstBatch();
+                        },
+                        icon: const Icon(Icons.replay),
+                      ),
+                      const Chip(
+                        label: Text("No items found!"),
+                      ),
+                    ],
+                  ),
+                )
+              : ItemsListBuilder(journals: items);
+        },
+        loading: () =>
+            const SliverToBoxAdapter(child: Center(child: DayViewShimmer())),
+        error: (e, stk) => const SliverToBoxAdapter(
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(Icons.info),
+                    SizedBox(height: 20),
+                    Text("Something Went Wrong!",
+                        style: TextStyle(color: Colors.black)),
+                  ],
+                ),
+              ),
+            ),
+        onGoingLoading: (items) {
+          return ItemsListBuilder(journals: items);
+        },
+        onGoingError: (items, e, st) {
+          return ItemsListBuilder(journals: items);
+        });
+  }
+}
+
+class ItemsListBuilder extends StatelessWidget {
+  const ItemsListBuilder({
+    super.key,
+    required this.journals,
+  });
+  final List<Journal> journals;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: (context, index) {
-      final indexInPage = index % pageSize;
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return _DayViewCard(journal: journals[index]);
+        },
+        childCount: journals.length,
+      ),
+    );
+  }
+}
 
-      final AsyncValue<PaginatedJournalResponse> responseAsync = ref.watch(
-          getPaginatedJournalsProvider(
-              pageSize: pageSize, lastDocument: lastDocument));
+class NoMoreItems extends ConsumerWidget {
+  const NoMoreItems({super.key});
 
-      return responseAsync.when(
-          error: (err, stack) =>
-              indexInPage == 0 ? Text(err.toString()) : const SizedBox.shrink(),
-          loading: () => const DayViewShimmer(),
-          data: (response) {
-            lastDocument = response.lastDocument;
-            if (indexInPage >= response.journals.length) {
-              return null;
-            }
-            final journal = response.journals[indexInPage];
-            return _DayViewCard(journal: journal);
-          });
-    });
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(paginationControllerProvider);
+    return SliverToBoxAdapter(
+      child: state.maybeWhen(
+          orElse: () => const SizedBox.shrink(),
+          data: (items) {
+            final noMoreItems =
+                ref.read(paginationControllerProvider.notifier).noMoreItems;
+            return noMoreItems
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Text.rich(
+                      TextSpan(
+                        text: "일지가 더 존재하지 않습니다.",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : const SizedBox.shrink();
+          }),
+    );
+  }
+}
+
+class OnGoingBottomWidget extends StatelessWidget {
+  const OnGoingBottomWidget({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: const EdgeInsets.all(40),
+      sliver: SliverToBoxAdapter(
+        child: Consumer(
+          builder: (context, ref, child) {
+            final state = ref.watch(paginationControllerProvider);
+            return state.maybeWhen(
+              orElse: () => const SizedBox.shrink(),
+              onGoingLoading: (items) => const Center(child: DayViewShimmer()),
+              onGoingError: (items, e, st) => const Center(
+                child: Column(
+                  children: [
+                    Icon(Icons.info),
+                    SizedBox(height: 20),
+                    Text(
+                      "Something Went Wrong!",
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 }
 
@@ -60,5 +193,39 @@ class _DayViewCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ScrollToTopButton extends StatelessWidget {
+  const ScrollToTopButton({super.key, required this.scrollController});
+  final ScrollController scrollController;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+        animation: scrollController,
+        builder: (context, child) {
+          double scrollOffset = scrollController.offset;
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) =>
+                ScaleTransition(scale: animation, child: child),
+            child: scrollOffset > MediaQuery.of(context).size.height * 0.5
+                ? IconButton(
+                    icon: Icon(
+                      Icons.keyboard_double_arrow_up_outlined,
+                      size: 35,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    onPressed: () async {
+                      scrollController.animateTo(
+                        0,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    })
+                : const SizedBox.shrink(),
+          );
+        });
   }
 }
