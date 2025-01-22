@@ -6,8 +6,8 @@ import 'package:farmers_journal/presentation/pages/page_main/day_view_shimmer.da
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CommunityView2 extends ConsumerWidget {
-  CommunityView2({super.key});
+class CommunityView extends ConsumerWidget {
+  CommunityView({super.key});
   final ScrollController scrollController = ScrollController();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,14 +21,18 @@ class CommunityView2 extends ConsumerWidget {
     });
 
     return Stack(children: [
-      CustomScrollView(
-          controller: scrollController,
-          restorationId: "journals List",
-          slivers: const [
-            ItemsList(),
-            NoMoreItems(),
-            OnGoingBottomWidget(),
-          ]),
+      RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(paginationControllerProvider);
+          },
+          child: CustomScrollView(
+              controller: scrollController,
+              restorationId: "journals List",
+              slivers: const [
+                ItemsList(),
+                NoMoreItems(),
+                OnGoingBottomWidget(),
+              ])),
       Align(
         alignment: Alignment.bottomRight,
         child: ScrollToTopButton(scrollController: scrollController),
