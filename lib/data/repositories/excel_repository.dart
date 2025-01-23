@@ -1,8 +1,6 @@
 import 'dart:developer';
-import 'dart:io';
 import 'package:excel/excel.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ExcelRepository {
   final String? filePath;
@@ -121,16 +119,4 @@ class HSCodeRepository extends ExcelRepository {
       return '$major$mid$minor';
     }
   }
-}
-
-// For developing purpose.
-void main() {
-  // '/Users/yangseungjun/AndroidStudioProjects/farmers_journal/assets/xls/hs_code.xlsx';
-  HSCodeRepository hsCodeRepository = HSCodeRepository(
-      instance: FirebaseStorage.instance, filePath: dotenv.env['EXCEL_KEY']);
-
-  // hsCodeRepository.readHSCode();
-  print(hsCodeRepository.findMatchingVariety(input: '포도'));
-  // print(hsCodeRepository.varieties);
-  // print(hsCodeRepository.subCategories);
 }
