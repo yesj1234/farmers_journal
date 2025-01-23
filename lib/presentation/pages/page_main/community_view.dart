@@ -154,7 +154,7 @@ class OnGoingBottomWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
-      padding: const EdgeInsets.all(40),
+      padding: const EdgeInsets.all(10),
       sliver: SliverToBoxAdapter(
         child: Consumer(
           builder: (context, ref, child) {
