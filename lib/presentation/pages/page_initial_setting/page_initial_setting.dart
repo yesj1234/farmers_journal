@@ -21,7 +21,10 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
   // plant related states
   String? code;
   void _setCode(String? value) {
-    code = ref.read(hsCodeRepositoryProvider).getHsCode(variety: plant);
+    final hsCodeRef = ref.read(hsCodeRepositoryProvider);
+    hsCodeRef.whenData((hsCode) {
+      code = hsCode.getHsCode(variety: plant);
+    });
   }
 
   bool _isCode(String? value) {
@@ -72,7 +75,7 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.sizeOf(context).height,
                 ),
-                child: PlantSelection2(
+                child: PlantSelection(
                   onChange: setPlant,
                 ),
               ),

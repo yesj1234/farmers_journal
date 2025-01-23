@@ -68,7 +68,7 @@ class _PagePlantState extends ConsumerState<PagePlant> {
               ),
             ),
           ]),
-      body: PlantSelection2(onChange: setPlant),
+      body: PlantSelection(onChange: setPlant),
     );
   }
 
@@ -80,7 +80,10 @@ class _PagePlantState extends ConsumerState<PagePlant> {
 
   String? code;
   void _setCode(String? value) {
-    code = ref.read(hsCodeRepositoryProvider).getHsCode(variety: plant);
+    final hsCodeRef = ref.read(hsCodeRepositoryProvider);
+    hsCodeRef.whenData((hsCode) {
+      code = hsCode.getHsCode(variety: plant);
+    });
   }
 
   bool _isCode(String? value) {

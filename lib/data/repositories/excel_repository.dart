@@ -1,50 +1,66 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:excel/excel.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ExcelRepository {
-  final String filePath;
+  final String? filePath;
+  final FirebaseStorage instance;
   late final Excel? excel;
 
   ExcelRepository({
+    required this.instance,
     required this.filePath,
-  }) {
-    excel = _readExcelFile(filePath);
+  });
+  Future<void> initialize() async {
+    log(filePath.toString());
+    if (filePath != null) {
+      await _readExcelFile(filePath!);
+    }
   }
 
-  Excel _readExcelFile(String filePath) {
-    final bytes = File(filePath).readAsBytesSync();
-    return Excel.decodeBytes(bytes);
+  Future<void> _readExcelFile(String filePath) async {
+    try {
+      final bytes = await instance.ref(filePath).getData();
+      if (bytes != null) {
+        excel = Excel.decodeBytes(bytes);
+      } else {
+        log('Failed to load Excel file: no data.');
+        excel = null;
+      }
+    } catch (error) {
+      throw Exception(error);
+    }
   }
 }
 
 class HSCodeRepository extends ExcelRepository {
-  HSCodeRepository({required super.filePath}) {
-    varieties = _setHSCodeVarieties();
-    subCategories = _setHSCodeSubCategories();
-  }
+  HSCodeRepository({required super.filePath, required super.instance});
   late final List<TextCellValue?> varieties;
   late final List<dynamic> subCategories;
 
-  List<TextCellValue?> _setHSCodeVarieties() {
-    if (excel == null) {
-      return [];
-    } else {
-      final currentTable = excel!.tables[excel!.tables.keys.first];
-      final startIndex = CellIndex.indexByColumnRow(
-          columnIndex: currentTable!.maxColumns - 1, rowIndex: 1);
-      final endIndex = CellIndex.indexByColumnRow(
-          columnIndex: currentTable.maxColumns - 1,
-          rowIndex: currentTable.maxRows - 1);
-      return currentTable
-          .selectRangeValues(
-            startIndex,
-            end: endIndex,
-          )
-          .map((cellValue) => cellValue?.first as TextCellValue)
-          .toList();
-    }
+  @override
+  Future<void> initialize() async {
+    await super.initialize();
+    varieties = _setHSCodeVarieties();
+    subCategories = _setHSCodeSubCategories();
+  }
 
-    return [];
+  List<TextCellValue?> _setHSCodeVarieties() {
+    final currentTable = excel!.tables[excel!.tables.keys.first];
+    final startIndex = CellIndex.indexByColumnRow(
+        columnIndex: currentTable!.maxColumns - 1, rowIndex: 1);
+    final endIndex = CellIndex.indexByColumnRow(
+        columnIndex: currentTable.maxColumns - 1,
+        rowIndex: currentTable.maxRows - 1);
+    return currentTable
+        .selectRangeValues(
+          startIndex,
+          end: endIndex,
+        )
+        .map((cellValue) => cellValue?.first as TextCellValue)
+        .toList();
   }
 
   List<List<CellValue?>?> _setHSCodeSubCategories() {
@@ -111,8 +127,8 @@ class HSCodeRepository extends ExcelRepository {
 void main() {
   // '/Users/yangseungjun/AndroidStudioProjects/farmers_journal/assets/xls/hs_code.xlsx';
   HSCodeRepository hsCodeRepository = HSCodeRepository(
-      filePath:
-          '/Users/yangseungjun/AndroidStudioProjects/farmers_journal/assets/xls/hs_code.xlsx');
+      instance: FirebaseStorage.instance, filePath: dotenv.env['EXCEL_KEY']);
+
   // hsCodeRepository.readHSCode();
   print(hsCodeRepository.findMatchingVariety(input: '포도'));
   // print(hsCodeRepository.varieties);

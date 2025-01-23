@@ -1,11 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/data/firestore_service.dart';
-import 'package:farmers_journal/data/interface/journal_interface.dart';
+
 import 'package:farmers_journal/data/repositories/excel_repository.dart';
 import 'package:farmers_journal/data/repositories/googleAPI.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -19,11 +20,13 @@ Future<List<Journal>> paginatedJournals(Ref ref) async {
   return journalRef.fetchPaginatedJournals();
 }
 
-// TODO: save the file in remote database(firebase firestorage)
 @Riverpod(keepAlive: true)
-HSCodeRepository hsCodeRepository(Ref ref) => HSCodeRepository(
-    filePath:
-        '/Users/yangseungjun/AndroidStudioProjects/farmers_journal/assets/xls/hs_code.xlsx');
+Future<HSCodeRepository> hsCodeRepository(Ref ref) async {
+  final hsCodeRepository = HSCodeRepository(
+      instance: FirebaseStorage.instance, filePath: 'hs_code.xlsx');
+  await hsCodeRepository.initialize();
+  return hsCodeRepository;
+}
 
 @Riverpod(keepAlive: true)
 class MainViewFilter extends _$MainViewFilter {
