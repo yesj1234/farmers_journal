@@ -40,10 +40,8 @@ class FireStoreJournalRepository implements JournalRepository {
     // initial fetching
     if (lastJournal == null) {
       try {
-        final journals = await journalRef
-            .orderBy('createdAt', descending: true)
-            .limit(10)
-            .get();
+        final journals =
+            await journalRef.orderBy('date', descending: true).limit(10).get();
         return journals.docs
             .map((doc) => Journal.fromJson(doc.data()))
             .toList();
@@ -54,8 +52,8 @@ class FireStoreJournalRepository implements JournalRepository {
       // start after the last journal
       try {
         final journals = await journalRef
-            .orderBy('createdAt', descending: true)
-            .startAfter([lastJournal.createdAt])
+            .orderBy('date', descending: true)
+            .startAfter([lastJournal.date])
             .limit(10)
             .get();
         return journals.docs
