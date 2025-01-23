@@ -258,6 +258,7 @@ class FireStoreUserRepository implements UserRepository {
           place: place,
           images: imageURLs,
           date: date,
+          createdAt: DateTime.now(),
         );
         userRef?.update({
           "journals": FieldValue.arrayUnion([id])
@@ -271,7 +272,8 @@ class FireStoreUserRepository implements UserRepository {
             plant: plant,
             place: place,
             images: images,
-            date: date);
+            date: date,
+            createdAt: DateTime.now());
         userRef?.update({
           "journals": FieldValue.arrayUnion([id])
         });
@@ -309,7 +311,7 @@ class FireStoreUserRepository implements UserRepository {
               title: title,
               content: content,
               images: imageURLs,
-              createdAt: date)
+              date: date)
           .toJson());
     } else {
       await journalRef.update(Journal(
@@ -317,7 +319,7 @@ class FireStoreUserRepository implements UserRepository {
               title: title,
               content: content,
               images: images,
-              createdAt: date)
+              date: date)
           .toJson());
     }
     return await getJournals();

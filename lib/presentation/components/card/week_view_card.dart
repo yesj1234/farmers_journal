@@ -132,7 +132,7 @@ class WeekViewCard extends ConsumerWidget {
                 fontSize: dateFontSize,
                 horizontalPadding: horizontalPadding,
                 verticalPadding: verticalPadding,
-                date: journal.createdAt!,
+                date: journal.date!,
                 onEdit: () => context.go('/update/${journal.id}'),
                 onDelete: () => _showDeleteAlertDialog(
                   context,

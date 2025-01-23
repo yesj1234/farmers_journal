@@ -38,7 +38,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
       setState(() {
         title = journal.title;
         content = journal.content;
-        date = journal.createdAt;
+        date = journal.date;
         images = journal.images ?? [];
       });
     });
@@ -136,7 +136,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                             id: widget.id!,
                             title: title ?? '',
                             content: content ?? '',
-                            date: date ?? snapshot.data!.createdAt!,
+                            date: date ?? snapshot.data!.date!,
                             images: imagePaths as List<String?>? ??
                                 snapshot.data!.images!);
                     if (context.mounted) {

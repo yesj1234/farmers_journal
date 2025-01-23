@@ -134,7 +134,7 @@ class DayViewCard extends ConsumerWidget {
                 fontSize: dateFontSize,
                 horizontalPadding: horizontalPadding,
                 verticalPadding: verticalPadding,
-                date: journal.createdAt!,
+                date: journal.date!,
                 editable: editable,
                 onEdit: () => context.go('/update/${journal.id}'),
                 onDelete: () => _showDeleteAlertDialog(
