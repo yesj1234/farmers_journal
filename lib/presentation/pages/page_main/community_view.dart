@@ -22,17 +22,19 @@ class CommunityView extends ConsumerWidget {
 
     return Stack(children: [
       RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(paginationControllerProvider);
-          },
-          child: CustomScrollView(
-              controller: scrollController,
-              restorationId: "journals List",
-              slivers: const [
-                ItemsList(),
-                NoMoreItems(),
-                OnGoingBottomWidget(),
-              ])),
+        onRefresh: () async {
+          ref.invalidate(paginationControllerProvider);
+        },
+        child: CustomScrollView(
+          controller: scrollController,
+          restorationId: "journals List",
+          slivers: const [
+            ItemsList(),
+            NoMoreItems(),
+            OnGoingBottomWidget(),
+          ],
+        ),
+      ),
       Align(
         alignment: Alignment.bottomRight,
         child: ScrollToTopButton(scrollController: scrollController),
