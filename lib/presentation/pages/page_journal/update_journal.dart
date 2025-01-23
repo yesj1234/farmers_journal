@@ -1,5 +1,6 @@
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/layout_images.dart';
+import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/components/styles/button.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
@@ -56,10 +57,8 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
     content = value;
   }
 
-  void pickImage() {
-    _imagePicker.pickMultiImage().then((image) {
-      setState(() => images = [...?images, ...image]);
-    });
+  Future<List<XFile>> _pickImage() {
+    return _imagePicker.pickMultiImage();
   }
 
   void deleteImage(int id) {
@@ -120,7 +119,16 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                   child: _ContentForm(
                     content: content,
                     onUpdateContent: updateJournalContent,
-                    onImagePick: pickImage,
+                    onImagePick: () async {
+                      List<XFile> _images = await _pickImage();
+                      if (_images.length + images!.length > 8) {
+                        showSnackBar(context, '사진은 8장 이상을 넘을 수 없습니다.');
+                      } else {
+                        setState(() {
+                          images = [...images!, ..._images];
+                        });
+                      }
+                    },
                   ),
                 ),
                 ElevatedButton(
