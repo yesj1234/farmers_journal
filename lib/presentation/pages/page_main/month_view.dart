@@ -86,6 +86,29 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return Column(
       children: [
         TableCalendar(
+          calendarBuilders:
+              CalendarBuilders(markerBuilder: (context, data, events) {
+            if (events.isNotEmpty) {
+              return Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    '${events.length}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              );
+            }
+          }),
           locale: 'ko_KR',
           firstDay: DateTime.utc(2010, 10, 16),
           lastDay: DateTime.utc(2030, 3, 14),
