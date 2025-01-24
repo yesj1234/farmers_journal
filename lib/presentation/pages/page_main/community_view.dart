@@ -2,6 +2,8 @@ import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/card/day_view_card.dart';
 import 'package:farmers_journal/presentation/controller/journal/pagination_controller.dart';
 import 'package:farmers_journal/presentation/controller/journal/pagination_state.dart';
+import 'package:farmers_journal/presentation/controller/user/community_view_controller.dart';
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_main/day_view_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -97,7 +99,7 @@ class ItemsList extends ConsumerWidget {
   }
 }
 
-class ItemsListBuilder extends StatelessWidget {
+class ItemsListBuilder extends ConsumerWidget {
   const ItemsListBuilder({
     super.key,
     required this.journals,
@@ -105,11 +107,40 @@ class ItemsListBuilder extends StatelessWidget {
   final List<Journal> journals;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userInfo = ref.watch(communityViewControllerProvider);
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          return _DayViewCard(journal: journals[index]);
+          return GestureDetector(
+              onTap: () {
+                ref
+                    .read(communityViewControllerProvider.notifier)
+                    .getUserById(id: journals[index].id!);
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        child: Container(
+                          width: MediaQuery.sizeOf(context).width * 0.7,
+                          height: MediaQuery.sizeOf(context).height * 0.5,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 5,
+                              color: Colors.black,
+                            ),
+                          ),
+                          child: userInfo.when(
+                            data: (info) {},
+                            loading: () {},
+                            error: (e, st) {},
+                            initial: () {},
+                          ),
+                        ),
+                      );
+                    });
+              },
+              child: _DayViewCard(journal: journals[index]));
         },
         childCount: journals.length,
       ),

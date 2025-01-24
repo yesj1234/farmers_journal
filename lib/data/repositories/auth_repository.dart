@@ -118,6 +118,7 @@ class FirebaseAuthRepository implements AuthRepository {
     String? errorMessage;
     try {
       AppUser user = AppUser(
+        id: uuid!,
         email: email ?? '',
         createdAt: Timestamp.now(),
         name: name,

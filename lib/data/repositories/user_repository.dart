@@ -239,7 +239,7 @@ class FireStoreUserRepository implements UserRepository {
       });
       final plant = userInfo?.plants.first.name;
       final place = userInfo?.plants.first.place;
-
+      final writerId = userInfo?.id;
       final journalRef = instance.collection("journals");
       var uuid = const Uuid();
       String id = uuid.v4();
@@ -259,6 +259,7 @@ class FireStoreUserRepository implements UserRepository {
           images: imageURLs,
           date: date,
           createdAt: DateTime.now(),
+          writer: writerId,
         );
         userRef?.update({
           "journals": FieldValue.arrayUnion([id])
@@ -273,7 +274,8 @@ class FireStoreUserRepository implements UserRepository {
             place: place,
             images: images,
             date: date,
-            createdAt: DateTime.now());
+            createdAt: DateTime.now(),
+            writer: writerId);
         userRef?.update({
           "journals": FieldValue.arrayUnion([id])
         });
@@ -337,6 +339,17 @@ class FireStoreUserRepository implements UserRepository {
       await userRef?.update({'journals': previousJournalList});
       await journalRef.delete();
       return await getJournals();
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
+  @override
+  Future<AppUser> getUserById({required String id}) async {
+    try {
+      final userDocSnapshot = await instance.collection("users").doc(id).get();
+      final user = AppUser.fromJson(userDocSnapshot.data()!);
+      return user;
     } catch (error) {
       throw Exception(error);
     }

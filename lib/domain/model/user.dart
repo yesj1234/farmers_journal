@@ -2,16 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/domain/model/plant.dart';
 
 class AppUser {
+  final String id;
   final String email;
   final Timestamp createdAt;
   final List<dynamic> journals;
-
   final List<dynamic> plants;
   final bool isInitialSettingRequired;
   final String? profileImage;
   final String? name;
   final String? nickName;
   AppUser({
+    required this.id,
     required this.email,
     required this.createdAt,
     required this.journals,
@@ -23,6 +24,7 @@ class AppUser {
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) {
+    String id = json['id'] as String;
     String email = json['email'] as String;
     Timestamp createdAt = json['createdAt'] as Timestamp;
     List<dynamic> journals = json['journals'] as List<dynamic>;
@@ -33,6 +35,7 @@ class AppUser {
     String name = json['name'] as String;
     String nickName = json['nickName'] as String;
     return AppUser(
+        id: id,
         email: email,
         createdAt: createdAt,
         name: name,
@@ -47,6 +50,7 @@ class AppUser {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'email': email,
       'createdAt': createdAt,
       'name': name ?? '',

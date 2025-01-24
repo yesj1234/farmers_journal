@@ -9,6 +9,7 @@ class Journal {
   final DateTime? date;
   final String? plant;
   final String? place;
+  final String? writer;
   Journal({
     this.id,
     this.title,
@@ -18,9 +19,9 @@ class Journal {
     this.date,
     this.plant,
     this.place,
+    this.writer,
   });
 
-  // model은 외부 패키지에 종속성이 생기지 않도록 dart로만 구성하도록 변경하자!
   factory Journal.fromJson(
     Map<String, dynamic> map,
   ) {
@@ -39,7 +40,8 @@ class Journal {
         place: map['place'],
         images: images,
         date: dateDateTime,
-        createdAt: createdAtDateTime);
+        createdAt: createdAtDateTime,
+        writer: map['writer']);
   }
 
   Map<String, dynamic> toJson() {
@@ -52,6 +54,7 @@ class Journal {
       "images": images ?? [],
       "date": date ?? DateTime.now(),
       "createdAt": createdAt ?? DateTime.now(),
+      "writer": writer ?? '',
     };
   }
 
