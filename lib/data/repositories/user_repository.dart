@@ -308,21 +308,21 @@ class FireStoreUserRepository implements UserRepository {
           }
         }
       }
-      journalRef.update(Journal(
-              id: id,
-              title: title,
-              content: content,
-              images: imageURLs,
-              date: date)
-          .toJson());
+
+      await journalRef.update({
+        'id': id,
+        'title': title,
+        'content': content,
+        'images': imageURLs,
+        'date': date,
+      });
     } else {
-      await journalRef.update(Journal(
-              id: id,
-              title: title,
-              content: content,
-              images: images,
-              date: date)
-          .toJson());
+      await journalRef.update({
+        'id': id,
+        'title': title,
+        'content': content,
+        'date': date,
+      });
     }
     return await getJournals();
   }
