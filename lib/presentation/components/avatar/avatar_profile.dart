@@ -28,20 +28,26 @@ class AvatarProfile extends ConsumerWidget {
     return GestureDetector(
       onTap: onNavigateTap,
       child: SizedBox(
-        width: width,
-        height: height,
-        child: user.isLoading
-            ? const CircularProgressIndicator()
-            : CircleAvatar(
-                backgroundImage: switch (user) {
-                AsyncData(:final value) =>
-                  (value != null && value.profileImage!.isNotEmpty)
-                      ? CachedNetworkImageProvider(value.profileImage!)
-                      : const AssetImage('assets/avatars/default.png'),
-                AsyncError() => const AssetImage('assets/avatars/default.png'),
-                _ => const AssetImage('assets/avatars/default.png'),
-              }),
-      ),
+          width: width,
+          height: height,
+          child: user.when(
+            data: (info) {
+              return CircleAvatar(
+                backgroundImage:
+                    CachedNetworkImageProvider(info!.profileImage!),
+              );
+            },
+            error: (e, st) {
+              return const SizedBox.shrink();
+            },
+            loading: () {
+              return const CircularProgressIndicator();
+            },
+          )),
     );
   }
 }
+
+//
+// CircleAvatar(
+// backgroundImage: CachedNetworkImageProvider(user.profileImage!)),

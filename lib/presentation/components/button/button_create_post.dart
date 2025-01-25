@@ -13,15 +13,15 @@ class ButtonCreatePost extends StatelessWidget {
     final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
       backgroundColor: colorScheme.primaryContainer,
       shape: const CircleBorder(),
-      minimumSize: const Size(80, 80),
-      maximumSize: const Size(160, 160),
+      minimumSize: const Size(60, 60),
+      maximumSize: const Size(80, 80),
     );
     return ElevatedButton(
       onPressed: onClick,
       style: buttonStyle,
       child: const Icon(
         Icons.add,
-        size: 40,
+        size: 30,
         color: Colors.white,
       ),
     );
