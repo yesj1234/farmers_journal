@@ -1,7 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/user.dart';
+import 'package:farmers_journal/presentation/components/card/card_single.dart';
+import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
+import 'package:farmers_journal/presentation/show_delete_alert_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
 class DataStateDialog extends StatelessWidget {
@@ -48,7 +54,26 @@ class DataStateDialog extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  const Icon(Icons.more_horiz),
+                  Consumer(builder: (context, ref, child) {
+                    final userInfo = ref.read(userControllerProvider);
+                    return userInfo.value!.id == journalInfo.writer
+                        ? MyCascadingMenu(
+                            menuType: CascadingMenuType.personal,
+                            onCallBack1: () =>
+                                context.go('/update/${journalInfo.id}'),
+                            onCallBack2: () => showDeleteAlertDialog(
+                              context,
+                              () => ref
+                                  .read(journalControllerProvider.notifier)
+                                  .deleteJournal(id: journalInfo.id as String),
+                            ),
+                          )
+                        : MyCascadingMenu(
+                            menuType: CascadingMenuType.community,
+                            onCallBack1: () {},
+                            onCallBack2: () {},
+                          );
+                  }),
                 ],
               ),
             ),

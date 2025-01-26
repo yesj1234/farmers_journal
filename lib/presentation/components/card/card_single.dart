@@ -73,7 +73,11 @@ class DatePortion extends StatelessWidget {
           ),
           editable
               ? Flexible(
-                  child: MyCascadingMenu(onEdit: onEdit, onDelete: onDelete),
+                  child: MyCascadingMenu(
+                    menuType: CascadingMenuType.personal,
+                    onCallBack1: onEdit,
+                    onCallBack2: onDelete,
+                  ),
                 )
               : const SizedBox.shrink(),
         ],
@@ -82,43 +86,79 @@ class DatePortion extends StatelessWidget {
   }
 }
 
+enum CascadingMenuType {
+  personal,
+  community,
+}
+
 class MyCascadingMenu extends StatefulWidget {
   const MyCascadingMenu(
-      {super.key, required this.onEdit, required this.onDelete});
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+      {super.key,
+      required this.onCallBack1,
+      required this.onCallBack2,
+      required this.menuType});
+  final CascadingMenuType menuType;
+  final VoidCallback onCallBack1;
+  final VoidCallback onCallBack2;
 
   @override
   State<StatefulWidget> createState() => _MyCascadingMenuState();
 }
 
 class _MyCascadingMenuState extends State<MyCascadingMenu> {
+  // Text get menus => switch (widget.menuType) {
+  //       CascadingMenuType.personal => const Text("수정하기"),
+  //       CascadingMenuType.community => const Text(
+  //           '삭제하기',
+  //           style: TextStyle(
+  //             color: Colors.red,
+  //           ),
+  //         ),
+  //     };
+  List<Widget> get menus => switch (widget.menuType) {
+        CascadingMenuType.personal => [
+            MenuItemButton(
+                onPressed: () => widget.onCallBack1(),
+                child: const Row(children: [
+                  Icon(Icons.edit),
+                  Text("수정하기"),
+                ])),
+            MenuItemButton(
+              onPressed: () => widget.onCallBack2(),
+              child: const Row(children: [
+                Icon(Icons.delete_forever),
+                Text("삭제하기"),
+              ]),
+            ),
+          ],
+        CascadingMenuType.community => [
+            MenuItemButton(
+              onPressed: () => widget.onCallBack1(),
+              child: const Row(
+                spacing: 5,
+                children: [
+                  Icon(Icons.report_outlined),
+                  Text("글 신고"),
+                ],
+              ),
+            ),
+            MenuItemButton(
+              onPressed: () => widget.onCallBack2(),
+              child: const Row(
+                spacing: 5,
+                children: [
+                  Icon(Icons.block_sharp),
+                  Text("유저 차단"),
+                ],
+              ),
+            ),
+          ]
+      };
+
   @override
   Widget build(BuildContext context) {
     return MenuAnchor(
-      menuChildren: [
-        MenuItemButton(
-          onPressed: () => widget.onEdit(),
-          child: const Row(children: [
-            Icon(Icons.edit),
-            Text('수정하기'),
-          ]),
-        ),
-        MenuItemButton(
-          onPressed: () => widget.onDelete(),
-          child: const Row(children: [
-            Icon(
-              Icons.delete_forever,
-            ),
-            Text(
-              '삭제하기',
-              style: TextStyle(
-                color: Colors.red,
-              ),
-            ),
-          ]),
-        ),
-      ],
+      menuChildren: menus,
       builder: (
         context,
         controller,
