@@ -104,9 +104,10 @@ class DayViewCard extends ConsumerWidget {
                 date: journal.date!,
                 editable: editable,
                 onEdit: () => context.go('/update/${journal.id}'),
-                onDelete: () => showDeleteAlertDialog(
-                    context,
-                    () => ref
+                onDelete: () => showMyAlertDialog(
+                    context: context,
+                    type: AlertDialogType.delete,
+                    cb: () => ref
                         .read(journalControllerProvider.notifier)
                         .deleteJournal(id: journal.id as String)),
               ),

@@ -67,7 +67,7 @@ class ItemsListBuilder extends ConsumerWidget {
     super.key,
     required this.journals,
   });
-  final List<Journal> journals;
+  final List<Journal?> journals;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -80,7 +80,7 @@ class ItemsListBuilder extends ConsumerWidget {
               onTap: () {
                 ref
                     .read(communityViewControllerProvider.notifier)
-                    .getUserById(id: journalInfo.writer!);
+                    .getUserById(id: journalInfo!.writer!);
                 showDialog(
                     context: context,
                     builder: (context) {
@@ -89,7 +89,7 @@ class ItemsListBuilder extends ConsumerWidget {
                             ref.watch(communityViewControllerProvider);
                         return userInfo.when(
                           data: (info) => DataStateDialog(
-                              info: info, journalInfo: journals[index]),
+                              info: info, journalInfo: journals[index]!),
                           loading: () => const ShimmerLoadingStateDialog(),
                           error: (e, st) => const ErrorStateDialog(),
                           initial: () => const ShimmerLoadingStateDialog(),
@@ -97,7 +97,7 @@ class ItemsListBuilder extends ConsumerWidget {
                       });
                     });
               },
-              child: _DayViewCard(journal: journals[index]));
+              child: _DayViewCard(journal: journals[index]!));
         },
         childCount: journals.length,
       ),

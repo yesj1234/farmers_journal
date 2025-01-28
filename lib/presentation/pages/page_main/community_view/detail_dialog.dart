@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:farmers_journal/presentation/components/card/card_single.dart';
+import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
+import 'package:farmers_journal/presentation/controller/journal/pagination_controller.dart';
 import 'package:farmers_journal/presentation/controller/user/community_view_controller.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/components/show_alert_dialog.dart';
@@ -62,28 +64,42 @@ class DataStateDialog extends StatelessWidget {
                             menuType: CascadingMenuType.personal,
                             onCallBack1: () =>
                                 context.go('/update/${journalInfo.id}'),
-                            onCallBack2: () => showDeleteAlertDialog(
-                              context,
-                              () => ref
+                            onCallBack2: () => showMyAlertDialog(
+                              context: context,
+                              type: AlertDialogType.delete,
+                              cb: () => ref
                                   .read(journalControllerProvider.notifier)
                                   .deleteJournal(id: journalInfo.id as String),
                             ),
                           )
                         : MyCascadingMenu(
                             menuType: CascadingMenuType.community,
-                            onCallBack1: () => ref
-                                .read(journalControllerProvider.notifier)
-                                .reportJournal(
-                                  id: journalInfo.id!,
-                                  userId: userInfo.value!.id,
-                                ),
-                            onCallBack2: () =>
-                                showBlockAlertDialog(context, () {
-                              ref
-                                  .read(userControllerProvider.notifier)
-                                  .blockUser(id: journalInfo.writer!);
-                              ref.invalidate(communityViewControllerProvider);
-                            }),
+                            onCallBack1: () => showMyAlertDialog(
+                                context: context,
+                                type: AlertDialogType.report,
+                                cb: () {
+                                  ref
+                                      .read(journalControllerProvider.notifier)
+                                      .reportJournal(
+                                        id: journalInfo.id!,
+                                        userId: userInfo.value!.id,
+                                      );
+                                  Navigator.pop(context);
+                                  showSnackBar(context, "신고해주셔서 감사합니다.");
+                                }),
+                            onCallBack2: () => showMyAlertDialog(
+                                context: context,
+                                type: AlertDialogType.block,
+                                cb: () {
+                                  ref
+                                      .read(userControllerProvider.notifier)
+                                      .blockUser(id: journalInfo.writer!);
+                                  ref.invalidate(
+                                      communityViewControllerProvider);
+                                  Navigator.pop(context);
+                                  ref.invalidate(paginationControllerProvider);
+                                  showSnackBar(context, "차단되었습니다.");
+                                }),
                           );
                   }),
                 ],
