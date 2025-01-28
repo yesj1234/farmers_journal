@@ -1,5 +1,6 @@
 import 'package:farmers_journal/domain/model/plant.dart';
 import 'package:farmers_journal/domain/model/user.dart';
+import 'package:farmers_journal/presentation/controller/journal/pagination_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -73,5 +74,8 @@ class UserController extends _$UserController {
   Future<void> blockUser({required String id}) async {
     final repository = ref.read(userRepositoryProvider);
     await repository.blockUser(id: id);
+    ref
+        .read(paginationControllerProvider.notifier)
+        .updateStateOnUserBlock(id: id);
   }
 }

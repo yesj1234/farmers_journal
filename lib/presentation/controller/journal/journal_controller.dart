@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:farmers_journal/domain/model/journal.dart';
+import 'package:farmers_journal/presentation/controller/journal/pagination_controller.dart';
 import 'package:farmers_journal/utils.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -115,5 +116,8 @@ class JournalController extends _$JournalController {
   Future<void> reportJournal(
       {required String id, required String userId}) async {
     ref.read(journalRepositoryProvider).reportJournal(id: id, userId: userId);
+    ref
+        .read(paginationControllerProvider.notifier)
+        .updateStateOnJournalReport(id: id);
   }
 }

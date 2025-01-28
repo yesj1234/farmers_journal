@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
-import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/presentation/controller/journal/pagination_state.dart';
 
@@ -11,11 +10,13 @@ part 'pagination_controller.g.dart';
 
 @riverpod
 class PaginationController extends _$PaginationController {
-  final List<Journal> _totalJournals = [];
+  final List<Journal?> _totalJournals = [];
   bool noMoreItems = false;
   Timer _timer = Timer(const Duration(milliseconds: 0), () {});
   @override
   PaginationState build() {
+    _totalJournals.removeRange(
+        0, _totalJournals.length); // re-initialize the _totalJournals
     fetchFirstBatch(); // Future that will eventually change the state to data or loading.
     return const PaginationState.loading();
   }
@@ -36,7 +37,8 @@ class PaginationController extends _$PaginationController {
     // filter blocked users and blocked journals
     final user = await ref.read(userRepositoryProvider).getUser();
     final blockedJournals = user?.blockedJournals ?? [];
-    final blockedUsers = user?.blockedJournals ?? [];
+    final blockedUsers = user?.blockedUsers ?? [];
+
     final filteredJournals = journals
         .where((journal) =>
             !blockedJournals.contains(journal.id) &&
@@ -81,5 +83,25 @@ class PaginationController extends _$PaginationController {
     } catch (error, stackTrace) {
       state = PaginationState.error(error, stackTrace);
     }
+  }
+
+  void updateStateOnJournalReport({required String id}) {
+    for (int i = 0; i < _totalJournals.length; i++) {
+      if (_totalJournals[i]?.id == id) {
+        _totalJournals[i] = null; // Replace the journal
+      }
+    }
+    _totalJournals.removeWhere((journal) => journal == null); // Clean up nulls
+    state = PaginationState.data(_totalJournals);
+  }
+
+  void updateStateOnUserBlock({required String id}) {
+    for (int i = 0; i < _totalJournals.length; i++) {
+      if (_totalJournals[i]?.writer == id) {
+        _totalJournals[i] = null; // Replace the journal
+      }
+    }
+    _totalJournals.removeWhere((journal) => journal == null); // Clean up nulls
+    state = PaginationState.data(_totalJournals);
   }
 }

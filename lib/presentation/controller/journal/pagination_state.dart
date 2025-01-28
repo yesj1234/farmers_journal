@@ -6,11 +6,11 @@ part 'pagination_state.freezed.dart';
 @freezed
 class PaginationState with _$PaginationState {
   const factory PaginationState.initial() = Initial;
-  const factory PaginationState.data(List<Journal> journals) = Data;
+  const factory PaginationState.data(List<Journal?> journals) = Data;
   const factory PaginationState.error(Object? e, [StackTrace? stk]) = Error;
   const factory PaginationState.loading() = Loading;
-  const factory PaginationState.onGoingLoading(List<Journal> journals) =
+  const factory PaginationState.onGoingLoading(List<Journal?> journals) =
       OnGoingLoading;
-  const factory PaginationState.onGoingError(List<Journal> journals, Object? e,
+  const factory PaginationState.onGoingError(List<Journal?> journals, Object? e,
       [StackTrace? stk]) = OnGoingError;
 }
