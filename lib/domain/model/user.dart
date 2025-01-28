@@ -11,6 +11,8 @@ class AppUser {
   final String? profileImage;
   final String? name;
   final String? nickName;
+  final List<dynamic>? blockedJournals;
+  final List<dynamic>? blockedUsers;
   AppUser({
     required this.id,
     required this.email,
@@ -21,6 +23,8 @@ class AppUser {
     this.profileImage,
     this.name,
     this.nickName,
+    this.blockedJournals,
+    this.blockedUsers,
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) {
@@ -34,6 +38,8 @@ class AppUser {
     String profileImage = json['profileImage'] as String;
     String name = json['name'] as String;
     String nickName = json['nickName'] as String;
+    List<dynamic> blockedJournals = json['blockedJournals'] as List<dynamic>;
+    List<dynamic> blockedUsers = json['blockedUsers'] as List<dynamic>;
     return AppUser(
         id: id,
         email: email,
@@ -43,6 +49,8 @@ class AppUser {
         profileImage: profileImage,
         journals: journals,
         isInitialSettingRequired: isInitialSettingRequired,
+        blockedJournals: blockedJournals,
+        blockedUsers: blockedUsers,
         plants: plants
             .map((plant) => Plant.fromJson(plant as Map<String, dynamic>))
             .toList());
@@ -59,6 +67,8 @@ class AppUser {
       'journals': journals,
       'plants': plants,
       'isInitialSettingRequired': isInitialSettingRequired,
+      'blockedJournals': blockedJournals ?? [],
+      'blockedUsers': blockedUsers ?? [],
     };
   }
 }

@@ -111,4 +111,9 @@ class JournalController extends _$JournalController {
     state = await AsyncValue.guard(
         () => ref.read(userRepositoryProvider).deleteJournal(id: id));
   }
+
+  Future<void> reportJournal(
+      {required String id, required String userId}) async {
+    ref.read(journalRepositoryProvider).reportJournal(id: id, userId: userId);
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:farmers_journal/data/firestore_service.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/presentation/controller/journal/pagination_state.dart';
 
@@ -31,12 +32,22 @@ class PaginationController extends _$PaginationController {
     }
   }
 
-  void updateState(List<Journal> journals) {
+  void updateState(List<Journal> journals) async {
+    // filter blocked users and blocked journals
+    final user = await ref.read(userRepositoryProvider).getUser();
+    final blockedJournals = user?.blockedJournals ?? [];
+    final blockedUsers = user?.blockedJournals ?? [];
+    final filteredJournals = journals
+        .where((journal) =>
+            !blockedJournals.contains(journal.id) &&
+            !blockedUsers.contains(journal.writer))
+        .toList();
+
     noMoreItems = journals.length < 10; //
     if (journals.isEmpty) {
       state = PaginationState.data(_totalJournals);
     } else {
-      state = PaginationState.data(_totalJournals..addAll(journals));
+      state = PaginationState.data(_totalJournals..addAll(filteredJournals));
     }
   }
 

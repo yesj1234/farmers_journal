@@ -260,6 +260,7 @@ class FireStoreUserRepository implements UserRepository {
           date: date,
           createdAt: DateTime.now(),
           writer: writerId,
+          reportCount: 0,
         );
         userRef?.update({
           "journals": FieldValue.arrayUnion([id])
@@ -267,15 +268,17 @@ class FireStoreUserRepository implements UserRepository {
         journalRef.doc(id).set(newJournal.toJson());
       } else {
         final newJournal = Journal(
-            id: id,
-            title: title,
-            content: content,
-            plant: plant,
-            place: place,
-            images: images,
-            date: date,
-            createdAt: DateTime.now(),
-            writer: writerId);
+          id: id,
+          title: title,
+          content: content,
+          plant: plant,
+          place: place,
+          images: images,
+          date: date,
+          createdAt: DateTime.now(),
+          writer: writerId,
+          reportCount: 0,
+        );
         userRef?.update({
           "journals": FieldValue.arrayUnion([id])
         });
@@ -350,6 +353,18 @@ class FireStoreUserRepository implements UserRepository {
       final userDocSnapshot = await instance.collection("users").doc(id).get();
       final user = AppUser.fromJson(userDocSnapshot.data()!);
       return user;
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
+  @override
+  Future<void> blockUser({required String id}) async {
+    try {
+      final userRef = await _fetchUserRef();
+      userRef?.update({
+        'blockedUsers': FieldValue.arrayUnion([id])
+      });
     } catch (error) {
       throw Exception(error);
     }

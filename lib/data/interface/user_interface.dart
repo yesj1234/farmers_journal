@@ -34,4 +34,5 @@ abstract class UserRepository {
   Future<List<Journal?>> deleteJournal({required String id});
   Future<List<Journal?>> getJournalsByYear({required int year});
   Future<AppUser> getUserById({required String id});
+  Future<void> blockUser({required String id});
 }

@@ -3,8 +3,9 @@ import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:farmers_journal/presentation/components/card/card_single.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
+import 'package:farmers_journal/presentation/controller/user/community_view_controller.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
-import 'package:farmers_journal/presentation/show_delete_alert_dialog.dart';
+import 'package:farmers_journal/presentation/components/show_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -70,8 +71,19 @@ class DataStateDialog extends StatelessWidget {
                           )
                         : MyCascadingMenu(
                             menuType: CascadingMenuType.community,
-                            onCallBack1: () {},
-                            onCallBack2: () {},
+                            onCallBack1: () => ref
+                                .read(journalControllerProvider.notifier)
+                                .reportJournal(
+                                  id: journalInfo.id!,
+                                  userId: userInfo.value!.id,
+                                ),
+                            onCallBack2: () =>
+                                showBlockAlertDialog(context, () {
+                              ref
+                                  .read(userControllerProvider.notifier)
+                                  .blockUser(id: journalInfo.writer!);
+                              ref.invalidate(communityViewControllerProvider);
+                            }),
                           );
                   }),
                 ],

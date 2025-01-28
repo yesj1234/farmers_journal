@@ -69,4 +69,9 @@ class UserController extends _$UserController {
     await repository.setPlace(id: id, newPlantPlace: newPlantPlace);
     ref.invalidateSelf();
   }
+
+  Future<void> blockUser({required String id}) async {
+    final repository = ref.read(userRepositoryProvider);
+    await repository.blockUser(id: id);
+  }
 }

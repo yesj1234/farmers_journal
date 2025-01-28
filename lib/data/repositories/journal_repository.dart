@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:farmers_journal/data/interface/journal_interface.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 
 class FireStoreJournalRepository implements JournalRepository {
   final FirebaseFirestore instance;
+
   FireStoreJournalRepository({required this.instance});
 
   @override
@@ -62,6 +64,21 @@ class FireStoreJournalRepository implements JournalRepository {
       } catch (error) {
         throw Exception(error);
       }
+    }
+  }
+
+  @override
+  Future<void> reportJournal(
+      {required String id, required String userId}) async {
+    final journalRef = instance.collection("journals").doc(id);
+    final userRef = instance.collection('users').doc(userId);
+    try {
+      journalRef.update({"reportCount": FieldValue.increment(1)});
+      userRef.update({
+        "blockedJournals": FieldValue.arrayUnion([id])
+      });
+    } catch (error) {
+      throw Exception(error);
     }
   }
 }

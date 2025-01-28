@@ -10,6 +10,7 @@ class Journal {
   final String? plant;
   final String? place;
   final String? writer;
+  final int? reportCount;
   Journal({
     this.id,
     this.title,
@@ -20,6 +21,7 @@ class Journal {
     this.plant,
     this.place,
     this.writer,
+    this.reportCount,
   });
 
   factory Journal.fromJson(
@@ -41,7 +43,8 @@ class Journal {
         images: images,
         date: dateDateTime,
         createdAt: createdAtDateTime,
-        writer: map['writer']);
+        writer: map['writer'],
+        reportCount: map['reportCount']);
   }
 
   Map<String, dynamic> toJson() {
@@ -55,6 +58,7 @@ class Journal {
       "date": date ?? DateTime.now(),
       "createdAt": createdAt ?? DateTime.now(),
       "writer": writer ?? '',
+      "reportCount": reportCount ?? 0,
     };
   }
 

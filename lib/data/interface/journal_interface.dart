@@ -5,4 +5,5 @@ abstract class JournalRepository {
   Future<List<Journal>> getJournals(List<String> ids);
 
   Future<List<Journal>> fetchPaginatedJournals({Journal? lastJournal});
+  Future<void> reportJournal({required String id, required String userId});
 }
