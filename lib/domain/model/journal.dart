@@ -62,8 +62,8 @@ class Journal {
     };
   }
 
-  @override
-  String toString() {
-    return 'Instance of "Journal"\ntitle: $title\ncontent: $content\nimage: $images\ncreatedAt: $createdAt';
-  }
+  // @override
+  // String toString() {
+  //   return 'Instance of "Journal"\ntitle: $title\ncontent: $content\nimage: $images\ncreatedAt: $createdAt';
+  // }
 }
