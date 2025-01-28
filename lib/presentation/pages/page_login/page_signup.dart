@@ -1,4 +1,5 @@
 import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
