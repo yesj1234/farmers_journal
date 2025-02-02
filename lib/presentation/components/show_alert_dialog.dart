@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 enum AlertDialogType {
   delete,
   block,
-  report,
 }
 
 Future<void> showMyAlertDialog(
@@ -13,8 +12,6 @@ Future<void> showMyAlertDialog(
       const Text('삭제', style: TextStyle(color: Colors.red)),
     AlertDialogType.block =>
       const Text('차단', style: TextStyle(color: Colors.red)),
-    AlertDialogType.report =>
-      const Text('신고', style: TextStyle(color: Colors.red)),
   };
 
   final alertChildren = switch (type) {
@@ -26,9 +23,6 @@ Future<void> showMyAlertDialog(
         Text('정말 차단 하시겠습니까?'),
         Text('이 동작은 이 유저의 모든 글을 차단합니다.')
       ],
-    AlertDialogType.report => const [
-        Text('정말 신고하시겠습니까?'),
-      ],
   };
   final confirmText = switch (type) {
     AlertDialogType.delete => const Text(
@@ -39,12 +33,6 @@ Future<void> showMyAlertDialog(
       ),
     AlertDialogType.block => const Text(
         '차단',
-        style: TextStyle(
-          color: Colors.red,
-        ),
-      ),
-    AlertDialogType.report => const Text(
-        '신고',
         style: TextStyle(
           color: Colors.red,
         ),

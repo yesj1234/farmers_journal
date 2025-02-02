@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/user.dart';
@@ -74,19 +75,21 @@ class DataStateDialog extends StatelessWidget {
                           )
                         : MyCascadingMenu(
                             menuType: CascadingMenuType.community,
-                            onCallBack1: () => showMyAlertDialog(
-                                context: context,
-                                type: AlertDialogType.report,
-                                cb: () {
-                                  ref
-                                      .read(journalControllerProvider.notifier)
-                                      .reportJournal(
-                                        id: journalInfo.id!,
-                                        userId: userInfo.value!.id,
-                                      );
-                                  Navigator.pop(context);
-                                  showSnackBar(context, "신고해주셔서 감사합니다.");
-                                }),
+                            onCallBack1: () {
+                              showReportDialog(
+                                  context: context,
+                                  journalId: journalInfo.id!,
+                                  onConfirm: () {
+                                    ref
+                                        .read(
+                                            journalControllerProvider.notifier)
+                                        .reportJournal(
+                                          id: journalInfo.id!,
+                                          userId: userInfo.value!.id,
+                                        );
+                                    Navigator.pop(context);
+                                  });
+                            },
                             onCallBack2: () => showMyAlertDialog(
                                 context: context,
                                 type: AlertDialogType.block,
@@ -248,4 +251,90 @@ class ErrorStateDialog extends StatelessWidget {
       ),
     );
   }
+}
+
+void showReportDialog({
+  required BuildContext context,
+  required String journalId,
+  required void Function() onConfirm,
+}) {
+  String? selectedReason;
+
+  final TextEditingController customReasonController = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return AlertDialog(
+          title: const Text('Report Post'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, // Use min to avoid expanding
+            children: [
+              DropdownButtonFormField<String>(
+                hint: const Text('Select a reason'),
+                isExpanded: true,
+                items: const [
+                  DropdownMenuItem(value: 'Spam', child: Text('Spam or Scam')),
+                  DropdownMenuItem(
+                    value: 'Hate Speech or Discrimination',
+                    child: Text('Hate Speech or Discrimination'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Inappropriate Content',
+                    child: Text('Inappropriate Content'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Misinformation or Fake News',
+                    child: Text('Misinformation or Fake News'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Violence or Harm',
+                    child: Text('Violence or Harm'),
+                  ),
+                  DropdownMenuItem(value: 'Other', child: Text('Other')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    selectedReason = value;
+                  });
+                },
+              ),
+              if (selectedReason == 'Other')
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: TextField(
+                    controller: customReasonController,
+                    decoration: const InputDecoration(
+                      labelText: 'Please specify',
+                      border:
+                          OutlineInputBorder(), // Add a border for better UI
+                    ),
+                    maxLines: 3, // Limit the number of lines
+                  ),
+                ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                final reason = selectedReason == 'Other'
+                    ? customReasonController.text
+                    : selectedReason;
+                if (reason != null) {
+                  onConfirm();
+                  Navigator.pop(ctx);
+                }
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    ),
+  );
 }
