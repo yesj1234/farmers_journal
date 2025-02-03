@@ -46,7 +46,9 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
   }
 
   void onDatePicked(DateTime? value) {
-    date = value;
+    setState(() {
+      date = value;
+    });
   }
 
   void updateJournalTitle(String? value) {

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/components/styles/text.dart';
@@ -27,7 +29,10 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
   String? content;
   List<XFile> images = [];
   void onDatePicked(DateTime? value) {
-    date = value;
+    log(value.toString());
+    setState(() {
+      date = value;
+    });
   }
 
   void updateJournalTitle(String? value) {
