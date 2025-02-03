@@ -1,5 +1,6 @@
 import 'package:farmers_journal/data/firestore_providers.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
+import 'package:farmers_journal/presentation/controller/auth/auth_controller.dart';
 import 'package:farmers_journal/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,11 +78,11 @@ class _PageSignUpState extends ConsumerState<PageSignup> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       ref
-          .read(authRepositoryProvider)
+          .read(authControllerProvider.notifier)
           .signUpWithEmail(email: email!, password: password!, name: name!)
           .then((_) {
         showSnackBar(context, '회원가입이 완료되었습니다.');
-        context.go('/initialSetting');
+        context.go('/initial_setting');
       }).catchError((e) {
         showSnackBar(context, e.toString());
       });
@@ -90,6 +91,7 @@ class _PageSignUpState extends ConsumerState<PageSignup> {
 
   @override
   Widget build(BuildContext context) {
+    final authRef = ref.watch(authControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -146,7 +148,7 @@ class _PageSignUpState extends ConsumerState<PageSignup> {
                     obscureText: true,
                   ),
                   ElevatedButton(
-                    onPressed: onFormSubmitted,
+                    onPressed: authRef.isLoading ? null : onFormSubmitted,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -154,14 +156,16 @@ class _PageSignUpState extends ConsumerState<PageSignup> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
-                      '가입하기',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: authRef.isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text(
+                            '가입하기',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                 ],
               ),
