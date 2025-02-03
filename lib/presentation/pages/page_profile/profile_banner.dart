@@ -102,31 +102,39 @@ class _UserDisplayNameState extends ConsumerState<_UserDisplayName> {
           Text('' ?? '', style: subTextStyle),
         ],
       ),
-      data: (value) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          FittedBox(
-            fit: BoxFit.fitWidth,
-            child: Text(value?.name ?? '', style: displayNameTextStyle),
-          ),
-          FittedBox(
-            fit: BoxFit.fitWidth,
-            child: Text(
-              value?.nickName ?? '',
+      data: (value) {
+        final displayName = value?.name ?? '';
+        final nickName = value?.nickName ?? '';
+
+        final place =
+            value!.plants.isNotEmpty ? value.plants[0].place : '초기 설정 필요';
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(displayName, style: displayNameTextStyle),
+            ),
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                nickName,
+                style: subTextStyle,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            AutoSizeText(
+              place,
               style: subTextStyle,
+              maxLines: 2,
+              minFontSize: 10,
               overflow: TextOverflow.ellipsis,
             ),
-          ),
-          AutoSizeText(
-            value?.plants[0].place ?? '',
-            style: subTextStyle,
-            maxLines: 2,
-            minFontSize: 10,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
 }
