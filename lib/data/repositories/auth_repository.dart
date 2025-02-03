@@ -122,7 +122,7 @@ class FirebaseAuthRepository implements AuthRepository {
         id: uuid!,
         email: email ?? '',
         createdAt: Timestamp.now(),
-        name: name,
+        name: name ?? '이름 설정 필요',
         nickName: nickName,
         journals: [],
         plants: [],
