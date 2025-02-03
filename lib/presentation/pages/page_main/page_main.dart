@@ -1,4 +1,7 @@
 // packages
+import 'dart:developer';
+
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_main/community_view/community_view.dart';
 import 'package:farmers_journal/presentation/pages/page_main/day_view.dart';
 import 'package:farmers_journal/presentation/pages/page_main/month_view.dart';
@@ -23,6 +26,7 @@ class PageMain extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final journalRef = ref.watch(journalControllerProvider);
+    final userRef = ref.watch(userControllerProvider);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(30),
@@ -63,7 +67,15 @@ class PageMain extends ConsumerWidget {
         ),
       ),
       floatingActionButton: ButtonCreatePost(
-        onClick: () => context.go('/create'),
+        onClick: () {
+          // 초기 설정 없으면 초기 설정 페이지로 이동
+          if (userRef.value!.isInitialSettingRequired) {
+            log('..');
+            context.go('/initial_setting');
+          } else {
+            context.go('/create');
+          }
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
