@@ -6,6 +6,7 @@ import 'package:farmers_journal/presentation/components/card/card_single.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/controller/journal/pagination_controller.dart';
+import 'package:farmers_journal/presentation/controller/journal/report_controller.dart';
 import 'package:farmers_journal/presentation/controller/user/community_view_controller.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/components/show_alert_dialog.dart';
@@ -79,14 +80,31 @@ class DataStateDialog extends StatelessWidget {
                               showReportDialog(
                                   context: context,
                                   journalId: journalInfo.id!,
-                                  onConfirm: () {
-                                    ref
-                                        .read(
-                                            journalControllerProvider.notifier)
-                                        .reportJournal(
-                                          id: journalInfo.id!,
-                                          userId: userInfo.value!.id,
-                                        );
+                                  onConfirm: (String? value) {
+                                    try {
+                                      // Side effects for the user who reports the journal.
+                                      ref
+                                          .read(journalControllerProvider
+                                              .notifier)
+                                          .reportJournal(
+                                            id: journalInfo.id!,
+                                            userId: userInfo.value!.id,
+                                            reason: value ?? '',
+                                          );
+                                      // and create the Report for later review
+                                      ref
+                                          .read(
+                                              reportControllerProvider.notifier)
+                                          .createReport(
+                                              journalId: journalInfo.id!,
+                                              writerId: userInfo.value!.id,
+                                              reason: value ?? '');
+                                      showSnackBar(context,
+                                          "신고가 정상적으로 처리되었습니다. 적절한 조치를 취하겠습니다.");
+                                    } catch (error) {
+                                      showSnackBar(context,
+                                          "신고 요청 처리에 문제가 발생했습니다. 불편을 드려 죄송하며 빠르게 해결하겠습니다. 잠시 후 다시 시도해 주세요.");
+                                    }
                                     Navigator.pop(context);
                                   });
                             },
@@ -256,7 +274,7 @@ class ErrorStateDialog extends StatelessWidget {
 void showReportDialog({
   required BuildContext context,
   required String journalId,
-  required void Function() onConfirm,
+  required void Function(String? value) onConfirm,
 }) {
   String? selectedReason;
 
@@ -267,32 +285,51 @@ void showReportDialog({
     builder: (ctx) => StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
         return AlertDialog(
-          title: const Text('Report Post'),
+          title: const Text('게시물 신고'),
           content: Column(
             mainAxisSize: MainAxisSize.min, // Use min to avoid expanding
             children: [
               DropdownButtonFormField<String>(
-                hint: const Text('Select a reason'),
+                hint: const FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text('신고 사유 선택'),
+                ),
                 isExpanded: true,
                 items: const [
-                  DropdownMenuItem(value: 'Spam', child: Text('Spam or Scam')),
+                  DropdownMenuItem(
+                    value: 'Spam',
+                    child: FittedBox(
+                        fit: BoxFit.fitWidth, child: Text('스팸 또는 사기')),
+                  ),
                   DropdownMenuItem(
                     value: 'Hate Speech or Discrimination',
-                    child: Text('Hate Speech or Discrimination'),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text('혐오 발언 또는 차별'),
+                    ),
                   ),
                   DropdownMenuItem(
                     value: 'Inappropriate Content',
-                    child: Text('Inappropriate Content'),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text('부적절한 콘텐츠'),
+                    ),
                   ),
                   DropdownMenuItem(
                     value: 'Misinformation or Fake News',
-                    child: Text('Misinformation or Fake News'),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text('허위 정보 또는 가짜 뉴스'),
+                    ),
                   ),
                   DropdownMenuItem(
                     value: 'Violence or Harm',
-                    child: Text('Violence or Harm'),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text('폭력 또는 유채 콘텐츠'),
+                    ),
                   ),
-                  DropdownMenuItem(value: 'Other', child: Text('Other')),
+                  DropdownMenuItem(value: 'Other', child: Text('기타')),
                 ],
                 onChanged: (value) {
                   setState(() {
@@ -306,7 +343,7 @@ void showReportDialog({
                   child: TextField(
                     controller: customReasonController,
                     decoration: const InputDecoration(
-                      labelText: 'Please specify',
+                      labelText: '신고 사유를 입력해주세요.',
                       border:
                           OutlineInputBorder(), // Add a border for better UI
                     ),
@@ -318,7 +355,7 @@ void showReportDialog({
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel'),
+              child: const Text('취소'),
             ),
             TextButton(
               onPressed: () {
@@ -326,11 +363,11 @@ void showReportDialog({
                     ? customReasonController.text
                     : selectedReason;
                 if (reason != null) {
-                  onConfirm();
+                  onConfirm(reason);
                   Navigator.pop(ctx);
                 }
               },
-              child: const Text('Submit'),
+              child: const Text('제출'),
             ),
           ],
         );

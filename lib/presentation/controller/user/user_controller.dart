@@ -4,7 +4,7 @@ import 'package:farmers_journal/presentation/controller/journal/pagination_contr
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/data/firestore_providers.dart';
 import 'package:uuid/uuid.dart';
 
 part 'user_controller.g.dart';

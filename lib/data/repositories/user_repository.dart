@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/data/firestore_providers.dart';
 import 'package:farmers_journal/data/interface/user_interface.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/plant.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/data/firestore_providers.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/presentation/controller/journal/pagination_state.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/data/firestore_providers.dart';
 import 'dart:developer';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

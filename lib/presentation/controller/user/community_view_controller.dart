@@ -1,4 +1,4 @@
-import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/data/firestore_providers.dart';
 import 'package:farmers_journal/presentation/controller/user/community_view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'dart:async';

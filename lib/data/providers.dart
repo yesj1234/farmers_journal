@@ -1,4 +1,4 @@
-import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/data/firestore_providers.dart';
 
 import 'package:farmers_journal/data/repositories/excel_repository.dart';
 import 'package:farmers_journal/data/repositories/googleAPI.dart';

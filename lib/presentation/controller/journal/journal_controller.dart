@@ -4,7 +4,7 @@ import 'package:farmers_journal/presentation/controller/journal/pagination_contr
 import 'package:farmers_journal/utils.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:farmers_journal/data/firestore_service.dart';
+import 'package:farmers_journal/data/firestore_providers.dart';
 
 part 'journal_controller.g.dart';
 
@@ -114,7 +114,9 @@ class JournalController extends _$JournalController {
   }
 
   Future<void> reportJournal(
-      {required String id, required String userId}) async {
+      {required String id,
+      required String userId,
+      required String reason}) async {
     ref.read(journalRepositoryProvider).reportJournal(id: id, userId: userId);
     ref
         .read(paginationControllerProvider.notifier)
