@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
@@ -112,7 +113,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           locale: 'ko_KR',
           firstDay: DateTime.utc(2010, 10, 16),
           lastDay: DateTime.utc(2030, 3, 14),
-          focusedDay: DateTime.now(),
+          focusedDay: _focusedDay,
           calendarFormat: _calendarFormat,
           selectedDayPredicate: (day) {
             return isSameDay(_selectedDay, day);
