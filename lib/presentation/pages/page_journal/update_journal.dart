@@ -74,6 +74,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
 
   @override
   Widget build(BuildContext context) {
+    final journalRef = ref.watch(journalControllerProvider);
     return FutureBuilder(
       future: _journal,
       builder: (context, snapshot) {
@@ -134,25 +135,27 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () async {
-                    _formKey.currentState?.save();
-                    final imagePaths = images?.map((image) {
-                      if (image is XFile) return image.path;
-                      return image as String;
-                    }).toList();
-                    await ref
-                        .read(journalControllerProvider.notifier)
-                        .updateJournal(
-                            id: widget.id!,
-                            title: title ?? '',
-                            content: content ?? '',
-                            date: date ?? snapshot.data!.date!,
-                            images: imagePaths as List<String?>? ??
-                                snapshot.data!.images!);
-                    if (context.mounted) {
-                      context.go('/main');
-                    }
-                  },
+                  onPressed: journalRef.isLoading
+                      ? null
+                      : () async {
+                          _formKey.currentState?.save();
+                          final imagePaths = images?.map((image) {
+                            if (image is XFile) return image.path;
+                            return image as String;
+                          }).toList();
+                          await ref
+                              .read(journalControllerProvider.notifier)
+                              .updateJournal(
+                                  id: widget.id!,
+                                  title: title ?? '',
+                                  content: content ?? '',
+                                  date: date ?? snapshot.data!.date!,
+                                  images: imagePaths as List<String?>? ??
+                                      snapshot.data!.images!);
+                          if (context.mounted) {
+                            context.go('/main');
+                          }
+                        },
                   style: onSaveButtonStyle,
                   child: ref.watch(journalControllerProvider).maybeWhen(
                         orElse: () => const Text("저장", style: onSaveTextStyle),

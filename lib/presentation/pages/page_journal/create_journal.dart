@@ -29,7 +29,6 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
   String? content;
   List<XFile> images = [];
   void onDatePicked(DateTime? value) {
-    log(value.toString());
     setState(() {
       date = value;
     });
@@ -60,6 +59,7 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final journalRef = ref.watch(journalControllerProvider);
     return Form(
       key: _formKey,
       child: Column(
@@ -107,18 +107,21 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
             ),
           ),
           ElevatedButton(
-            onPressed: () async {
-              _formKey.currentState?.save();
-              await ref.read(journalControllerProvider.notifier).createJournal(
-                  title: title ?? '',
-                  content: content ?? '',
-                  date: date ?? DateTime.now(),
-                  images: images.map((item) => item.path).toList()
-                      as List<String>?);
-              if (context.mounted) {
-                context.go('/main');
-              }
-            },
+            onPressed: journalRef.isLoading
+                ? null
+                : () async {
+                    _formKey.currentState?.save();
+                    await ref
+                        .read(journalControllerProvider.notifier)
+                        .createJournal(
+                            title: title ?? '',
+                            content: content ?? '',
+                            date: date ?? DateTime.now(),
+                            images: images);
+                    if (context.mounted) {
+                      context.go('/main');
+                    }
+                  },
             style: onSaveButtonStyle,
             child: ref.watch(journalControllerProvider).maybeWhen(
                 orElse: () => const Text("저장", style: onSaveTextStyle),
