@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/controller/journal/pagination_controller.dart';
 import 'package:farmers_journal/utils.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:farmers_journal/data/firestore_providers.dart';
@@ -82,7 +83,7 @@ class JournalController extends _$JournalController {
       {required String title,
       required String content,
       required DateTime date,
-      required List<String>? images}) async {
+      required List<XFile>? images}) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => ref
         .read(userRepositoryProvider)
