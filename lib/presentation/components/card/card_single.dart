@@ -106,15 +106,6 @@ class MyCascadingMenu extends StatefulWidget {
 }
 
 class _MyCascadingMenuState extends State<MyCascadingMenu> {
-  // Text get menus => switch (widget.menuType) {
-  //       CascadingMenuType.personal => const Text("수정하기"),
-  //       CascadingMenuType.community => const Text(
-  //           '삭제하기',
-  //           style: TextStyle(
-  //             color: Colors.red,
-  //           ),
-  //         ),
-  //     };
   List<Widget> get menus => switch (widget.menuType) {
         CascadingMenuType.personal => [
             MenuItemButton(

@@ -149,6 +149,7 @@ class DataStateDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (journalInfo.title!.isNotEmpty)
                     Text(
@@ -169,10 +170,35 @@ class DataStateDialog extends StatelessWidget {
                 ],
               ),
             ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                _formatDate(journalInfo.date!)!,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurfaceVariant
+                      .withValues(alpha: 0.5),
+                ),
+              ),
+            )
           ],
         ),
       ),
     );
+  }
+
+  String? _formatDate(DateTime date) {
+    final localDateTime = date.toLocal();
+    final weekDayOrder = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"];
+    int month = localDateTime.month;
+    int day = localDateTime.day;
+    int weekDay = localDateTime.weekday;
+
+    return '$month월 $day일 ${weekDayOrder[weekDay - 1]}';
   }
 }
 
