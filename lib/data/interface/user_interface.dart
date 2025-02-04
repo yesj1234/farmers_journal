@@ -22,7 +22,7 @@ abstract class UserRepository {
     required String title,
     required String content,
     required DateTime date,
-    required List<String>? images,
+    required List<XFile>? images,
   });
   Future<List<Journal?>> updateJournal({
     required String id,

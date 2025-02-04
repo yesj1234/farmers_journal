@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
@@ -32,12 +33,14 @@ class FireStoreUserRepository implements UserRepository {
     }
   }
 
-  Future<String> _uploadBytes(Uint8List bytes) async {
+  Future<String> _uploadBytes({required Uint8List bytes, String? path}) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Reference storageRef =
-        FirebaseStorage.instance.ref().child("profile_images/$fileName");
+        FirebaseStorage.instance.ref().child("${path ?? ''}/$fileName");
 
-    UploadTask uploadTask = storageRef.putData(bytes);
+    final compressedBytes = await FlutterImageCompress.compressWithList(bytes);
+
+    UploadTask uploadTask = storageRef.putData(compressedBytes);
 
     TaskSnapshot snapshot = await uploadTask;
 
@@ -49,7 +52,8 @@ class FireStoreUserRepository implements UserRepository {
   Future<void> setProfileImage({required Uint8List bytes}) async {
     try {
       final user = await _fetchUserRef();
-      String photoURL = await _uploadBytes(bytes);
+      String photoURL =
+          await _uploadBytes(bytes: bytes, path: 'profile_images');
       await user?.update({
         'profileImage': photoURL,
       });
@@ -71,8 +75,8 @@ class FireStoreUserRepository implements UserRepository {
         updateRef.update('nickName', (_) => nickName, ifAbsent: () => nickName);
       }
       if (profileImage != null) {
-        String downloadURL =
-            await _uploadBytes(await profileImage.readAsBytes());
+        String downloadURL = await _uploadBytes(
+            bytes: await profileImage.readAsBytes(), path: 'profile_images');
         updateRef.update('profileImage', (_) => downloadURL,
             ifAbsent: () => downloadURL);
       }
@@ -229,7 +233,7 @@ class FireStoreUserRepository implements UserRepository {
       {required String title,
       required String content,
       required DateTime date,
-      required List<String>? images}) async {
+      required List<XFile>? images}) async {
     try {
       final userRef = await _fetchUserRef();
       final userInfo = await userRef?.get().then((doc) {
@@ -243,47 +247,34 @@ class FireStoreUserRepository implements UserRepository {
       final journalRef = instance.collection("journals");
       var uuid = const Uuid();
       String id = uuid.v4();
+
+      Journal newJournal = Journal(
+        id: id,
+        title: title,
+        content: content,
+        plant: plant,
+        place: place,
+        images: [],
+        date: date,
+        createdAt: DateTime.now(),
+        writer: writerId,
+        reportCount: 0,
+      );
+
       if (images != null) {
         List<String>? imageURLs = [];
-        for (String path in images) {
-          String downloadURL = await _uploadFile(File(path));
+        for (final image in images) {
+          final bytes = await image.readAsBytes();
+          final downloadURL = await _uploadBytes(bytes: bytes, path: 'images');
           imageURLs.add(downloadURL);
         }
-
-        final newJournal = Journal(
-          id: id,
-          title: title,
-          content: content,
-          plant: plant,
-          place: place,
-          images: imageURLs,
-          date: date,
-          createdAt: DateTime.now(),
-          writer: writerId,
-          reportCount: 0,
-        );
-        userRef?.update({
-          "journals": FieldValue.arrayUnion([id])
-        });
-        journalRef.doc(id).set(newJournal.toJson());
-      } else {
-        final newJournal = Journal(
-          id: id,
-          title: title,
-          content: content,
-          plant: plant,
-          place: place,
-          images: images,
-          date: date,
-          createdAt: DateTime.now(),
-          writer: writerId,
-          reportCount: 0,
-        );
-        userRef?.update({
-          "journals": FieldValue.arrayUnion([id])
-        });
-        journalRef.doc(id).set(newJournal.toJson());
+        newJournal = newJournal.copyWith(images: imageURLs);
       }
+      userRef?.update({
+        "journals": FieldValue.arrayUnion([id])
+      });
+      journalRef.doc(id).set(newJournal.toJson());
+
       return getJournals();
     } catch (error) {
       throw Exception(error);
