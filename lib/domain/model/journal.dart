@@ -62,8 +62,29 @@ class Journal {
     };
   }
 
-  // @override
-  // String toString() {
-  //   return 'Instance of "Journal"\ntitle: $title\ncontent: $content\nimage: $images\ncreatedAt: $createdAt';
-  // }
+  Journal copyWith({
+    String? id,
+    String? title,
+    String? content,
+    List<String?>? images,
+    DateTime? createdAt,
+    DateTime? date,
+    String? plant,
+    String? place,
+    String? writer,
+    int? reportCount,
+  }) {
+    return Journal(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      images: images ?? this.images,
+      createdAt: createdAt ?? this.createdAt,
+      date: date ?? this.date,
+      plant: plant ?? this.plant,
+      place: place ?? this.place,
+      writer: writer ?? this.writer,
+      reportCount: reportCount ?? this.reportCount,
+    );
+  }
 }
