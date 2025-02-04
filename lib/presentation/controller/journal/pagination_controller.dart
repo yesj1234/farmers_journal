@@ -8,25 +8,26 @@ import 'package:farmers_journal/presentation/controller/journal/pagination_state
 
 part 'pagination_controller.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PaginationController extends _$PaginationController {
   final List<Journal?> _totalJournals = [];
+  Journal? _lastJournal;
   bool noMoreItems = false;
   Timer _timer = Timer(const Duration(milliseconds: 0), () {});
   @override
   PaginationState build() {
+    _lastJournal = null;
     _totalJournals.removeRange(
         0, _totalJournals.length); // re-initialize the _totalJournals
     fetchFirstBatch(); // Future that will eventually change the state to data or loading.
-    return const PaginationState.loading();
+    return const PaginationState.initial();
   }
 
   Future<void> fetchFirstBatch() async {
     try {
       state = const PaginationState.loading();
-      final List<Journal> result = _totalJournals.isEmpty
-          ? await _fetchNextItems(lastJournal: null)
-          : await _fetchNextItems(lastJournal: _totalJournals.last);
+      final List<Journal> result =
+          await _fetchNextItems(lastJournal: _lastJournal);
       updateState(result);
     } catch (error, stackTrace) {
       state = PaginationState.error(error, stackTrace);
@@ -39,6 +40,7 @@ class PaginationController extends _$PaginationController {
     final blockedJournals = user?.blockedJournals ?? [];
     final blockedUsers = user?.blockedUsers ?? [];
 
+    _lastJournal = journals.last;
     final filteredJournals = journals
         .where((journal) =>
             !blockedJournals.contains(journal.id) &&
@@ -77,8 +79,7 @@ class PaginationController extends _$PaginationController {
 
     state = PaginationState.onGoingLoading(_totalJournals);
     try {
-      await Future.delayed(const Duration(seconds: 1));
-      final result = await _fetchNextItems(lastJournal: _totalJournals.last);
+      final result = await _fetchNextItems(lastJournal: _lastJournal);
       updateState(result);
     } catch (error, stackTrace) {
       state = PaginationState.error(error, stackTrace);
