@@ -79,18 +79,6 @@ class JournalController extends _$JournalController {
     return await repository.getJournal(id);
   }
 
-  Future<void> createJournal(
-      {required String title,
-      required String content,
-      required DateTime date,
-      required List<XFile>? images}) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() => ref
-        .read(userRepositoryProvider)
-        .createJournal(
-            title: title, content: content, date: date, images: images));
-  }
-
   Future<void> updateJournal(
       {required String id,
       required String title,

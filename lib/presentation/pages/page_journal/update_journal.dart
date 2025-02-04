@@ -2,6 +2,7 @@ import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/components/styles/button.dart';
+import 'package:farmers_journal/presentation/controller/journal/journal_form_controller.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:go_router/go_router.dart';
@@ -74,7 +75,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
 
   @override
   Widget build(BuildContext context) {
-    final journalRef = ref.watch(journalControllerProvider);
+    final journalFormController = ref.watch(journalFormControllerProvider);
     return FutureBuilder(
       future: _journal,
       builder: (context, snapshot) {
@@ -135,32 +136,40 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: journalRef.isLoading
-                      ? null
-                      : () async {
+                  onPressed: journalFormController.maybeWhen(
+                      orElse: () {
+                        return () async {
                           _formKey.currentState?.save();
                           final imagePaths = images?.map((image) {
                             if (image is XFile) return image.path;
                             return image as String;
                           }).toList();
                           await ref
-                              .read(journalControllerProvider.notifier)
+                              .read(journalFormControllerProvider.notifier)
                               .updateJournal(
                                   id: widget.id!,
                                   title: title ?? '',
                                   content: content ?? '',
                                   date: date ?? snapshot.data!.date!,
                                   images: imagePaths as List<String?>? ??
-                                      snapshot.data!.images!);
-                          if (context.mounted) {
-                            context.go('/main');
-                          }
-                        },
+                                      snapshot.data!.images!)
+                              .then(
+                            (_) {
+                              context.go('/main');
+                            },
+                            onError: (e, st) => showSnackBar(
+                              context,
+                              e.toString(),
+                            ),
+                          );
+                        };
+                      },
+                      loading: null),
                   style: onSaveButtonStyle,
-                  child: ref.watch(journalControllerProvider).maybeWhen(
-                        orElse: () => const Text("저장", style: onSaveTextStyle),
-                        loading: () => const CircularProgressIndicator(),
-                      ),
+                  child: journalFormController.maybeWhen(
+                    orElse: () => const Text("저장", style: onSaveTextStyle),
+                    loading: () => const CircularProgressIndicator(),
+                  ),
                 ),
               ],
             ),

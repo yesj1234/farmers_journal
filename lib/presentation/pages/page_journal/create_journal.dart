@@ -4,13 +4,13 @@ import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/components/styles/text.dart';
 import 'package:farmers_journal/presentation/components/styles/button.dart';
+import 'package:farmers_journal/presentation/controller/journal/journal_form_controller.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
 class CreateJournalForm extends StatefulHookConsumerWidget {
@@ -59,7 +59,7 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final journalRef = ref.watch(journalControllerProvider);
+    final journalFormController = ref.watch(journalFormControllerProvider);
     return Form(
       key: _formKey,
       child: Column(
@@ -107,23 +107,36 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
             ),
           ),
           ElevatedButton(
-            onPressed: journalRef.isLoading
-                ? null
-                : () async {
-                    _formKey.currentState?.save();
+            onPressed: journalFormController.maybeWhen(
+              loading: null,
+              orElse: () {
+                return () async {
+                  _formKey.currentState?.save();
+                  try {
                     await ref
-                        .read(journalControllerProvider.notifier)
+                        .read(journalFormControllerProvider.notifier)
                         .createJournal(
                             title: title ?? '',
                             content: content ?? '',
                             date: date ?? DateTime.now(),
-                            images: images);
-                    if (context.mounted) {
-                      context.go('/main');
-                    }
-                  },
+                            images: images)
+                        .then(
+                      (_) {
+                        context.go('/main');
+                      },
+                      onError: (e, st) => showSnackBar(
+                        context,
+                        e.toString(),
+                      ),
+                    );
+                  } catch (error) {
+                    showSnackBar(context, error.toString());
+                  }
+                };
+              },
+            ),
             style: onSaveButtonStyle,
-            child: ref.watch(journalControllerProvider).maybeWhen(
+            child: journalFormController.maybeWhen(
                 orElse: () => const Text("저장", style: onSaveTextStyle),
                 loading: () => const CircularProgressIndicator()),
           ),
