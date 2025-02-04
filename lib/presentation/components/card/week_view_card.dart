@@ -71,7 +71,6 @@ class WeekViewCard extends ConsumerWidget {
           minHeight: cardMinHeight,
           maxHeight: cardMaxHeight),
       child: Card.outlined(
-        color: colorScheme.surface.withValues(alpha: 0.5),
         shape: ContinuousRectangleBorder(
           borderRadius: BorderRadius.circular(50),
         ),
