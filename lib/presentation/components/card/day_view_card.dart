@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/components/show_alert_dialog.dart';
@@ -16,8 +18,8 @@ class DayViewCard extends ConsumerWidget {
     this.editable = true,
     this.cardMinHeight = 0,
     this.cardMaxHeight = 300,
-    this.cardMaxWidth = 270,
-    this.horizontalPadding = 4.0,
+    this.cardMaxWidth = 300,
+    this.horizontalPadding = 16.0,
     this.verticalPadding = 0.0,
     this.textMaxLine = 3,
     this.dateFontSize = 12,
@@ -38,11 +40,10 @@ class DayViewCard extends ConsumerWidget {
 
     return ConstrainedBox(
       constraints: BoxConstraints(
-          maxWidth: cardMaxWidth,
+          maxWidth: max(cardMaxWidth, MediaQuery.sizeOf(context).width - 32),
           minHeight: cardMinHeight,
           maxHeight: cardMaxHeight),
       child: Card.outlined(
-        // color: colorScheme.surface.withValues(alpha: 0.5),
         shape: ContinuousRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),

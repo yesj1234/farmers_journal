@@ -46,7 +46,7 @@ class HeroImageWidgetLayout extends StatelessWidget {
               availableHeight / _getRowCount(images.length, crossAxisCount);
 
           return GridView.builder(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(2.0),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: crossAxisCount,
               crossAxisSpacing: 8.0,
