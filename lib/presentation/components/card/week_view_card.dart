@@ -72,7 +72,7 @@ class WeekViewCard extends ConsumerWidget {
           maxHeight: cardMaxHeight),
       child: Card.outlined(
         shape: ContinuousRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(10),
         ),
         elevation: 2.0,
         child: Column(

@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
@@ -35,18 +34,17 @@ class HeroImageWidgetLayout extends StatelessWidget {
         builder: (context, constraints) {
           int crossAxisCount = _getCrossAxisCount(images.length);
 
-          double totalHorizontalPadding = 8.0 * (crossAxisCount + 1);
-          double availableWidth = constraints.maxWidth - totalHorizontalPadding;
+          double availableWidth = constraints.maxWidth;
           double tileWidth = availableWidth / crossAxisCount;
 
-          double totalVerticalPadding =
-              8.0 * ((_getRowCount(images.length, crossAxisCount)) + 1);
-          double availableHeight = constraints.maxHeight - totalVerticalPadding;
+          double availableHeight = constraints.maxHeight;
           double tileHeight =
               availableHeight / _getRowCount(images.length, crossAxisCount);
 
           return GridView.builder(
-            padding: const EdgeInsets.all(2.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 2,
+            ),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: crossAxisCount,
               crossAxisSpacing: 8.0,
@@ -148,7 +146,7 @@ class ImageWidgetLayout extends StatelessWidget {
               availableHeight / _getRowCount(images.length, crossAxisCount);
 
           return GridView.builder(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(2.0),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: crossAxisCount,
               crossAxisSpacing: 8.0,

@@ -55,15 +55,17 @@ class DayViewCard extends ConsumerWidget {
             journal.images != null && journal.images!.isNotEmpty
                 ? Expanded(
                     flex: 4,
-                    child: HeroImageWidgetLayout(
-                        images: journal.images!.map((item) {
-                      if (item is String) {
-                        return UrlImage(item);
-                      } else {
-                        throw ArgumentError(
-                            'Invalid type in list: ${item.runtimeType}');
-                      }
-                    }).toList()),
+                    child: Center(
+                      child: HeroImageWidgetLayout(
+                          images: journal.images!.map((item) {
+                        if (item is String) {
+                          return UrlImage(item);
+                        } else {
+                          throw ArgumentError(
+                              'Invalid type in list: ${item.runtimeType}');
+                        }
+                      }).toList()),
+                    ),
                   )
                 : const SizedBox.shrink(),
             journal.title != null
