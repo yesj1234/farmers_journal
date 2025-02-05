@@ -117,7 +117,7 @@ class _UserContent extends ConsumerWidget {
         MainView.day => const DayView(),
         MainView.week => const WeekView(),
         MainView.month => const MonthView(),
-        MainView.community => CommunityView(),
+        MainView.community => const CommunityView(),
       };
     } else {
       return const _DefaultContent();

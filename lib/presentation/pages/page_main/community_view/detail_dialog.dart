@@ -150,6 +150,7 @@ class DataStateDialog extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (journalInfo.title!.isNotEmpty)
                     Text(
@@ -162,8 +163,11 @@ class DataStateDialog extends StatelessWidget {
                     SizedBox(
                       height: MediaQuery.sizeOf(context).height * 0.3,
                       child: SingleChildScrollView(
-                        child: Text(
-                          journalInfo.content!,
+                        child: SizedBox(
+                          width: MediaQuery.sizeOf(context).width,
+                          child: Text(
+                            journalInfo.content!,
+                          ),
                         ),
                       ),
                     ),

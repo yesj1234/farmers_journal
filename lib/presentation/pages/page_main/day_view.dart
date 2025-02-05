@@ -1,6 +1,9 @@
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/card/day_view_card.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
+import 'package:farmers_journal/presentation/controller/user/community_view_controller.dart';
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
+import 'package:farmers_journal/presentation/pages/page_main/community_view/detail_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -39,7 +42,28 @@ class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
               );
               for (var journal in entry.value) {
                 if (journal != null) {
-                  children.add(_DayViewCard(journal: journal));
+                  children.add(
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Consumer(builder: (context, ref, child) {
+                                final userInfo =
+                                    ref.watch(userControllerProvider);
+                                return userInfo.when(
+                                  data: (info) => DataStateDialog(
+                                      info: info!, journalInfo: journal),
+                                  loading: () =>
+                                      const ShimmerLoadingStateDialog(),
+                                  error: (e, st) => const ErrorStateDialog(),
+                                );
+                              });
+                            });
+                      },
+                      child: _DayViewCard(journal: journal),
+                    ),
+                  );
                 }
               }
             }

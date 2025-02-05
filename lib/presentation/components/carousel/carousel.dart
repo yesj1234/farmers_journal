@@ -1,4 +1,6 @@
 import 'package:farmers_journal/presentation/components/card/week_view_card.dart';
+import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
+import 'package:farmers_journal/presentation/pages/page_main/community_view/detail_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -27,15 +29,31 @@ class _MyCarouselState extends ConsumerState<MyCarousel> {
         shrinkExtent: minimumItemSize,
         children: [
           for (var journal in widget.journals)
-            WeekViewCard(
-                dateFontSize: 10,
-                textMaxLine: 1,
-                cardMaxHeight: 200,
-                cardMinHeight: 200,
-                cardMaxWidth: widget.cardMaxWidth,
-                horizontalPadding: 6.0,
-                verticalPadding: 0.0,
-                journal: journal),
+            GestureDetector(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Consumer(builder: (context, ref, child) {
+                          final userInfo = ref.watch(userControllerProvider);
+                          return userInfo.when(
+                            data: (info) => DataStateDialog(
+                                info: info!, journalInfo: journal),
+                            loading: () => const ShimmerLoadingStateDialog(),
+                            error: (e, st) => const ErrorStateDialog(),
+                          );
+                        });
+                      });
+                },
+                child: WeekViewCard(
+                    dateFontSize: 10,
+                    textMaxLine: 1,
+                    cardMaxHeight: 200,
+                    cardMinHeight: 200,
+                    cardMaxWidth: widget.cardMaxWidth,
+                    horizontalPadding: 6.0,
+                    verticalPadding: 0.0,
+                    journal: journal)),
         ],
       ),
     );
