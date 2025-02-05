@@ -14,15 +14,7 @@ class PageLogin extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(
-          "login page",
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+      appBar: AppBar(),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -161,9 +153,9 @@ class _AppIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Icon(
-          Icons.tab_sharp,
-          size: 70,
+        Image.asset(
+          'assets/icons/leaf_icon.png',
+          height: 100,
         ),
         Text("농사 일지", style: textStyle)
       ],
