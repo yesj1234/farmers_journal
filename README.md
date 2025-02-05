@@ -50,29 +50,19 @@ Whether you're managing a small garden or a large-scale farm, this app helps you
 ## Code Structure 
 The code structure reflects the Riverpod architecture.
 You can read more about the architecture in [here](https://yesj1234.github.io/posts/flutter_app_architecture2) and [here](https://yesj1234.github.io/posts/flutter_app_architecture)
-
-./lib  
-
-├── data  
-
-│   ├── interface  
-
-│   └── repositories  
-
-├── domain  
-
-│    ├── firebase  
-
-│    └── model  
-
-└── presentation  
-
-    ├── components  
-
-    ├── controller  
-
+```
+./lib
+├── data
+│   ├── interface
+│   └── repositories
+├── domain
+│    ├── firebase
+│    └── model
+└── presentation
+    ├── components
+    ├── controller
     └── pages  
-
+```
 
 
 ### Presentation
