@@ -23,7 +23,7 @@ class _CommunityViewState extends ConsumerState<CommunityView> {
     scrollController.addListener(() {
       double maxScroll = scrollController.position.maxScrollExtent;
       double currentScroll = scrollController.position.pixels;
-      double delta = MediaQuery.of(context).size.width * 0.2;
+      double delta = MediaQuery.sizeOf(context).width * 0.2;
       if (maxScroll - currentScroll <= delta) {
         ref.read(paginationControllerProvider.notifier).fetchNextBatch();
       }
@@ -38,25 +38,27 @@ class _CommunityViewState extends ConsumerState<CommunityView> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      RefreshIndicator(
-        onRefresh: () async {
-          ref.invalidate(paginationControllerProvider);
-        },
-        child: CustomScrollView(
-          controller: scrollController,
-          restorationId: "journals List",
-          slivers: const [
-            ItemsList(),
-            NoMoreItems(),
-            OnGoingBottomWidget(),
-          ],
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(paginationControllerProvider);
+          },
+          child: CustomScrollView(
+            controller: scrollController,
+            restorationId: "journals List",
+            slivers: const [
+              ItemsList(),
+              NoMoreItems(),
+              OnGoingBottomWidget(),
+            ],
+          ),
         ),
-      ),
-      Align(
-        alignment: Alignment.bottomRight,
-        child: ScrollToTopButton(scrollController: scrollController),
-      ),
-    ]);
+        Align(
+          alignment: Alignment.bottomRight,
+          child: ScrollToTopButton(scrollController: scrollController),
+        ),
+      ],
+    );
   }
 }

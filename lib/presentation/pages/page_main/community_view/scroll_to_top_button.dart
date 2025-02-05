@@ -14,7 +14,7 @@ class ScrollToTopButton extends StatelessWidget {
             duration: const Duration(milliseconds: 300),
             transitionBuilder: (child, animation) =>
                 ScaleTransition(scale: animation, child: child),
-            child: scrollOffset > MediaQuery.of(context).size.height * 0.5
+            child: scrollOffset > MediaQuery.sizeOf(context).height * 0.4
                 ? IconButton(
                     icon: Icon(
                       Icons.keyboard_double_arrow_up_outlined,

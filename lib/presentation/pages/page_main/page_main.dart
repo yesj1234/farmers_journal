@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_main/community_view/community_view.dart';
+import 'package:farmers_journal/presentation/pages/page_main/community_view/scroll_to_top_button.dart';
 import 'package:farmers_journal/presentation/pages/page_main/day_view.dart';
 import 'package:farmers_journal/presentation/pages/page_main/month_view.dart';
 import 'package:farmers_journal/presentation/pages/page_main/top_nav.dart';

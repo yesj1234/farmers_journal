@@ -3,6 +3,7 @@ import 'package:farmers_journal/presentation/components/card/day_view_card.dart'
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_main/community_view/detail_dialog.dart';
+import 'package:farmers_journal/presentation/pages/page_main/community_view/scroll_to_top_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,11 +15,18 @@ class DayView extends ConsumerStatefulWidget {
 
 class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
   late Future<Map<DateTime, List<Journal?>>> _sortedJournal;
+  final ScrollController scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
     _sortedJournal =
         ref.read(journalControllerProvider.notifier).getDayViewJournals();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -66,10 +74,19 @@ class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
                 }
               }
             }
-            return ListView(
-                shrinkWrap: true,
-                padding: const EdgeInsets.only(top: 4.0),
-                children: children);
+            return Stack(
+              children: [
+                ListView(
+                    controller: scrollController,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(top: 4.0),
+                    children: children),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ScrollToTopButton(scrollController: scrollController),
+                ),
+              ],
+            );
           }
           return const SizedBox.shrink();
         });
