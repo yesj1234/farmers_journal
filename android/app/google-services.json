@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "80482822005",
+    "project_id": "farmers-journal-7f2cc",
+    "storage_bucket": "farmers-journal-7f2cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80482822005:android:0c6c03c68ef7061b39953c",
+        "android_client_info": {
+          "package_name": "com.jack.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfk4vCB-iSzaeJM85DoeZ9LqLA7dkEc-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
