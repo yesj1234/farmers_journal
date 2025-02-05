@@ -8,6 +8,7 @@ import 'package:farmers_journal/data/interface/user_interface.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/plant.dart';
 import 'package:farmers_journal/domain/model/user.dart';
+import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -287,37 +288,32 @@ class FireStoreUserRepository implements UserRepository {
       required String title,
       required String content,
       required DateTime date,
-      required List<String?>? images}) async {
+      required List<ImageType?>? images}) async {
     final journalRef = instance.collection("journals").doc(id);
-
+    log(images.toString());
+    List<String>? imageURLs = [];
     if (images != null && images.isNotEmpty) {
-      List<String>? imageURLs = [];
-      for (String? path in images) {
-        if (path != null && path.isNotEmpty) {
-          if (path.startsWith('http')) {
-            imageURLs.add(path);
-          } else {
-            String downloadURL = await _uploadFile(File(path));
+      for (final image in images) {
+        switch (image) {
+          case null:
+            throw UnimplementedError();
+          case UrlImage():
+            imageURLs.add(image.value);
+          case XFileImage():
+            final bytes = await image.value.readAsBytes();
+            String downloadURL = await _uploadBytes(bytes: bytes);
             imageURLs.add(downloadURL);
-          }
         }
       }
-
-      await journalRef.update({
-        'id': id,
-        'title': title,
-        'content': content,
-        'images': imageURLs,
-        'date': date,
-      });
-    } else {
-      await journalRef.update({
-        'id': id,
-        'title': title,
-        'content': content,
-        'date': date,
-      });
     }
+    await journalRef.update({
+      'id': id,
+      'title': title,
+      'content': content,
+      'date': date,
+      'images': imageURLs,
+    });
+
     return await getJournals();
   }
 

@@ -29,7 +29,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
   String? title;
   String? content;
   DateTime? date;
-  List<dynamic>? images;
+  List<ImageType>? images;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
         title = journal.title;
         content = journal.content;
         date = journal.date;
-        images = journal.images ?? [];
+        images = journal.images?.map((path) => UrlImage(path!)).toList() ?? [];
       });
     });
   }
@@ -99,13 +99,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                           width: MediaQuery.sizeOf(context).width / 1.1,
                           height: MediaQuery.sizeOf(context).height / 4,
                           child: ImageWidgetLayout(
-                            images: images!.map((item) {
-                              if (item is String) {
-                                return UrlImage(item);
-                              } else {
-                                return XFileImage(item);
-                              }
-                            }).toList(),
+                            images: images ?? [],
                             onDelete: deleteImage,
                             isEditMode: true,
                           ),
@@ -129,7 +123,10 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                         showSnackBar(context, '사진은 8장 이상을 넘을 수 없습니다.');
                       } else {
                         setState(() {
-                          images = [...images!, ..._images];
+                          images = [
+                            ...images!,
+                            ..._images.map((file) => XFileImage(file))
+                          ];
                         });
                       }
                     },
@@ -140,10 +137,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                       orElse: () {
                         return () async {
                           _formKey.currentState?.save();
-                          final imagePaths = images?.map((image) {
-                            if (image is XFile) return image.path;
-                            return image as String;
-                          }).toList();
+
                           await ref
                               .read(journalFormControllerProvider.notifier)
                               .updateJournal(
@@ -151,8 +145,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                                   title: title ?? '',
                                   content: content ?? '',
                                   date: date ?? snapshot.data!.date!,
-                                  images: imagePaths as List<String?>? ??
-                                      snapshot.data!.images!)
+                                  images: images)
                               .then(
                             (_) {
                               context.go('/main');

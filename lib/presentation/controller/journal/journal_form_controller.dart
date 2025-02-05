@@ -1,5 +1,6 @@
 import 'package:farmers_journal/data/firestore_providers.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_form_controller_state.dart';
+import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -35,7 +36,7 @@ class JournalFormController extends _$JournalFormController {
       required String title,
       required String content,
       required DateTime date,
-      required List<String?>? images}) async {
+      required List<ImageType?>? images}) async {
     state = const JournalFormControllerState.loading();
     if (title.isEmpty && content.isEmpty && images != null && images.isEmpty) {
       state = const JournalFormControllerState.initial();

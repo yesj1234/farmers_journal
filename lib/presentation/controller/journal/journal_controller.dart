@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/controller/journal/pagination_controller.dart';
+import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:farmers_journal/utils.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -77,23 +78,6 @@ class JournalController extends _$JournalController {
   Future<Journal> getJournal(String id) async {
     final repository = ref.read(journalRepositoryProvider);
     return await repository.getJournal(id);
-  }
-
-  Future<void> updateJournal(
-      {required String id,
-      required String title,
-      required String content,
-      required DateTime date,
-      required List<String?>? images}) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() => ref
-        .read(userRepositoryProvider)
-        .updateJournal(
-            id: id,
-            title: title,
-            content: content,
-            date: date,
-            images: images));
   }
 
   Future<void> deleteJournal({required String id}) async {

@@ -1,6 +1,7 @@
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/plant.dart';
 import 'package:farmers_journal/domain/model/user.dart';
+import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -29,7 +30,7 @@ abstract class UserRepository {
     required String title,
     required String content,
     required DateTime date,
-    required List<String?>? images,
+    required List<ImageType?>? images,
   });
   Future<List<Journal?>> deleteJournal({required String id});
   Future<List<Journal?>> getJournalsByYear({required int year});
