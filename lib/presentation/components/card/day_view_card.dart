@@ -53,8 +53,7 @@ class DayViewCard extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             journal.images != null && journal.images!.isNotEmpty
-                ? Expanded(
-                    flex: 4,
+                ? Flexible(
                     child: Center(
                       child: HeroImageWidgetLayout(
                           images: journal.images!.map((item) {
@@ -68,8 +67,9 @@ class DayViewCard extends ConsumerWidget {
                     ),
                   )
                 : const SizedBox.shrink(),
-            journal.title != null
-                ? Padding(
+            journal.title!.isEmpty
+                ? const SizedBox.shrink()
+                : Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: horizontalPadding),
                     child: Text(
@@ -79,22 +79,24 @@ class DayViewCard extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  )
-                : const SizedBox(width: 0, height: 0),
-            Flexible(
-              flex: 2,
-              child: TextPortion(
-                horizontalPadding: horizontalPadding,
-                verticalPadding: verticalPadding,
-                child: RichText(
-                  maxLines: textMaxLine,
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(
-                      style: TextStyle(color: colorScheme.onSurfaceVariant),
-                      text: journal.content),
-                ),
-              ),
-            ),
+                  ),
+            journal.content!.isEmpty
+                ? const SizedBox.shrink()
+                : Flexible(
+                    flex: 2,
+                    child: TextPortion(
+                      horizontalPadding: horizontalPadding,
+                      verticalPadding: verticalPadding,
+                      child: RichText(
+                        maxLines: textMaxLine,
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                            style:
+                                TextStyle(color: colorScheme.onSurfaceVariant),
+                            text: journal.content),
+                      ),
+                    ),
+                  ),
             Divider(
               indent: verticalPadding,
               endIndent: verticalPadding,

@@ -66,13 +66,19 @@ class DataStateDialog extends StatelessWidget {
                             menuType: CascadingMenuType.personal,
                             onCallBack1: () =>
                                 context.go('/update/${journalInfo.id}'),
-                            onCallBack2: () => showMyAlertDialog(
-                              context: context,
-                              type: AlertDialogType.delete,
-                              cb: () => ref
-                                  .read(journalControllerProvider.notifier)
-                                  .deleteJournal(id: journalInfo.id as String),
-                            ),
+                            onCallBack2: () {
+                              showMyAlertDialog(
+                                context: context,
+                                type: AlertDialogType.delete,
+                                cb: () {
+                                  ref
+                                      .read(journalControllerProvider.notifier)
+                                      .deleteJournal(
+                                          id: journalInfo.id as String);
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                            },
                           )
                         : MyCascadingMenu(
                             menuType: CascadingMenuType.community,
