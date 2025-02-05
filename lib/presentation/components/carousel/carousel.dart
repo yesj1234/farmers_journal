@@ -30,30 +30,31 @@ class _MyCarouselState extends ConsumerState<MyCarousel> {
         children: [
           for (var journal in widget.journals)
             GestureDetector(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Consumer(builder: (context, ref, child) {
-                          final userInfo = ref.watch(userControllerProvider);
-                          return userInfo.when(
-                            data: (info) => DataStateDialog(
-                                info: info!, journalInfo: journal),
-                            loading: () => const ShimmerLoadingStateDialog(),
-                            error: (e, st) => const ErrorStateDialog(),
-                          );
-                        });
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Consumer(builder: (context, ref, child) {
+                        final userInfo = ref.watch(userControllerProvider);
+                        return userInfo.when(
+                          data: (info) => DataStateDialog(
+                              info: info!, journalInfo: journal),
+                          loading: () => const ShimmerLoadingStateDialog(),
+                          error: (e, st) => const ErrorStateDialog(),
+                        );
                       });
-                },
-                child: WeekViewCard(
-                    dateFontSize: 10,
-                    textMaxLine: 1,
-                    cardMaxHeight: 200,
-                    cardMinHeight: 200,
-                    cardMaxWidth: widget.cardMaxWidth,
-                    horizontalPadding: 6.0,
-                    verticalPadding: 0.0,
-                    journal: journal)),
+                    });
+              },
+              child: WeekViewCard(
+                  dateFontSize: 10,
+                  textMaxLine: 1,
+                  cardMaxHeight: 200,
+                  cardMinHeight: 200,
+                  cardMaxWidth: widget.cardMaxWidth,
+                  horizontalPadding: 6.0,
+                  verticalPadding: 0.0,
+                  journal: journal),
+            ),
         ],
       ),
     );

@@ -1,7 +1,6 @@
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/card/day_view_card.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
-import 'package:farmers_journal/presentation/controller/user/community_view_controller.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_main/community_view/detail_dialog.dart';
 import 'package:flutter/material.dart';
