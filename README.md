@@ -1,12 +1,21 @@
 # Project
 
-**title**: *Farmer's journal*
+**Title**: *Farmer's journal*
 
-**subtitle**: *Simplify farming, enhance productivity.*
+**SubTitle**: *Simplify farming, enhance productivity.*
 
-**introduction**: Track your farming journey, share insights, and optimize your methods with real-time data and visualizations. 
+**Introduction**: Track your farming journey, share insights, and optimize your methods with real-time data and visualizations. 
 
-**related keywords**: 농업, 농장, 작물, 일지, 농업기록, 기록관리, 농산물가격, 실시간경매, 생산성, 데이터시각화, 공유, 플랜트관리, 농업도구, 농민앱
+**Related Keywords**: 
+- 농업
+- 농장
+- 작물
+- 일지
+- 농업기록
+- 기록관리
+- 생산성 
+- 데이터시각화
+- 공유
 
 ## Project Description 
 
@@ -42,7 +51,7 @@ Whether you're managing a small garden or a large-scale farm, this app helps you
 The code structure reflects the Riverpod architecture.
 You can read more about the architecture in [here](https://yesj1234.github.io/posts/flutter_app_architecture2) and [here](https://yesj1234.github.io/posts/flutter_app_architecture)
 
-./lib
+./lib \n
 ├── data
 │   ├── interface
 │   └── repositories
