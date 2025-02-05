@@ -231,7 +231,7 @@ class _ProfileForm extends ConsumerWidget {
             constraints:
                 BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 40),
             hintText: user.value?.name,
-            labelText: 'Name',
+            labelText: '이름',
           ),
         ),
         TextFormField(
@@ -240,7 +240,7 @@ class _ProfileForm extends ConsumerWidget {
             constraints:
                 BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 40),
             hintText: user.value?.nickName,
-            labelText: 'Nickname',
+            labelText: '닉네임',
           ),
         )
       ],

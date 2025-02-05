@@ -119,8 +119,10 @@ class _PlantSettings extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRef = ref.watch(userControllerProvider);
-    return _SettingContainer(settingTitle: "작물", items: [
-      _SelectionItemWithCallback(
+    return _SettingContainer(
+      settingTitle: "작물",
+      items: [
+        _SelectionItemWithCallback(
           callback: () {
             if (userRef.value!.isInitialSettingRequired == false) {
               context.go('/main/profile/plant/');
@@ -129,8 +131,9 @@ class _PlantSettings extends ConsumerWidget {
             }
           },
           icon: Icons.apple_rounded,
-          selectionName: "작물 변경"),
-      _SelectionItemWithCallback(
+          selectionName: "작물 변경",
+        ),
+        _SelectionItemWithCallback(
           callback: () {
             if (userRef.value!.isInitialSettingRequired == false) {
               context.go('/main/profile/place/');
@@ -139,8 +142,10 @@ class _PlantSettings extends ConsumerWidget {
             }
           },
           icon: Icons.place_outlined,
-          selectionName: "위치 변경"),
-    ]);
+          selectionName: "위치 변경",
+        ),
+      ],
+    );
   }
 }
 
