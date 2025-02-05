@@ -11,7 +11,7 @@ class ButtonCreatePost extends StatelessWidget {
     final ColorScheme colorScheme = themeData.colorScheme;
 
     final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
-      backgroundColor: colorScheme.primaryContainer,
+      backgroundColor: colorScheme.primary.withAlpha(255),
       shape: const CircleBorder(),
       minimumSize: const Size(60, 60),
       maximumSize: const Size(80, 80),
