@@ -148,3 +148,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 For questions or suggestions, please contact Yang Seung Jun at [juesc007@gmail.com](mailto:juesc007@gmail.com).
 
+
+Track what things to be done based on your past notes and ohter farmers notes. 
+
