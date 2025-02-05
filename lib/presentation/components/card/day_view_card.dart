@@ -97,10 +97,12 @@ class DayViewCard extends ConsumerWidget {
                       ),
                     ),
                   ),
-            Divider(
-              indent: verticalPadding,
-              endIndent: verticalPadding,
-            ),
+            journal.content!.isEmpty && journal.title!.isEmpty
+                ? const SizedBox.shrink()
+                : Divider(
+                    indent: verticalPadding,
+                    endIndent: verticalPadding,
+                  ),
             Flexible(
               child: DatePortion(
                 fontSize: dateFontSize,

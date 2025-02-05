@@ -68,7 +68,10 @@ class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
                               });
                             });
                       },
-                      child: _DayViewCard(journal: journal),
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        child: _DayViewCard(journal: journal),
+                      ),
                     ),
                   );
                 }

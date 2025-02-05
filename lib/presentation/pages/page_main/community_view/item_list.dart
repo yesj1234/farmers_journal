@@ -77,27 +77,31 @@ class ItemsListBuilder extends ConsumerWidget {
         (context, index) {
           final journalInfo = journals[index];
           return GestureDetector(
-              onTap: () {
-                ref
-                    .read(communityViewControllerProvider.notifier)
-                    .getUserById(id: journalInfo!.writer!);
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Consumer(builder: (context, ref, child) {
-                        final userInfo =
-                            ref.watch(communityViewControllerProvider);
-                        return userInfo.when(
-                          data: (info) => DataStateDialog(
-                              info: info, journalInfo: journals[index]!),
-                          loading: () => const ShimmerLoadingStateDialog(),
-                          error: (e, st) => const ErrorStateDialog(),
-                          initial: () => const ShimmerLoadingStateDialog(),
-                        );
-                      });
+            onTap: () {
+              ref
+                  .read(communityViewControllerProvider.notifier)
+                  .getUserById(id: journalInfo!.writer!);
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Consumer(builder: (context, ref, child) {
+                      final userInfo =
+                          ref.watch(communityViewControllerProvider);
+                      return userInfo.when(
+                        data: (info) => DataStateDialog(
+                            info: info, journalInfo: journals[index]!),
+                        loading: () => const ShimmerLoadingStateDialog(),
+                        error: (e, st) => const ErrorStateDialog(),
+                        initial: () => const ShimmerLoadingStateDialog(),
+                      );
                     });
-              },
-              child: _DayViewCard(journal: journals[index]!));
+                  });
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              child: _DayViewCard(journal: journals[index]!),
+            ),
+          );
         },
         childCount: journals.length,
       ),
