@@ -1,12 +1,12 @@
 # Project
 
-title: Farmer's journal
+**title**: *Farmer's journal*
 
-subtitle: *Simplify farming, enhance productivity.*
+**subtitle**: *Simplify farming, enhance productivity.*
 
-introduction: *Track your farming journey, share insights, and optimize your methods with real-time data and visualizations.* 
+**introduction**: Track your farming journey, share insights, and optimize your methods with real-time data and visualizations. 
 
-related keywords: 농업, 농장, 작물, 일지, 농업기록, 기록관리, 농산물가격, 실시간경매, 생산성, 데이터시각화, 공유, 플랜트관리, 농업도구, 농민앱
+**related keywords**: 농업, 농장, 작물, 일지, 농업기록, 기록관리, 농산물가격, 실시간경매, 생산성, 데이터시각화, 공유, 플랜트관리, 농업도구, 농민앱
 
 ## Project Description 
 
@@ -20,7 +20,7 @@ related keywords: 농업, 농장, 작물, 일지, 농업기록, 기록관리, �
 
 ### Description
 
-**Farmer's Journal** is the ultimate tool for modern farmers to enhance their farming methodologies. 
+**Farmer's Journal** is helpful tool for modern farmers to enhance their farming methodologies. 
 
 Whether you're managing a small garden or a large-scale farm, this app helps you document, analyze, and improve your farming processes step-by-step.
 
@@ -32,9 +32,6 @@ Whether you're managing a small garden or a large-scale farm, this app helps you
 - **Data Visualizations**:  
   View your farming journey through visually engaging charts and graphs. Analyze trends and patterns to improve your methods and increase productivity.
 
-- **Real-Time Auction Prices**:  
-  Stay updated with the latest auction prices for your crops. Make informed decisions about when to harvest and sell.
-
 - **Sharing & Collaboration**:  
   Share your farming journal with other users to exchange insights and strategies. Build a community of like-minded farmers to learn and grow together.
 
@@ -42,6 +39,32 @@ Whether you're managing a small garden or a large-scale farm, this app helps you
   Get gentle reminders and visual feedback to encourage consistent journal entries. Watch your progress over time and take pride in your farming journey.
 
 ## Code Structure 
+The code structure reflects the Riverpod architecture.
+You can read more about the architecture in [here](https://yesj1234.github.io/posts/flutter_app_architecture2) and [here](https://yesj1234.github.io/posts/flutter_app_architecture)
+
+./lib
+├── data
+│   ├── interface
+│   └── repositories
+├── domain
+│    ├── firebase
+│    └── model
+└── presentation
+    ├── components
+    ├── controller
+    └── pages
+
+
+### Presentation
+The role of the UI is to display the application data on the screen and also to serve as the primary point of user interaction.
+Whenever the data changes, either due to user interaction (like pressing a button) or external input (like a network response), the UI should update to reflect those changes.
+Effectively, the UI is a visual representation of the application state as retrieved from the data layer.
+
+### Domain
+The primary role of the domain layer is to define application-specific model classes that represent the data that comes from the data layer.
+
+### Data
+Data layer is the gateway between remote database and the application. 
 
 
 
