@@ -169,6 +169,7 @@ class _SelectionItemWithCallback extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: callback,
+      behavior: HitTestBehavior.translucent,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
