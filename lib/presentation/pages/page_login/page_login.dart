@@ -13,89 +13,90 @@ class PageLogin extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(),
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          spacing: 10,
-          children: [
-            const _AppIcon(),
-            const _LoginForm(),
-            const _DividerWithText(text: "혹은"),
-            Row(
-              spacing: 4,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('계정이 없으신가요?'),
-                TextButton(
-                  onPressed: () {
-                    context.go('/registration');
-                  },
-                  style: registrationButtonStyle,
-                  child: const Text(
-                    '회원가입',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            spacing: 10,
+            children: [
+              const _AppIcon(),
+              const _LoginForm(),
+              const _DividerWithText(text: "혹은"),
+              Row(
+                spacing: 4,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('계정이 없으신가요?'),
+                  TextButton(
+                    onPressed: () {
+                      context.go('/registration');
+                    },
+                    style: registrationButtonStyle,
+                    child: const Text(
+                      '회원가입',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
+                ],
+              ),
+              IconButton(
+                onPressed: () async {
+                  await ref
+                      .read(authControllerProvider.notifier)
+                      .signInWithKakaoTalk()
+                      .then((_) {}, onError: (error) {
+                    showSnackBar(context, error);
+                  });
+                  if (context.mounted) {
+                    context.go('/');
+                  }
+                },
+                padding: EdgeInsets.zero,
+                icon: Image.asset('assets/icons/kakao_login_medium_narrow.png'),
+              ),
+              TextButton.icon(
+                onPressed: () async {
+                  await ref
+                      .read(authControllerProvider.notifier)
+                      .signInWithApple()
+                      .then((_) {}, onError: (error) {
+                    showSnackBar(context, error);
+                  });
+                  if (context.mounted) {
+                    context.go('/');
+                  }
+                },
+                style: ButtonStyle(
+                  fixedSize: const WidgetStatePropertyAll(
+                    Size(185, 44),
+                  ),
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                  iconColor: const WidgetStatePropertyAll(Colors.white),
+                  backgroundColor: const WidgetStatePropertyAll(Colors.black),
                 ),
-              ],
-            ),
-            IconButton(
-              onPressed: () async {
-                await ref
-                    .read(authControllerProvider.notifier)
-                    .signInWithKakaoTalk()
-                    .then((_) {}, onError: (error) {
-                  showSnackBar(context, error);
-                });
-                if (context.mounted) {
-                  context.go('/');
-                }
-              },
-              padding: EdgeInsets.zero,
-              icon: Image.asset('assets/icons/kakao_login_medium_narrow.png'),
-            ),
-            TextButton.icon(
-              onPressed: () async {
-                await ref
-                    .read(authControllerProvider.notifier)
-                    .signInWithApple()
-                    .then((_) {}, onError: (error) {
-                  showSnackBar(context, error);
-                });
-                if (context.mounted) {
-                  context.go('/');
-                }
-              },
-              style: ButtonStyle(
-                fixedSize: const WidgetStatePropertyAll(
-                  Size(185, 44),
+                icon: const Icon(
+                  Icons.apple,
+                  size: 20,
                 ),
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
+                iconAlignment: IconAlignment.start,
+                label: const Text(
+                  "애플 로그인",
+                  style: TextStyle(
+                    fontSize: 19,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
-                iconColor: const WidgetStatePropertyAll(Colors.white),
-                backgroundColor: const WidgetStatePropertyAll(Colors.black),
               ),
-              icon: const Icon(
-                Icons.apple,
-                size: 20,
-              ),
-              iconAlignment: IconAlignment.start,
-              label: const Text(
-                "애플 로그인",
-                style: TextStyle(
-                  fontSize: 19,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
