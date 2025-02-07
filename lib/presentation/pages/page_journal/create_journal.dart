@@ -193,13 +193,13 @@ class _DateForm extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: _DatePickerWrapper(
-              onDatePicked: onDatePicked,
-              child: const SizedBox(
-                width: 35,
-                child: Icon(
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: _DatePickerWrapper(
+                onDatePicked: onDatePicked,
+                child: const Icon(
                   Icons.calendar_month,
                   size: 25,
                 ),
@@ -304,7 +304,12 @@ class _ContentForm extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          tag.isLoading ? const SizedBox.shrink() : tag.value!,
+          tag.isLoading
+              ? const SizedBox.shrink()
+              : Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: tag.value!,
+                ),
           Expanded(
             child: Stack(
               children: [
