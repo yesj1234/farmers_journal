@@ -49,7 +49,10 @@ class PageMain extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               const SizedBox(height: 10),
-              const TopNav(),
+              const Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: TopNav(),
+              ),
               Divider(
                 thickness: 0.5,
                 indent: 10,
