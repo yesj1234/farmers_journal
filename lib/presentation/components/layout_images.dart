@@ -238,7 +238,7 @@ class _URLImageTile extends StatelessWidget {
                 iconSize: 20,
                 icon: const Icon(
                   Icons.cancel_rounded,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             )
@@ -293,7 +293,7 @@ class _XFileImageTile extends StatelessWidget {
                   iconSize: 20,
                   icon: const Icon(
                     Icons.cancel_rounded,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
               )
