@@ -58,16 +58,28 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
           onStepTapped: onStepTapped,
           steps: [
             Step(
+              title: const Text("이름 설정"),
+              content: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height,
+                ),
+                child: PlaceSetting(
+                    sessionToken: const Uuid().v4(), onChanged: setPlace),
+              ),
+              isActive: _index >= 0,
+              state: _index == 0 ? StepState.editing : StepState.indexed,
+            ),
+            Step(
               title: const Text("위치 설정"),
               content: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.sizeOf(context).height,
                 ),
                 child: PlaceSetting(
-                    sessionToken: Uuid().v4(), onChanged: setPlace),
+                    sessionToken: const Uuid().v4(), onChanged: setPlace),
               ),
-              isActive: _index >= 0,
-              state: _index == 0 ? StepState.editing : StepState.indexed,
+              isActive: _index >= 1,
+              state: _index == 1 ? StepState.editing : StepState.indexed,
             ),
             Step(
               title: const Text("작물 설정"),
@@ -79,8 +91,8 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
                   onChange: setPlant,
                 ),
               ),
-              isActive: _index >= 1,
-              state: _index == 1 ? StepState.editing : StepState.indexed,
+              isActive: _index >= 2,
+              state: _index == 2 ? StepState.editing : StepState.indexed,
             ),
           ],
         ),
@@ -195,7 +207,7 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
   }
 
   void onStepContinue() async {
-    if (_index == 1) {
+    if (_index == 2) {
       bool isCompleted = await _completeSetting(context);
       if (isCompleted) {
         context.go('/');

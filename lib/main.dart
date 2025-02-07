@@ -14,16 +14,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 //config import
 import 'package:farmers_journal/gorouter_config.dart';
 
-// pages import
-
 // provider observer
 import 'package:farmers_journal/data/my_observer.dart';
-
-// temp import for development
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +51,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('ko'),
+      ],
       routerConfig: router,
       debugShowCheckedModeBanner: true,
       theme: FlexThemeData.light(

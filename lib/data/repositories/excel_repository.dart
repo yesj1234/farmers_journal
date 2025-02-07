@@ -54,11 +54,12 @@ class HSCodeRepository extends ExcelRepository {
         rowIndex: currentTable.maxRows - 1);
     return currentTable
         .selectRangeValues(
-          startIndex,
-          end: endIndex,
-        )
-        .map((cellValue) => cellValue?.first as TextCellValue)
-        .toList();
+      startIndex,
+      end: endIndex,
+    )
+        .map((cellValue) {
+      return cellValue?.first as TextCellValue;
+    }).toList();
   }
 
   List<List<CellValue?>?> _setHSCodeSubCategories() {

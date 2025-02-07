@@ -64,7 +64,6 @@ class _PlantSelection2State extends ConsumerState<PlantSelection> {
                         title: Text(suggestion.toString()),
                         onTap: () {
                           widget.onChange(suggestion);
-
                           setState(() {
                             controller.closeView(suggestion);
                           });
