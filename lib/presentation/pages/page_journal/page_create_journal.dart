@@ -15,7 +15,7 @@ class PageCreateJournal extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-          onPressed: () => context.go('/main'),
+          onPressed: () => context.pop('/main'),
         ),
         title: Text(
           "일지 쓰기",

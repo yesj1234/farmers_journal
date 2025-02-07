@@ -77,7 +77,7 @@ class PageMain extends ConsumerWidget {
             log('..');
             context.go('/initial_setting');
           } else {
-            context.go('/create');
+            context.push('/create');
           }
         },
       ),
