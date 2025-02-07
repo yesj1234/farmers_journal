@@ -42,10 +42,6 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
     content = value;
   }
 
-  Future<List<XFile>> _pickImage() {
-    return _imagePicker.pickMultiImage();
-  }
-
   void deleteImage(int id) {
     setState(() {
       images.removeAt(id);
@@ -95,7 +91,8 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
               content: content,
               onUpdateContent: updateJournalContent,
               onImagePick: () async {
-                List<XFile> _images = await _pickImage();
+                List<XFile> _images =
+                    await _imagePicker.pickMultiImage(limit: 8 - images.length);
                 if (_images.length + images.length > 8) {
                   showSnackBar(context, '사진은 8장 이상을 넘을 수 없습니다.');
                 } else {
