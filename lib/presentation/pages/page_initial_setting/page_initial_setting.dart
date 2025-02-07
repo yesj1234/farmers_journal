@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:farmers_journal/data/providers.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
@@ -31,16 +33,24 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
     return value == null;
   }
 
+  final _key = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
+
+  String plant = '';
+  void setPlant(value) {
+    plant = value;
+    _setCode(value);
+  }
+
   String place = '';
   void setPlace(value) {
     place = value;
   }
 
-  //plant related states
-  String plant = '';
-  void setPlant(value) {
-    plant = value;
-    _setCode(value);
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,34 +65,23 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
           currentStep: _index,
           onStepCancel: onStepCancel,
           onStepContinue: onStepContinue,
-          onStepTapped: onStepTapped,
           steps: [
             Step(
-              title: const Text("이름 설정"),
+              title: const Text("회원님의 이름을 알려주세요."),
               content: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.sizeOf(context).height,
                 ),
-                child: PlaceSetting(
-                    sessionToken: const Uuid().v4(), onChanged: setPlace),
+                child: NameSetting(
+                  formKey: _key,
+                  controller: nameController,
+                ),
               ),
               isActive: _index >= 0,
               state: _index == 0 ? StepState.editing : StepState.indexed,
             ),
             Step(
-              title: const Text("위치 설정"),
-              content: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.sizeOf(context).height,
-                ),
-                child: PlaceSetting(
-                    sessionToken: const Uuid().v4(), onChanged: setPlace),
-              ),
-              isActive: _index >= 1,
-              state: _index == 1 ? StepState.editing : StepState.indexed,
-            ),
-            Step(
-              title: const Text("작물 설정"),
+              title: const Text("키우시는 작물을 알려주세요."),
               content: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.sizeOf(context).height,
@@ -90,6 +89,18 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
                 child: PlantSelection(
                   onChange: setPlant,
                 ),
+              ),
+              isActive: _index >= 1,
+              state: _index == 1 ? StepState.editing : StepState.indexed,
+            ),
+            Step(
+              title: const Text("키우시는 작물의 위치를 알려주세요."),
+              content: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height,
+                ),
+                child: PlaceSetting(
+                    sessionToken: const Uuid().v4(), onChanged: setPlace),
               ),
               isActive: _index >= 2,
               state: _index == 2 ? StepState.editing : StepState.indexed,
@@ -107,9 +118,11 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
       return false;
     } else {
       return await _showAlertDialog(context, () {
-        ref
-            .read(userControllerProvider.notifier)
-            .setPlantAndPlace(plantName: plant, place: place, code: code!);
+        ref.read(userControllerProvider.notifier).setInitial(
+            plantName: plant,
+            place: place,
+            code: code!,
+            name: nameController.text);
       });
     }
   }
@@ -207,16 +220,31 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
   }
 
   void onStepContinue() async {
-    if (_index == 2) {
+    if (_index == 0) {
+      // validate name on step1.
+      bool isValid = _key.currentState?.validate() ?? false;
+
+      if (isValid) {
+        setState(() {
+          _index += 1;
+        });
+      }
+    } else if (_index == 1) {
+      // validate plant on step2.
+      if (plant.isEmpty) {
+        log(plant);
+        showSnackBar(context, '작물을 선택 해 주세요.');
+      } else {
+        setState(() {
+          _index += 1;
+        });
+      }
+    } else {
+      // validate location of the plant on step3.
       bool isCompleted = await _completeSetting(context);
       if (isCompleted) {
         context.go('/');
       }
-    }
-    if (_index <= 0) {
-      setState(() {
-        _index += 1;
-      });
     }
   }
 
@@ -224,6 +252,31 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
     setState(() {
       _index = index;
     });
+  }
+}
+
+class NameSetting extends StatelessWidget {
+  const NameSetting(
+      {super.key, required this.formKey, required this.controller});
+  final GlobalKey<FormState> formKey;
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+        key: formKey,
+        child: TextFormField(
+            controller: controller,
+            validator: (value) {
+              if (value == null) {
+                return '이름은 빈 값일 수 없습니다.';
+              }
+              if (value.isEmpty) {
+                return '이름은 빈 값일 수 없습니다.';
+              } else {
+                return null;
+              }
+            }));
   }
 }
 

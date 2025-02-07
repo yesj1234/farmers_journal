@@ -25,15 +25,15 @@ class PlaceAutocompleteStructuredFormat {
   });
 
   final String mainText;
-  final List<PlaceAutocompleteMatchedSubString> mainTextMatchedSubstrings;
+  final List<PlaceAutocompleteMatchedSubString>? mainTextMatchedSubstrings;
   String? secondaryText;
   List<PlaceAutocompleteMatchedSubString>? secondaryTextMatchedSubstrings;
 
   factory PlaceAutocompleteStructuredFormat.fromJson(
       Map<String, dynamic> data) {
     String mainText = data['main_text'] as String;
-    List<dynamic> mainTextMatchedSubstrings =
-        data['main_text_matched_substrings'] as List<dynamic>;
+    List<dynamic>? mainTextMatchedSubstrings =
+        data['main_text_matched_substrings'];
 
     String? secondaryText;
     List<dynamic>? secondaryTextMatchedSubstrings;
@@ -48,7 +48,7 @@ class PlaceAutocompleteStructuredFormat {
     return PlaceAutocompleteStructuredFormat(
       mainText: mainText,
       mainTextMatchedSubstrings: mainTextMatchedSubstrings
-          .map((subString) => PlaceAutocompleteMatchedSubString.fromJson(
+          ?.map((subString) => PlaceAutocompleteMatchedSubString.fromJson(
               subString as Map<String, dynamic>))
           .toList(),
       secondaryText: secondaryText,

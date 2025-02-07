@@ -90,11 +90,12 @@ class FireStoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<void> setPlantAndPlace({required Plant plant}) async {
+  Future<void> setInitial({required Plant plant, required String name}) async {
     try {
       final user = await _fetchUserRef();
       await user?.update({
         'isInitialSettingRequired': false,
+        'name': name,
         'nickName': '${plant.name} 농부',
         'plants': FieldValue.arrayUnion([plant.toJson()])
       });

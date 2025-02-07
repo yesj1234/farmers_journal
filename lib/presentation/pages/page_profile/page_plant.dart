@@ -1,13 +1,10 @@
 import 'package:farmers_journal/data/providers.dart';
-import 'package:farmers_journal/domain/model/user.dart';
 import 'package:farmers_journal/presentation/components/plant_selection.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../utils.dart';
 
 class PagePlant extends ConsumerStatefulWidget {
   const PagePlant({super.key});
