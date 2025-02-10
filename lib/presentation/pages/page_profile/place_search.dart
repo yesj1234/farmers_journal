@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:farmers_journal/data/providers.dart';
+import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_profile/place_map.dart';
 import 'package:farmers_journal/presentation/pages/page_profile/place_predictedItem.dart';
@@ -45,6 +46,7 @@ class _PagePlaceSearchState extends ConsumerState<PagePlaceSearch> {
                   .read(userControllerProvider.notifier)
                   .setPlace(id: plantId, newPlantPlace: selectedPlace)
                   .then((_) {
+                showSnackBar(context, '위치가 $selectedPlace(으)로 변경되었습니다.');
                 context.pop();
               });
             },

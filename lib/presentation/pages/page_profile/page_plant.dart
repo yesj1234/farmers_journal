@@ -68,6 +68,7 @@ class _PagePlantState extends ConsumerState<PagePlant> {
       final userRef = ref.read(userControllerProvider);
       await ref.read(userControllerProvider.notifier).setPlant(
           id: userRef.value!.plants[0].id, newPlantName: plant, code: code!);
+      showSnackBar(context, '작물이 $plant로 변경되었습니다.');
       context.pop();
     }
   }
