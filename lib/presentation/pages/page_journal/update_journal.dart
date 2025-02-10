@@ -30,6 +30,15 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
   String? content;
   DateTime? date;
   List<ImageType>? images;
+  bool get isFormEmpty {
+    if (images == null || title == null || content == null) {
+      return false;
+    } else {
+      return images!.isEmpty &&
+          title!.trim().isEmpty &&
+          content!.trim().isEmpty;
+    }
+  }
 
   @override
   void initState() {
@@ -96,7 +105,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                     ? const SizedBox.shrink()
                     : Flexible(
                         child: SizedBox(
-                          width: MediaQuery.sizeOf(context).width / 1.1,
+                          width: MediaQuery.sizeOf(context).width - 42,
                           height: MediaQuery.sizeOf(context).height / 4,
                           child: ImageWidgetLayout(
                             images: images ?? [],
@@ -109,6 +118,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                 _TitleForm(
                   title: title,
                   onUpdateJournalTitle: updateJournalTitle,
+                  notValid: isFormEmpty,
                 ),
                 const SizedBox(
                   height: 10,
@@ -118,17 +128,14 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                     content: content,
                     onUpdateContent: updateJournalContent,
                     onImagePick: () async {
-                      List<XFile> _images = await _pickImage();
-                      if (_images.length + images!.length > 8) {
-                        showSnackBar(context, '사진은 8장 이상을 넘을 수 없습니다.');
-                      } else {
-                        setState(() {
-                          images = [
-                            ...images!,
-                            ..._images.map((file) => XFileImage(file))
-                          ];
-                        });
-                      }
+                      List<XFile> _images = await _imagePicker.pickMultiImage(
+                          limit: 8 - images!.length);
+                      setState(() {
+                        images = [
+                          ...images!,
+                          ..._images.map((file) => XFileImage(file))
+                        ];
+                      });
                     },
                   ),
                 ),
@@ -136,33 +143,47 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                   onPressed: journalFormController.maybeWhen(
                       orElse: () {
                         return () async {
-                          _formKey.currentState?.save();
-
-                          await ref
-                              .read(journalFormControllerProvider.notifier)
-                              .updateJournal(
-                                  id: widget.id!,
-                                  title: title ?? '',
-                                  content: content ?? '',
-                                  date: date ?? snapshot.data!.date!,
-                                  images: images)
-                              .then(
-                            (_) {
-                              context.go('/main');
-                            },
-                            onError: (e, st) => showSnackBar(
-                              context,
-                              e.toString(),
-                            ),
-                          );
+                          final bool isValid =
+                              _formKey.currentState?.validate() ?? false;
+                          if (isValid) {
+                            _formKey.currentState?.save();
+                            try {
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    );
+                                  });
+                              await ref
+                                  .read(journalFormControllerProvider.notifier)
+                                  .updateJournal(
+                                      id: widget.id!,
+                                      title: title ?? '',
+                                      content: content ?? '',
+                                      date: date ?? snapshot.data!.date!,
+                                      images: images)
+                                  .then(
+                                (_) {
+                                  context.go('/main');
+                                },
+                                onError: (e, st) => showSnackBar(
+                                  context,
+                                  e.toString(),
+                                ),
+                              );
+                            } catch (error) {
+                              showSnackBar(context, error.toString());
+                            }
+                          }
                         };
                       },
                       loading: null),
                   style: onSaveButtonStyle,
-                  child: journalFormController.maybeWhen(
-                    orElse: () => const Text("저장", style: onSaveTextStyle),
-                    loading: () => const CircularProgressIndicator(),
-                  ),
+                  child: const Text("저장", style: onSaveTextStyle),
                 ),
               ],
             ),
@@ -253,9 +274,13 @@ class _DateForm extends StatelessWidget {
 
 class _TitleForm extends StatelessWidget {
   const _TitleForm(
-      {super.key, required this.title, required this.onUpdateJournalTitle});
+      {super.key,
+      required this.title,
+      required this.onUpdateJournalTitle,
+      required this.notValid});
   final String? title;
   final void Function(String?) onUpdateJournalTitle;
+  final bool notValid;
   TextStyle get textStyle => const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
@@ -268,6 +293,13 @@ class _TitleForm extends StatelessWidget {
         initialValue: title,
         onChanged: (value) => onUpdateJournalTitle(value),
         onSaved: (value) => onUpdateJournalTitle(value),
+        validator: (_) {
+          if (notValid && title!.isEmpty) {
+            return '비어 있는 일지를 만들 수 없습니다.';
+          } else {
+            return null;
+          }
+        },
         style: textStyle,
         decoration: const InputDecoration(
           hintText: '제목',
