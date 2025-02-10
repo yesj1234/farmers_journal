@@ -8,7 +8,6 @@ import 'package:farmers_journal/presentation/controller/journal/journal_form_con
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
@@ -22,42 +21,43 @@ class CreateJournalForm extends StatefulHookConsumerWidget {
 }
 
 class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
+  bool get isFormEmpty {
+    return images.isEmpty &&
+        titleController.text.trim().isEmpty &&
+        contentController.text.trim().isEmpty;
+  }
+
   final ImagePicker _imagePicker = ImagePicker();
 
   DateTime? date = DateTime.now();
-  String? title;
-  String? content;
+
   List<XFile> images = [];
+
   void onDatePicked(DateTime? value) {
     setState(() {
       date = value;
     });
   }
 
-  void updateJournalTitle(String? value) {
-    title = value;
-  }
+  final _formKey = GlobalKey<FormState>();
 
-  void updateJournalContent(String? value) {
-    content = value;
-  }
+  final TextEditingController titleController = TextEditingController();
+
+  final TextEditingController contentController = TextEditingController();
 
   void deleteImage(int id) {
     setState(() {
       images.removeAt(id);
-      if (images.isEmpty) {
-        images = [];
-      }
     });
+    _formKey.currentState?.validate();
   }
-
-  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final journalFormController = ref.watch(journalFormControllerProvider);
     return Form(
       key: _formKey,
+      autovalidateMode: AutovalidateMode.always,
       child: Column(
         children: [
           const SizedBox(height: 10),
@@ -68,7 +68,7 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
           images.isNotEmpty
               ? Flexible(
                   child: SizedBox(
-                    width: MediaQuery.sizeOf(context).width / 1.1,
+                    width: MediaQuery.sizeOf(context).width - 42,
                     height: MediaQuery.sizeOf(context).height / 4,
                     child: ImageWidgetLayout(
                       images: images.map((item) => XFileImage(item)).toList(),
@@ -80,26 +80,21 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
               : const SizedBox.shrink(),
           const SizedBox(height: 5),
           _TitleForm(
-            title: title,
-            onUpdateJournalTitle: updateJournalTitle,
+            controller: titleController,
+            notValid: isFormEmpty,
           ),
           const SizedBox(
             height: 10,
           ),
           Flexible(
             child: _ContentForm(
-              content: content,
-              onUpdateContent: updateJournalContent,
+              controller: contentController,
               onImagePick: () async {
                 List<XFile> _images =
                     await _imagePicker.pickMultiImage(limit: 8 - images.length);
-                if (_images.length + images.length > 8) {
-                  showSnackBar(context, '사진은 8장 이상을 넘을 수 없습니다.');
-                } else {
-                  setState(() {
-                    images = [...images, ..._images];
-                  });
-                }
+                setState(() {
+                  images = [...images, ..._images];
+                });
               },
             ),
           ),
@@ -108,34 +103,48 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
               loading: null,
               orElse: () {
                 return () async {
-                  _formKey.currentState?.save();
-                  try {
-                    await ref
-                        .read(journalFormControllerProvider.notifier)
-                        .createJournal(
-                            title: title ?? '',
-                            content: content ?? '',
-                            date: date ?? DateTime.now(),
-                            images: images)
-                        .then(
-                      (_) {
-                        context.go('/main');
-                      },
-                      onError: (e, st) => showSnackBar(
-                        context,
-                        e.toString(),
-                      ),
-                    );
-                  } catch (error) {
-                    showSnackBar(context, error.toString());
+                  _formKey.currentState?.validate();
+
+                  if (!isFormEmpty) {
+                    _formKey.currentState?.save();
+                    try {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          );
+                        },
+                      );
+
+                      await ref
+                          .read(journalFormControllerProvider.notifier)
+                          .createJournal(
+                              title: titleController.text ?? '',
+                              content: contentController.text ?? '',
+                              date: date ?? DateTime.now(),
+                              images: images)
+                          .then(
+                        (_) {
+                          context.go('/main');
+                        },
+                        onError: (e, st) => showSnackBar(
+                          context,
+                          e.toString(),
+                        ),
+                      );
+                    } catch (error) {
+                      showSnackBar(context, error.toString());
+                    }
                   }
                 };
               },
             ),
             style: onSaveButtonStyle,
-            child: journalFormController.maybeWhen(
-                orElse: () => const Text("저장", style: onSaveTextStyle),
-                loading: () => const CircularProgressIndicator()),
+            child: const Text("저장", style: onSaveTextStyle),
           ),
         ],
       ),
@@ -221,9 +230,10 @@ class _DateForm extends StatelessWidget {
 
 class _TitleForm extends StatelessWidget {
   const _TitleForm(
-      {super.key, required this.title, required this.onUpdateJournalTitle});
-  final String? title;
-  final void Function(String?) onUpdateJournalTitle;
+      {super.key, required this.controller, required this.notValid});
+
+  final TextEditingController controller;
+  final bool notValid;
   TextStyle get textStyle => const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
@@ -233,8 +243,16 @@ class _TitleForm extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.sizeOf(context).width / 1.2,
       child: TextFormField(
-        initialValue: title,
-        onChanged: (value) => onUpdateJournalTitle(value),
+        controller: controller,
+        validator: (value) {
+          log('title validator called');
+          log('notValid: $notValid');
+          if (notValid && controller.text.isEmpty) {
+            return '비어 있는 일지를 만들 수 없습니다.';
+          } else {
+            return null;
+          }
+        },
         style: textStyle,
         decoration: const InputDecoration(
           hintText: '제목',
@@ -257,13 +275,10 @@ class _TitleForm extends StatelessWidget {
 
 class _ContentForm extends ConsumerWidget {
   const _ContentForm(
-      {super.key,
-      required this.content,
-      required this.onUpdateContent,
-      required this.onImagePick});
-  final String? content;
+      {super.key, required this.controller, required this.onImagePick});
 
-  final void Function(String?) onUpdateContent;
+  final TextEditingController controller;
+
   final void Function() onImagePick;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -311,8 +326,7 @@ class _ContentForm extends ConsumerWidget {
             child: Stack(
               children: [
                 TextFormField(
-                  initialValue: content,
-                  onChanged: (value) => onUpdateContent(value),
+                  controller: controller,
                   decoration: const InputDecoration(
                     hintText: '글쓰기 시작...',
                     fillColor: Colors.white,
