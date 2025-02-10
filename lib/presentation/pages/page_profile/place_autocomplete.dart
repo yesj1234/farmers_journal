@@ -7,16 +7,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:developer';
 
 class PlaceAutoComplete2 extends StatefulWidget {
-  const PlaceAutoComplete2(
-      {super.key,
-      required this.sessionToken,
-      required this.place,
-      required this.onChanged,
-      required this.onSaved});
+  const PlaceAutoComplete2({
+    super.key,
+    required this.sessionToken,
+    required this.place,
+    required this.onChanged,
+    required this.onSaved,
+    this.autoFocus = false,
+  });
   final void Function(String?) onChanged;
   final void Function(String?) onSaved;
   final String sessionToken;
   final String? place;
+  final bool autoFocus;
 
   @override
   State<PlaceAutoComplete2> createState() => _PlaceAutoComplete2State();
@@ -71,6 +74,7 @@ class _PlaceAutoComplete2State extends State<PlaceAutoComplete2> {
         spacing: 10,
         children: [
           TextFormField(
+            autofocus: widget.autoFocus,
             validator: (value) {
               if (value == null) {
                 if (finalAddress.isNotEmpty) {

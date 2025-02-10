@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PlantSelection extends ConsumerStatefulWidget {
-  const PlantSelection({super.key, required this.onChange});
-  final void Function(String) onChange;
+  const PlantSelection({
+    super.key,
+    required this.onChange,
+    this.autoFocus = false,
+  });
 
+  final void Function(String) onChange;
+  final bool? autoFocus;
   @override
   ConsumerState<PlantSelection> createState() => _PlantSelection2State();
 }
@@ -29,6 +34,7 @@ class _PlantSelection2State extends ConsumerState<PlantSelection> {
       builder: (BuildContext context, SearchController controller) {
         return SearchBar(
           controller: controller,
+          autoFocus: widget.autoFocus!,
           leading: const Icon(Icons.search),
           onTap: () {
             controller.openView();

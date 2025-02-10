@@ -13,36 +13,6 @@ class PagePlant extends ConsumerStatefulWidget {
 }
 
 class _PagePlantState extends ConsumerState<PagePlant> {
-  Future<bool> _showAlertDialog(context, cb) async {
-    return await showDialog<bool>(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                  title: const Text('확정'),
-                  content: SingleChildScrollView(
-                    child: ListBody(
-                      children: [
-                        Text('작물: $plant'),
-                      ],
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('취소'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                        cb();
-                      },
-                      child: const Text('확정'),
-                    )
-                  ]);
-            }) ??
-        false;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +36,10 @@ class _PagePlantState extends ConsumerState<PagePlant> {
               ),
             ),
           ]),
-      body: PlantSelection(onChange: setPlant),
+      body: PlantSelection(
+        onChange: setPlant,
+        autoFocus: true,
+      ),
     );
   }
 
@@ -92,14 +65,10 @@ class _PagePlantState extends ConsumerState<PagePlant> {
     if (_isCode(code)) {
       showSnackBar(context, '$plant는 등록되지 않은 작물입니다. 검색 결과 중에 선택해주세요.');
     } else {
-      bool isCompleted = await _showAlertDialog(context, () async {
-        final userRef = ref.read(userControllerProvider);
-        await ref.read(userControllerProvider.notifier).setPlant(
-            id: userRef.value!.plants[0].id, newPlantName: plant, code: code!);
-      });
-      if (isCompleted) {
-        context.go('/main/profile');
-      }
+      final userRef = ref.read(userControllerProvider);
+      await ref.read(userControllerProvider.notifier).setPlant(
+          id: userRef.value!.plants[0].id, newPlantName: plant, code: code!);
+      context.pop();
     }
   }
 }
