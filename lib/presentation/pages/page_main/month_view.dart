@@ -87,29 +87,65 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return Column(
       children: [
         TableCalendar(
-          calendarBuilders:
-              CalendarBuilders(markerBuilder: (context, data, events) {
-            if (events.isNotEmpty) {
-              return Align(
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    shape: BoxShape.circle,
-                  ),
+          calendarBuilders: CalendarBuilders(
+            selectedBuilder: (context, day, focusedDay) {
+              return Container(
+                decoration: const BoxDecoration(
+                  color: Colors.blueAccent,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
                   child: Text(
-                    '${events.length}',
+                    '${day.day}',
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               );
-            }
-          }),
+            },
+            todayBuilder: (context, day, focusedDay) {
+              return Container(
+                decoration: const BoxDecoration(
+                  color: Colors.orangeAccent,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    '${day.day}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              );
+            },
+            markerBuilder: (context, data, events) {
+              if (events.isNotEmpty) {
+                return Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '${events.length}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                );
+              }
+              return null;
+            },
+          ),
           locale: 'ko_KR',
           firstDay: DateTime.utc(2010, 10, 16),
           lastDay: DateTime.utc(2030, 3, 14),
@@ -134,30 +170,31 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         const SizedBox(height: 8),
         Expanded(
           child: ValueListenableBuilder<List<Journal?>>(
-              valueListenable: _selectedEvents,
-              builder: (context, value, _) {
-                return ListView.builder(
-                    itemCount: value.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 4.0,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: ListTile(
-                          title: Text('${value[index]?.title}',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
-                          subtitle: Text('${value[index]?.content}'),
-                        ),
-                      );
-                    });
-              }),
-        )
+            valueListenable: _selectedEvents,
+            builder: (context, value, _) {
+              return ListView.builder(
+                itemCount: value.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: ListTile(
+                      title: Text('${value[index]?.title}',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Text('${value[index]?.content}'),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
       ],
     );
   }
