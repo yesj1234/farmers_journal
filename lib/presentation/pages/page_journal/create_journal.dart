@@ -245,8 +245,6 @@ class _TitleForm extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         validator: (value) {
-          log('title validator called');
-          log('notValid: $notValid');
           if (notValid && controller.text.isEmpty) {
             return '비어 있는 일지를 만들 수 없습니다.';
           } else {
