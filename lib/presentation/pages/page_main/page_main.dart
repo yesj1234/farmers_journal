@@ -74,7 +74,6 @@ class PageMain extends ConsumerWidget {
         onClick: () {
           // 초기 설정 없으면 초기 설정 페이지로 이동
           if (userRef.value!.isInitialSettingRequired) {
-            log('..');
             context.go('/initial_setting');
           } else {
             context.push('/create');
