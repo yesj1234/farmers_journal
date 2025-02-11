@@ -4,6 +4,7 @@ import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/components/styles/text.dart';
 import 'package:farmers_journal/presentation/components/styles/button.dart';
+import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_form_controller.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:go_router/go_router.dart';
@@ -129,6 +130,7 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
                               images: images)
                           .then(
                         (_) {
+                          ref.invalidate(journalControllerProvider);
                           context.go('/main');
                         },
                         onError: (e, st) => showSnackBar(
