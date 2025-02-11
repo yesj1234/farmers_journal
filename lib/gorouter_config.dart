@@ -1,3 +1,4 @@
+import 'package:farmers_journal/presentation/pages/page_journal/page_update_journal.dart';
 import 'package:farmers_journal/presentation/pages/page_login/page_reset_password.dart';
 import 'package:farmers_journal/presentation/pages/page_profile/page_setting/page_settings.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/page_create_journal.dart';
@@ -36,12 +37,12 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/create',
-      builder: (context, state) => const PageCreateJournal(id: null),
+      builder: (context, state) => const PageCreateJournal(),
     ),
     GoRoute(
       path: '/update/:id',
       builder: (context, state) =>
-          PageCreateJournal(id: state.pathParameters['id']),
+          PageUpdateJournal(id: state.pathParameters['id']),
     ),
     GoRoute(
       path: '/main',
