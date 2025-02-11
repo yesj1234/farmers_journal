@@ -53,7 +53,7 @@ class DayViewCard extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             journal.images != null && journal.images!.isNotEmpty
-                ? Flexible(
+                ? Expanded(
                     child: Center(
                       child: HeroImageWidgetLayout(
                           images: journal.images!.map((item) {
