@@ -82,7 +82,7 @@ class WeekViewCard extends ConsumerWidget {
             journal.images != null && journal.images!.isNotEmpty
                 ? Expanded(
                     flex: 4,
-                    child: HeroImageWidgetLayout(
+                    child: HeroImageWidgetLayoutCustom(
                         images: journal.images!.map((item) {
                       if (item is String) {
                         return UrlImage(item);

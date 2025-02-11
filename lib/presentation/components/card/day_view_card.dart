@@ -55,15 +55,16 @@ class DayViewCard extends ConsumerWidget {
             journal.images != null && journal.images!.isNotEmpty
                 ? Expanded(
                     child: Center(
-                      child: HeroImageWidgetLayout(
-                          images: journal.images!.map((item) {
-                        if (item is String) {
-                          return UrlImage(item);
-                        } else {
-                          throw ArgumentError(
-                              'Invalid type in list: ${item.runtimeType}');
-                        }
-                      }).toList()),
+                      child: HeroImageWidgetLayoutCustom(
+                        images: journal.images!.map((item) {
+                          if (item is String) {
+                            return UrlImage(item);
+                          } else {
+                            throw ArgumentError(
+                                'Invalid type in list: ${item.runtimeType}');
+                          }
+                        }).toList(),
+                      ),
                     ),
                   )
                 : const SizedBox.shrink(),
@@ -110,7 +111,7 @@ class DayViewCard extends ConsumerWidget {
                 verticalPadding: verticalPadding,
                 date: journal.date!,
                 editable: editable,
-                onEdit: () => context.go('/update/${journal.id}'),
+                onEdit: () => context.push('/update/${journal.id}'),
                 onDelete: () => showMyAlertDialog(
                     context: context,
                     type: AlertDialogType.delete,

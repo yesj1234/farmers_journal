@@ -5,8 +5,8 @@ import 'dart:io';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:farmers_journal/presentation/components/layout_images_detail_screen.dart';
 
-class HeroImageWidgetLayout extends StatelessWidget {
-  const HeroImageWidgetLayout({
+class HeroImageWidgetLayoutCustom extends StatelessWidget {
+  const HeroImageWidgetLayoutCustom({
     super.key,
     required this.images,
     this.isEditMode = false,
@@ -16,92 +16,275 @@ class HeroImageWidgetLayout extends StatelessWidget {
   final void Function(int id)? onDelete;
   final List<ImageType> images;
 
-  int _getCrossAxisCount(int imageCount) {
-    if (imageCount == 1) return 1;
-    if (imageCount <= 4) return 2;
-    if (imageCount <= 9) return 3;
-    return 4;
-  }
-
-  int _getRowCount(int imageCount, int crossAxisCount) {
-    return (imageCount / crossAxisCount).ceil();
-  }
-
   @override
   Widget build(BuildContext context) {
     if (images.isNotEmpty) {
       return LayoutBuilder(
         builder: (context, constraints) {
-          int crossAxisCount = _getCrossAxisCount(images.length);
+          double maxWidth = constraints.maxWidth;
+          double maxHeight = constraints.maxHeight;
 
-          double availableWidth = constraints.maxWidth;
-          double tileWidth = availableWidth / crossAxisCount;
+          Widget buildLayout() {
+            switch (images.length) {
+              case 1:
+                return _buildSingleImage(maxWidth, maxHeight, context);
+              case 2:
+                return _buildTwoImages(
+                  maxWidth,
+                  maxHeight,
+                  context,
+                );
+              case 3:
+                return _buildThreeImages(
+                  maxWidth,
+                  maxHeight,
+                  context,
+                );
+              case 4:
+                return _buildFourImages(
+                  maxWidth,
+                  maxHeight,
+                  context,
+                );
+              case 5:
+                return _buildFiveImages(
+                  maxWidth,
+                  maxHeight,
+                  context,
+                );
+              default:
+                return _buildMoreThanSixImages(
+                  maxWidth,
+                  maxHeight,
+                  context,
+                );
+            }
+          }
 
-          double availableHeight = constraints.maxHeight;
-          double tileHeight =
-              availableHeight / _getRowCount(images.length, crossAxisCount);
-
-          return GridView.builder(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 2,
-            ),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: 8.0,
-              mainAxisSpacing: 8.0,
-              childAspectRatio: tileWidth / tileHeight, // Dynamic aspect ratio
-            ),
-            itemCount: images.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              switch (images[index]) {
-                case UrlImage(:final value):
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => LayoutImagesDetailScreen(
-                            tags: images as List<UrlImage>,
-                            initialIndex: index,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Hero(
-                      tag: value,
-                      child: _URLImageTile(
-                        id: index,
-                        url: value,
-                        onDelete: () {
-                          onDelete!(index);
-                        },
-                        width: tileWidth,
-                        height: tileHeight,
-                        isEditMode: isEditMode,
-                      ),
-                    ),
-                  );
-
-                case XFileImage(:final value):
-                  return _XFileImageTile(
-                    id: index,
-                    image: value,
-                    onDelete: () {
-                      onDelete!(index);
-                    },
-                    width: tileWidth,
-                    height: tileHeight,
-                    isEditMode: isEditMode,
-                  );
-              }
-            },
-          );
+          return buildLayout();
         },
       );
     } else {
       return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildSingleImage(
+    double width,
+    double height,
+    context,
+  ) {
+    return _buildImageTile(0, width, height, context);
+  }
+
+  Widget _buildTwoImages(double width, double height, context) {
+    return Row(
+      spacing: 2,
+      children: [
+        Expanded(
+          child: _buildImageTile(0, width / 2, height, context),
+        ),
+        Expanded(
+          child: _buildImageTile(1, width / 2, height, context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildThreeImages(double width, double height, context) {
+    return Row(
+      spacing: 2,
+      children: [
+        Expanded(
+          child: _buildImageTile(0, width / 2, height, context),
+        ),
+        Column(
+          spacing: 2,
+          children: [
+            Expanded(
+              child: _buildImageTile(1, width / 2, height / 2, context),
+            ),
+            Expanded(
+              child: _buildImageTile(1, width / 2, height / 2, context),
+            )
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget _buildFourImages(double width, double height, context) {
+    return Row(spacing: 2, children: [
+      Expanded(
+        child: _buildImageTile(0, width / 2, height, context),
+      ),
+      Expanded(
+        child: Column(
+          spacing: 2,
+          children: [
+            Expanded(
+              child: _buildImageTile(1, width / 2, height / 2, context),
+            ),
+            Row(spacing: 2, children: [
+              Expanded(
+                child: _buildImageTile(2, width / 4, height / 2, context),
+              ),
+              Expanded(
+                child: _buildImageTile(3, width / 4, height / 2, context),
+              ),
+            ]),
+          ],
+        ),
+      ),
+    ]);
+  }
+
+  Widget _buildFiveImages(double width, double height, context) {
+    return Row(spacing: 2, children: [
+      Expanded(
+        child: _buildImageTile(0, width / 2, height, context),
+      ),
+      Expanded(
+        child: Column(
+          spacing: 2,
+          children: [
+            Expanded(
+              child: Row(
+                spacing: 2,
+                children: [
+                  Expanded(
+                    child: _buildImageTile(1, width / 2, height / 2, context),
+                  ),
+                  Expanded(
+                    child: _buildImageTile(2, width / 2, height / 2, context),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(spacing: 2, children: [
+                Expanded(
+                  child: _buildImageTile(3, width / 4, height / 2, context),
+                ),
+                Expanded(
+                  child: _buildImageTile(4, width / 4, height / 2, context),
+                ),
+              ]),
+            )
+          ],
+        ),
+      ),
+    ]);
+  }
+
+  Widget _buildMoreThanSixImages(double width, double height, context) {
+    return Stack(
+      children: [
+        Row(
+          spacing: 2,
+          children: [
+            Expanded(
+              child: _buildImageTile(0, width / 2, height, context),
+            ),
+            Expanded(
+              child: Column(
+                spacing: 2,
+                children: [
+                  Expanded(
+                    child: Row(
+                      spacing: 2,
+                      children: [
+                        Expanded(
+                          child: _buildImageTile(
+                              1, width / 2, height / 2, context),
+                        ),
+                        Expanded(
+                          child: _buildImageTile(
+                              2, width / 2, height / 2, context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      spacing: 2,
+                      children: [
+                        Expanded(
+                          child: _buildImageTile(
+                              3, width / 4, height / 2, context),
+                        ),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              _buildImageTile(
+                                  4, width / 4, height / 2, context),
+                              Positioned.fill(
+                                child: Container(
+                                  color: Colors.black54,
+                                  child: Center(
+                                    child: Text(
+                                      "+${images.length - 4}",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImageTile(int index, double width, double height, context) {
+    final image = images[index];
+    switch (image) {
+      case UrlImage(:final value):
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => LayoutImagesDetailScreen(
+                  tags: images as List<UrlImage>,
+                  initialIndex: index,
+                ),
+              ),
+            );
+          },
+          child: Hero(
+            tag: value,
+            child: _URLImageTile(
+              id: index,
+              url: value,
+              onDelete: () => onDelete?.call(index),
+              width: width,
+              height: height,
+              isEditMode: isEditMode,
+            ),
+          ),
+        );
+      case XFileImage(:final value):
+        return _XFileImageTile(
+          id: index,
+          image: value,
+          onDelete: () => onDelete?.call(index),
+          width: width,
+          height: height,
+          isEditMode: isEditMode,
+        );
     }
   }
 }

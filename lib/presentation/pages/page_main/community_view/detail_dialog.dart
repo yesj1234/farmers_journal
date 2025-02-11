@@ -64,8 +64,15 @@ class DataStateDialog extends StatelessWidget {
                     return userInfo.value!.id == journalInfo.writer
                         ? MyCascadingMenu(
                             menuType: CascadingMenuType.personal,
-                            onCallBack1: () =>
-                                context.go('/update/${journalInfo.id}'),
+                            onCallBack1: () => context
+                                .push('/update/${journalInfo.id}')
+                                .then((value) {
+                              if (value == true) {
+                                if (context.mounted) {
+                                  context.pop();
+                                }
+                              }
+                            }),
                             onCallBack2: () {
                               showMyAlertDialog(
                                 context: context,
