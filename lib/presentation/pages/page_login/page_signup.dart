@@ -18,6 +18,7 @@ class _PageSignUpState extends ConsumerState<PageSignup> {
   String? password;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
+  bool isAgreed = false;
   @override
   void dispose() {
     _passwordController.dispose();
@@ -150,8 +151,23 @@ class _PageSignUpState extends ConsumerState<PageSignup> {
                         onSaved: onPasswordSaved,
                         obscureText: true,
                       ),
+                      Row(children: [
+                        Checkbox(
+                          value: isAgreed,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              if (value != null) {
+                                isAgreed = value;
+                              }
+                            });
+                          },
+                        ),
+                        const Text("이용약관에 동의합니다."),
+                      ]),
                       ElevatedButton(
-                        onPressed: authRef.isLoading ? null : onFormSubmitted,
+                        onPressed: authRef.isLoading || !isAgreed
+                            ? null
+                            : onFormSubmitted,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           backgroundColor:
