@@ -58,7 +58,7 @@ class PageMain extends ConsumerWidget {
               ),
               journalRef.hasValue && journalRef.value!.isNotEmpty
                   ? const Align(
-                      alignment: Alignment.centerLeft,
+                      alignment: Alignment.center,
                       child: ButtonMainViewFilter(),
                     )
                   : const SizedBox.shrink(),
