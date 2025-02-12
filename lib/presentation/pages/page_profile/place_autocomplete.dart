@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:farmers_journal/domain/model/places_autocomplete_response.dart';
 import 'package:farmers_journal/data/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:developer';
 
 class PlaceAutoComplete2 extends StatefulWidget {
   const PlaceAutoComplete2({

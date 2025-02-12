@@ -1,6 +1,4 @@
 import 'dart:collection';
-import 'dart:developer';
-
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/utils.dart';

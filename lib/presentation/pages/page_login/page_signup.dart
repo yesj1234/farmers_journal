@@ -1,4 +1,3 @@
-import 'package:farmers_journal/data/firestore_providers.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/auth/auth_controller.dart';
 import 'package:flutter/material.dart';

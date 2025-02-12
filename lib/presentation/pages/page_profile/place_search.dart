@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:farmers_journal/data/providers.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';

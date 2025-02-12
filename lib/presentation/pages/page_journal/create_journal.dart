@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/components/styles/text.dart';
