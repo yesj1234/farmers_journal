@@ -217,19 +217,6 @@ class FireStoreUserRepository implements UserRepository {
     }
   }
 
-  Future<String> _uploadFile(File imageFile) async {
-    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference storageRef =
-        FirebaseStorage.instance.ref().child("images/$fileName");
-
-    UploadTask uploadTask = storageRef.putFile(imageFile);
-
-    TaskSnapshot snapshot = await uploadTask;
-
-    String downloadURL = await snapshot.ref.getDownloadURL();
-    return downloadURL;
-  }
-
   @override
   Future<List<Journal?>> createJournal(
       {required String title,
@@ -302,7 +289,8 @@ class FireStoreUserRepository implements UserRepository {
             imageURLs.add(image.value);
           case XFileImage():
             final bytes = await image.value.readAsBytes();
-            String downloadURL = await _uploadBytes(bytes: bytes);
+            String downloadURL =
+                await _uploadBytes(path: 'images', bytes: bytes);
             imageURLs.add(downloadURL);
         }
       }
