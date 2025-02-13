@@ -83,19 +83,15 @@ class DayViewCard extends ConsumerWidget {
                   ),
             journal.content!.isEmpty
                 ? const SizedBox.shrink()
-                : Flexible(
-                    flex: 2,
-                    child: TextPortion(
-                      horizontalPadding: horizontalPadding,
-                      verticalPadding: verticalPadding,
-                      child: RichText(
-                        maxLines: textMaxLine,
-                        overflow: TextOverflow.ellipsis,
-                        text: TextSpan(
-                            style:
-                                TextStyle(color: colorScheme.onSurfaceVariant),
-                            text: journal.content),
-                      ),
+                : TextPortion(
+                    horizontalPadding: horizontalPadding,
+                    verticalPadding: verticalPadding,
+                    child: RichText(
+                      maxLines: textMaxLine,
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(
+                          style: TextStyle(color: colorScheme.onSurfaceVariant),
+                          text: journal.content),
                     ),
                   ),
             journal.content!.isEmpty && journal.title!.isEmpty
