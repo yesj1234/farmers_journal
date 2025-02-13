@@ -1,5 +1,5 @@
-import 'dart:math';
-
+import 'dart:math' hide log;
+import 'dart:developer';
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/components/show_alert_dialog.dart';

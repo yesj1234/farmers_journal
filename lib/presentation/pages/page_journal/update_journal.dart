@@ -69,10 +69,6 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
     content = value;
   }
 
-  Future<List<XFile>> _pickImage() {
-    return _imagePicker.pickMultiImage();
-  }
-
   void deleteImage(int id) {
     setState(() {
       images?.removeAt(id);

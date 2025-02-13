@@ -105,7 +105,7 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
               child: _buildImageTile(1, width / 2, height / 2, context),
             ),
             Expanded(
-              child: _buildImageTile(1, width / 2, height / 2, context),
+              child: _buildImageTile(2, width / 2, height / 2, context),
             )
           ],
         )
