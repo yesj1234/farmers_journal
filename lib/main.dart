@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
         Locale('ko'),
       ],
       routerConfig: router,
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       theme: FlexThemeData.light(
         scheme: FlexScheme.green,
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
