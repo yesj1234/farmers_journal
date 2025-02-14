@@ -3,6 +3,8 @@
         android:label="farmers_journal"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA847Y-rI2TprKxVAUrNJkrsx2bf0KEvOY"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
