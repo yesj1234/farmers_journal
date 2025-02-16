@@ -91,8 +91,8 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
           return Form(
             key: _formKey,
             child: Column(
+              spacing: 10,
               children: [
-                const SizedBox(height: 10),
                 _DateForm(
                   datePicked: date,
                   onDatePicked: onDatePicked,
@@ -110,16 +110,13 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                           ),
                         ),
                       ),
-                const SizedBox(height: 5),
                 _TitleForm(
                   title: title,
                   onUpdateJournalTitle: updateJournalTitle,
                   notValid: isFormEmpty,
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Flexible(
+                Expanded(
+                  flex: 3,
                   child: _ContentForm(
                     content: content,
                     onUpdateContent: updateJournalContent,
@@ -178,9 +175,22 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                         };
                       },
                       loading: null),
-                  style: onSaveButtonStyle,
-                  child: const Text("저장", style: onSaveTextStyle),
-                ),
+                  style: onSaveButtonStyle.copyWith(
+                    backgroundColor:
+                        WidgetStatePropertyAll(Theme.of(context).primaryColor),
+                    fixedSize: WidgetStatePropertyAll(
+                      Size.fromWidth(MediaQuery.sizeOf(context).width - 32),
+                    ),
+                  ),
+                  child: const Text(
+                    "저장",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                )
               ],
             ),
           );
@@ -232,7 +242,7 @@ class _DateForm extends StatelessWidget {
       decoration: const BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.black,
+            color: Colors.transparent,
             width: 0.5,
           ),
         ),
@@ -335,6 +345,7 @@ class _ContentForm extends ConsumerWidget {
           fit: BoxFit.fitWidth,
           child: Text.rich(
             overflow: TextOverflow.ellipsis,
+            maxLines: null,
             TextSpan(
               text: '${appUser.plants.first.name}, ',
               style: TextStyle(
@@ -364,6 +375,9 @@ class _ContentForm extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           tag.isLoading ? const SizedBox.shrink() : tag.value!,
+          const SizedBox(
+            height: 10,
+          ),
           Expanded(
               child: Stack(
             children: [
@@ -385,7 +399,7 @@ class _ContentForm extends ConsumerWidget {
                   ),
                 ),
                 minLines: 5,
-                maxLines: 10,
+                maxLines: null,
               ),
               Align(
                 alignment: Alignment.bottomRight,

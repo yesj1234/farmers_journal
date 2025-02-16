@@ -69,6 +69,7 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
     }
   }
 
+  // TODO: image layout should differ based on the size of the images and index.
   Widget _buildSingleImage(
     double width,
     double height,
@@ -395,7 +396,12 @@ class _URLImageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(children: [
       ClipRRect(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.zero,
+          bottomRight: Radius.zero,
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
         child: SizedBox(
           width: width,
           height: height,

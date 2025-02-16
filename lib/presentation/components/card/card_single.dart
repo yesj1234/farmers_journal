@@ -163,7 +163,8 @@ class _MyCascadingMenuState extends State<MyCascadingMenu> {
           },
           child: const Icon(
             Icons.more_horiz,
-            size: 20,
+            color: Color.fromRGBO(0, 0, 0, 0.7),
+            size: 24,
           ),
         );
       },

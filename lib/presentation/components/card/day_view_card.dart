@@ -71,12 +71,14 @@ class DayViewCard extends ConsumerWidget {
             journal.title!.isEmpty
                 ? const SizedBox.shrink()
                 : Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: horizontalPadding),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: horizontalPadding,
+                      vertical: 5,
+                    ),
                     child: Text(
                       journal.title!,
                       style: const TextStyle(
-                        fontSize: 15,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -97,6 +99,8 @@ class DayViewCard extends ConsumerWidget {
             journal.content!.isEmpty && journal.title!.isEmpty
                 ? const SizedBox.shrink()
                 : Divider(
+                    height: 0.5,
+                    thickness: 1,
                     indent: verticalPadding,
                     endIndent: verticalPadding,
                   ),
