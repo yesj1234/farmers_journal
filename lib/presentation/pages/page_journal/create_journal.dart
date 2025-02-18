@@ -10,7 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
-// TODO: update UI same with update journal
+// TODO: Refactoring needed. Merge create journal and update journal page.
 class CreateJournalForm extends StatefulHookConsumerWidget {
   const CreateJournalForm({super.key});
 
@@ -65,15 +65,13 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
             onDatePicked: onDatePicked,
           ),
           images.isNotEmpty
-              ? Flexible(
-                  child: SizedBox(
-                    width: MediaQuery.sizeOf(context).width - 42,
-                    height: MediaQuery.sizeOf(context).height / 4,
-                    child: ImageWidgetLayout(
-                      images: images.map((item) => XFileImage(item)).toList(),
-                      isEditMode: true,
-                      onDelete: deleteImage,
-                    ),
+              ? SizedBox(
+                  width: MediaQuery.sizeOf(context).width - 42,
+                  height: MediaQuery.sizeOf(context).height / 5,
+                  child: CustomImageWidgetLayout(
+                    images: images.map((item) => XFileImage(item)).toList(),
+                    isEditMode: true,
+                    onDelete: deleteImage,
                   ),
                 )
               : const SizedBox.shrink(),

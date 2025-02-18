@@ -97,15 +97,13 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                 ),
                 images!.isEmpty
                     ? const SizedBox.shrink()
-                    : Flexible(
-                        child: SizedBox(
-                          width: MediaQuery.sizeOf(context).width - 42,
-                          height: MediaQuery.sizeOf(context).height / 4,
-                          child: ImageWidgetLayout(
-                            images: images ?? [],
-                            onDelete: deleteImage,
-                            isEditMode: true,
-                          ),
+                    : SizedBox(
+                        width: MediaQuery.sizeOf(context).width - 42,
+                        height: MediaQuery.sizeOf(context).height / 5,
+                        child: ImageWidgetLayout(
+                          images: images ?? [],
+                          onDelete: deleteImage,
+                          isEditMode: true,
                         ),
                       ),
                 _TitleForm(

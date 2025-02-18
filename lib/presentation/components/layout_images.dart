@@ -5,8 +5,8 @@ import 'dart:io';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:farmers_journal/presentation/components/layout_images_detail_screen.dart';
 
-class HeroImageWidgetLayoutCustom extends StatelessWidget {
-  const HeroImageWidgetLayoutCustom({
+class CustomImageWidgetLayout extends StatelessWidget {
+  const CustomImageWidgetLayout({
     super.key,
     required this.images,
     this.isEditMode = false,
@@ -69,7 +69,6 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
     }
   }
 
-  // TODO: image layout should differ based on the size of the images and index.
   Widget _buildSingleImage(
     double width,
     double height,
@@ -348,6 +347,7 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
           width: width,
           height: height,
           isEditMode: isEditMode,
+          borderRadius: borderRadius,
         );
     }
   }
@@ -484,8 +484,8 @@ class _URLImageTile extends StatelessWidget {
         ),
       ),
       isEditMode
-          ? Align(
-              alignment: Alignment.topRight,
+          ? Positioned(
+              right: 1,
               child: IconButton(
                 alignment: Alignment.topRight,
                 onPressed: onDelete,
@@ -510,6 +510,7 @@ class _XFileImageTile extends StatelessWidget {
     required this.onDelete,
     this.width,
     this.height,
+    this.borderRadius,
   });
   final int id;
   final XFile image;
@@ -517,13 +518,13 @@ class _XFileImageTile extends StatelessWidget {
   final void Function()? onDelete;
   final double? width;
   final double? height;
-
+  final BorderRadius? borderRadius;
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: borderRadius ?? BorderRadius.circular(10),
           child: SizedBox(
             width: width,
             height: height,
@@ -539,8 +540,8 @@ class _XFileImageTile extends StatelessWidget {
           ),
         ),
         isEditMode
-            ? Align(
-                alignment: Alignment.topRight,
+            ? Positioned(
+                right: 1,
                 child: IconButton(
                   alignment: Alignment.topRight,
                   onPressed: onDelete,
