@@ -12,8 +12,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 
-import 'package:farmers_journal/presentation/components/styles/text.dart';
-
 class UpdateJournalForm extends StatefulHookConsumerWidget {
   const UpdateJournalForm({super.key, required this.id});
   final String? id;
@@ -374,10 +372,12 @@ class _ContentForm extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          tag.isLoading ? const SizedBox.shrink() : tag.value!,
-          const SizedBox(
-            height: 10,
-          ),
+          tag.isLoading
+              ? const SizedBox.shrink()
+              : Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: tag.value!,
+                ),
           Expanded(
               child: Stack(
             children: [
