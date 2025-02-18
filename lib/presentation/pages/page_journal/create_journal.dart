@@ -11,20 +11,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
-class A extends StatefulWidget {
-  const A({super.key});
-
-  @override
-  State<A> createState() => _AState();
-}
-
-class _AState extends State<A> {
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
-
 // TODO: update UI same with update journal
 class CreateJournalForm extends StatefulHookConsumerWidget {
   const CreateJournalForm({super.key});
