@@ -75,7 +75,7 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
     double height,
     context,
   ) {
-    return _buildImageTile(0, width, height, context);
+    return _buildImageTile(0, width, height, 1, context);
   }
 
   Widget _buildTwoImages(double width, double height, context) {
@@ -83,10 +83,10 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
       spacing: 2,
       children: [
         Expanded(
-          child: _buildImageTile(0, width / 2, height, context),
+          child: _buildImageTile(0, width / 2, height, 2, context),
         ),
         Expanded(
-          child: _buildImageTile(1, width / 2, height, context),
+          child: _buildImageTile(1, width / 2, height, 2, context),
         ),
       ],
     );
@@ -97,16 +97,16 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
       spacing: 2,
       children: [
         Expanded(
-          child: _buildImageTile(0, width / 2, height, context),
+          child: _buildImageTile(0, width / 2, height, 3, context),
         ),
         Column(
           spacing: 2,
           children: [
             Expanded(
-              child: _buildImageTile(1, width / 2, height / 2, context),
+              child: _buildImageTile(1, width / 2, height / 2, 3, context),
             ),
             Expanded(
-              child: _buildImageTile(2, width / 2, height / 2, context),
+              child: _buildImageTile(2, width / 2, height / 2, 3, context),
             )
           ],
         )
@@ -117,21 +117,21 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
   Widget _buildFourImages(double width, double height, context) {
     return Row(spacing: 2, children: [
       Expanded(
-        child: _buildImageTile(0, width / 2, height, context),
+        child: _buildImageTile(0, width / 2, height, 4, context),
       ),
       Expanded(
         child: Column(
           spacing: 2,
           children: [
             Expanded(
-              child: _buildImageTile(1, width / 2, height / 2, context),
+              child: _buildImageTile(1, width / 2, height / 2, 4, context),
             ),
             Row(spacing: 2, children: [
               Expanded(
-                child: _buildImageTile(2, width / 4, height / 2, context),
+                child: _buildImageTile(2, width / 4, height / 2, 4, context),
               ),
               Expanded(
-                child: _buildImageTile(3, width / 4, height / 2, context),
+                child: _buildImageTile(3, width / 4, height / 2, 4, context),
               ),
             ]),
           ],
@@ -143,7 +143,7 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
   Widget _buildFiveImages(double width, double height, context) {
     return Row(spacing: 2, children: [
       Expanded(
-        child: _buildImageTile(0, width / 2, height, context),
+        child: _buildImageTile(0, width / 2, height, 5, context),
       ),
       Expanded(
         child: Column(
@@ -154,10 +154,12 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
                 spacing: 2,
                 children: [
                   Expanded(
-                    child: _buildImageTile(1, width / 2, height / 2, context),
+                    child:
+                        _buildImageTile(1, width / 2, height / 2, 5, context),
                   ),
                   Expanded(
-                    child: _buildImageTile(2, width / 2, height / 2, context),
+                    child:
+                        _buildImageTile(2, width / 2, height / 2, 5, context),
                   ),
                 ],
               ),
@@ -165,10 +167,10 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
             Expanded(
               child: Row(spacing: 2, children: [
                 Expanded(
-                  child: _buildImageTile(3, width / 4, height / 2, context),
+                  child: _buildImageTile(3, width / 4, height / 2, 5, context),
                 ),
                 Expanded(
-                  child: _buildImageTile(4, width / 4, height / 2, context),
+                  child: _buildImageTile(4, width / 4, height / 2, 5, context),
                 ),
               ]),
             )
@@ -185,7 +187,7 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
           spacing: 2,
           children: [
             Expanded(
-              child: _buildImageTile(0, width / 2, height, context),
+              child: _buildImageTile(0, width / 2, height, 5, context),
             ),
             Expanded(
               child: Column(
@@ -197,11 +199,11 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
                       children: [
                         Expanded(
                           child: _buildImageTile(
-                              1, width / 2, height / 2, context),
+                              1, width / 2, height / 2, 5, context),
                         ),
                         Expanded(
                           child: _buildImageTile(
-                              2, width / 2, height / 2, context),
+                              2, width / 2, height / 2, 5, context),
                         ),
                       ],
                     ),
@@ -212,13 +214,13 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
                       children: [
                         Expanded(
                           child: _buildImageTile(
-                              3, width / 4, height / 2, context),
+                              3, width / 4, height / 2, 5, context),
                         ),
                         Expanded(
                           child: Stack(
                             children: [
                               _buildImageTile(
-                                  4, width / 4, height / 2, context),
+                                  4, width / 4, height / 2, 5, context),
                               Positioned.fill(
                                 child: Container(
                                   color: Colors.black54,
@@ -249,8 +251,68 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
     );
   }
 
-  Widget _buildImageTile(int index, double width, double height, context) {
+  /// Depending on the index of the image and size of the total, URLImageTile will get different border radius.
+  Widget _buildImageTile(
+      int index, double width, double height, int total, context) {
     final image = images[index];
+    BorderRadius? borderRadius;
+    if (index == 0) {
+      if (total == 1) {
+        borderRadius = const BorderRadius.only(
+          bottomLeft: Radius.zero,
+          bottomRight: Radius.zero,
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        );
+      } else {
+        borderRadius = const BorderRadius.only(
+          bottomLeft: Radius.zero,
+          bottomRight: Radius.zero,
+          topLeft: Radius.circular(10),
+          topRight: Radius.zero,
+        );
+      }
+    } else if (index == 1) {
+      if (total >= 2 && total <= 4) {
+        borderRadius = const BorderRadius.only(
+          bottomLeft: Radius.zero,
+          bottomRight: Radius.zero,
+          topLeft: Radius.zero,
+          topRight: Radius.circular(10),
+        );
+      } else {
+        borderRadius = const BorderRadius.only(
+          bottomLeft: Radius.zero,
+          bottomRight: Radius.zero,
+          topLeft: Radius.zero,
+          topRight: Radius.zero,
+        );
+      }
+    } else if (index == 2) {
+      if (total >= 5) {
+        borderRadius = const BorderRadius.only(
+          bottomLeft: Radius.zero,
+          bottomRight: Radius.zero,
+          topLeft: Radius.zero,
+          topRight: Radius.circular(10),
+        );
+      } else {
+        borderRadius = const BorderRadius.only(
+          bottomLeft: Radius.zero,
+          bottomRight: Radius.zero,
+          topLeft: Radius.zero,
+          topRight: Radius.zero,
+        );
+      }
+    } else {
+      borderRadius = const BorderRadius.only(
+        bottomLeft: Radius.zero,
+        bottomRight: Radius.zero,
+        topLeft: Radius.zero,
+        topRight: Radius.zero,
+      );
+    }
+
     switch (image) {
       case UrlImage(:final value):
         return GestureDetector(
@@ -274,6 +336,7 @@ class HeroImageWidgetLayoutCustom extends StatelessWidget {
               width: width,
               height: height,
               isEditMode: isEditMode,
+              borderRadius: borderRadius,
             ),
           ),
         );
@@ -384,6 +447,7 @@ class _URLImageTile extends StatelessWidget {
     required this.isEditMode,
     this.width,
     this.height,
+    this.borderRadius,
   });
   final int id;
   final String url;
@@ -391,17 +455,19 @@ class _URLImageTile extends StatelessWidget {
   final bool isEditMode;
   final double? width;
   final double? height;
+  final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
       ClipRRect(
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.zero,
-          bottomRight: Radius.zero,
-          topLeft: Radius.circular(10),
-          topRight: Radius.circular(10),
-        ),
+        borderRadius: borderRadius ??
+            const BorderRadius.only(
+              bottomLeft: Radius.zero,
+              bottomRight: Radius.zero,
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            ),
         child: SizedBox(
           width: width,
           height: height,
