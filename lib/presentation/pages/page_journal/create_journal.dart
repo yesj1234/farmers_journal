@@ -1,6 +1,5 @@
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
-import 'package:farmers_journal/presentation/components/styles/text.dart';
 import 'package:farmers_journal/presentation/components/styles/button.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_form_controller.dart';
@@ -59,8 +58,8 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
       key: _formKey,
       autovalidateMode: AutovalidateMode.always,
       child: Column(
+        spacing: 10,
         children: [
-          const SizedBox(height: 10),
           _DateForm(
             datePicked: date,
             onDatePicked: onDatePicked,
@@ -78,15 +77,12 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
                   ),
                 )
               : const SizedBox.shrink(),
-          const SizedBox(height: 5),
           _TitleForm(
             controller: titleController,
             notValid: isFormEmpty,
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          Flexible(
+          Expanded(
+            flex: 3,
             child: _ContentForm(
               controller: contentController,
               onImagePick: () async {
@@ -144,8 +140,21 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
                 };
               },
             ),
-            style: onSaveButtonStyle,
-            child: const Text("저장", style: onSaveTextStyle),
+            style: onSaveButtonStyle.copyWith(
+              backgroundColor:
+                  WidgetStatePropertyAll(Theme.of(context).primaryColor),
+              fixedSize: WidgetStatePropertyAll(
+                Size.fromWidth(MediaQuery.sizeOf(context).width - 32),
+              ),
+            ),
+            child: const Text(
+              "저장",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
@@ -193,7 +202,7 @@ class _DateForm extends StatelessWidget {
       decoration: const BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.black,
+            color: Colors.transparent,
             width: 0.5,
           ),
         ),
@@ -287,6 +296,8 @@ class _ContentForm extends ConsumerWidget {
         return FittedBox(
           fit: BoxFit.fitWidth,
           child: Text.rich(
+            overflow: TextOverflow.ellipsis,
+            maxLines: null,
             TextSpan(
               text: '${appUser.plants.first.name}, ',
               style: TextStyle(
@@ -340,7 +351,7 @@ class _ContentForm extends ConsumerWidget {
                     ),
                   ),
                   minLines: 5,
-                  maxLines: 10,
+                  maxLines: null,
                 ),
                 Align(
                   alignment: Alignment.bottomRight,
