@@ -206,8 +206,8 @@ class _KakaoLoginButton extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: Container(
             decoration: const BoxDecoration(
-              color: Color.fromRGBO(254, 229, 0, 1),
-            ),
+                color: Color.fromRGBO(254, 229, 0, 1),
+                borderRadius: BorderRadius.all(Radius.circular(8))),
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             height: height,
             child: Row(
