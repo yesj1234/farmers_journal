@@ -314,30 +314,43 @@ class CustomImageWidgetLayout extends StatelessWidget {
 
     switch (image) {
       case UrlImage(:final value):
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => LayoutImagesDetailScreen(
-                  tags: images as List<UrlImage>,
-                  initialIndex: index,
+        final child = isEditMode
+            ? _URLImageTile(
+                id: index,
+                url: value,
+                onDelete: () => onDelete?.call(index),
+                width: width,
+                height: height,
+                isEditMode: isEditMode,
+                borderRadius: borderRadius,
+              )
+            : Hero(
+                tag: value,
+                child: _URLImageTile(
+                  id: index,
+                  url: value,
+                  onDelete: () => onDelete?.call(index),
+                  width: width,
+                  height: height,
+                  isEditMode: isEditMode,
+                  borderRadius: borderRadius,
                 ),
-              ),
-            );
-          },
-          child: Hero(
-            tag: value,
-            child: _URLImageTile(
-              id: index,
-              url: value,
-              onDelete: () => onDelete?.call(index),
-              width: width,
-              height: height,
-              isEditMode: isEditMode,
-              borderRadius: borderRadius,
-            ),
-          ),
+              );
+        return GestureDetector(
+          onTap: isEditMode
+              ? null
+              : () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LayoutImagesDetailScreen(
+                        tags: images as List<UrlImage>,
+                        initialIndex: index,
+                      ),
+                    ),
+                  );
+                },
+          child: child,
         );
       case XFileImage(:final value):
         return _XFileImageTile(
