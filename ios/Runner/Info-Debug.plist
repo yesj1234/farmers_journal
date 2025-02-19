@@ -29,6 +29,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+			    <string>com.yesj1234.farmersJournal</string>
 				<string>kakao45fcae32d7db22e18c5b28456013b0b6</string>
 			</array>
 		</dict>

@@ -16,6 +16,12 @@ import 'package:farmers_journal/presentation/pages/page_profile/page_profile.dar
 import 'package:farmers_journal/presentation/pages/page_statistics/page_statistics.dart';
 
 final router = GoRouter(
+  redirect: (context, state) {
+    if (state.uri.toString().contains('google/link')) {
+      return '/';
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',
