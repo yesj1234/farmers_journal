@@ -7,7 +7,7 @@ import 'package:farmers_journal/data/firestore_providers.dart';
 
 part 'journal_controller.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class JournalController extends _$JournalController {
   @override
   Future<List<Journal?>> build() async {
