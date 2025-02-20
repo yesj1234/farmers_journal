@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 
 //Firebase imports
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/rendering.dart';
-
 import 'firebase_options.dart';
 
 // pub import
@@ -33,8 +31,6 @@ void main() async {
     javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_KEY'],
   );
 
-  // debugPaintSizeEnabled = true;
-  // debugPaintLayerBordersEnabled = true;
   initializeDateFormatting('ko_KR').then(
     (_) => runApp(
       ProviderScope(
