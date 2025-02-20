@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmers_journal/data/interface/report_interface.dart';
+import 'package:farmers_journal/domain/interface/report_interface.dart';
 import 'package:farmers_journal/domain/model/report.dart';
 import 'package:uuid/uuid.dart';
 

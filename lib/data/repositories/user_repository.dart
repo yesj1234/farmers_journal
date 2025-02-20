@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/data/firestore_providers.dart';
-import 'package:farmers_journal/data/interface/user_interface.dart';
+import 'package:farmers_journal/domain/interface/user_interface.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/plant.dart';
 import 'package:farmers_journal/domain/model/user.dart';
