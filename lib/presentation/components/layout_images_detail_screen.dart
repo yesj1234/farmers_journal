@@ -1,23 +1,49 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LayoutImagesDetailScreen extends StatelessWidget {
-  const LayoutImagesDetailScreen({
+  LayoutImagesDetailScreen({
     super.key,
     required this.tags,
     required this.initialIndex,
-  });
+  }) : clipTween = Tween<double>(
+            begin: kMinRadius, end: 2 * (kMaxRadius / math.sqrt2));
   final List<UrlImage> tags;
   final int initialIndex;
+  final Tween<double> clipTween;
+
+  static const double kMinRadius = 32.0;
+  static const double kMaxRadius = 128.0;
+  RectTween _createRectTween(Rect? begin, Rect? end) {
+    return MaterialRectCenterArcTween(begin: begin, end: end);
+  }
+
   @override
   Widget build(BuildContext context) {
     final heroWidgets = tags
         .map(
-          (path) => Hero(
-            tag: path.value,
-            child: CachedNetworkImage(
-              imageUrl: path.value,
+          (path) => SizedBox(
+            width: kMinRadius,
+            height: kMaxRadius,
+            child: Hero(
+              tag: path.value,
+              createRectTween: _createRectTween,
+              child: LayoutBuilder(builder: (context, size) {
+                final double t = (size.biggest.width / 2.0) / (128 - 34);
+                final double rectClipExtent = clipTween.transform(t);
+                return SizedBox(
+                  width: rectClipExtent,
+                  height: rectClipExtent,
+                  child: ClipRect(
+                    child: CachedNetworkImage(
+                      imageUrl: path.value,
+                    ),
+                  ),
+                );
+              }),
             ),
           ),
         )

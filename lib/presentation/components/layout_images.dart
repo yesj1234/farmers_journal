@@ -16,6 +16,12 @@ class CustomImageWidgetLayout extends StatelessWidget {
   final void Function(int id)? onDelete;
   final List<ImageType> images;
 
+  RectTween _createRectTween(Rect? begin, Rect? end) {
+    return MaterialRectCenterArcTween(begin: begin, end: end);
+  }
+
+  static const opacityCurve = Interval(0.0, 0.75, curve: Curves.fastOutSlowIn);
+
   @override
   Widget build(BuildContext context) {
     if (images.isNotEmpty) {
@@ -250,7 +256,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
     );
   }
 
-  /// Depending on the index of the image and size of the total, URLImageTile will get different border radius.
+  /// Depending on the index of the image and total count of [images], URLImageTile will get different border radius.
   Widget _buildImageTile(
       int index, double width, double height, int total, context) {
     final image = images[index];
@@ -326,6 +332,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
               )
             : Hero(
                 tag: value,
+                createRectTween: _createRectTween,
                 child: _URLImageTile(
                   id: index,
                   url: value,
@@ -340,13 +347,26 @@ class CustomImageWidgetLayout extends StatelessWidget {
           onTap: isEditMode
               ? null
               : () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => LayoutImagesDetailScreen(
-                        tags: images as List<UrlImage>,
-                        initialIndex: index,
-                      ),
+                  Navigator.of(context).push(
+                    PageRouteBuilder(
+                      transitionDuration: const Duration(seconds: 1),
+                      pageBuilder: (
+                        context,
+                        animation,
+                        secondaryAnimation,
+                      ) =>
+                          AnimatedBuilder(
+                              animation: animation,
+                              builder: (context, child) {
+                                return Opacity(
+                                  opacity:
+                                      opacityCurve.transform(animation.value),
+                                  child: LayoutImagesDetailScreen(
+                                    tags: images as List<UrlImage>,
+                                    initialIndex: index,
+                                  ),
+                                );
+                              }),
                     ),
                   );
                 },
@@ -461,6 +481,7 @@ class _URLImageTile extends StatelessWidget {
     this.width,
     this.height,
     this.borderRadius,
+    this.scaleEffect,
   });
   final int id;
   final String url;
@@ -469,21 +490,22 @@ class _URLImageTile extends StatelessWidget {
   final double? width;
   final double? height;
   final BorderRadius? borderRadius;
+  final double? scaleEffect;
 
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      ClipRRect(
-        borderRadius: borderRadius ??
-            const BorderRadius.only(
-              bottomLeft: Radius.zero,
-              bottomRight: Radius.zero,
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
-            ),
-        child: SizedBox(
-          width: width,
-          height: height,
+      SizedBox(
+        width: width,
+        height: height,
+        child: ClipRRect(
+          borderRadius: borderRadius ??
+              const BorderRadius.only(
+                bottomLeft: Radius.zero,
+                bottomRight: Radius.zero,
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
           child: CachedNetworkImage(
             imageUrl: url,
             width: width,
@@ -534,40 +556,40 @@ class _XFileImageTile extends StatelessWidget {
   final BorderRadius? borderRadius;
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: borderRadius ?? BorderRadius.circular(10),
-          child: SizedBox(
-            width: width,
-            height: height,
-            child: Image.file(
-              File(image.path),
-              width: width,
-              height: height,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Center(child: Icon(Icons.broken_image, size: 50));
-              },
-            ),
-          ),
+    final imageRect = ClipRRect(
+      borderRadius: borderRadius ?? BorderRadius.circular(10),
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Image.file(
+          File(image.path),
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return const Center(child: Icon(Icons.broken_image, size: 50));
+          },
         ),
-        isEditMode
-            ? Positioned(
-                right: 1,
-                child: IconButton(
-                  alignment: Alignment.topRight,
-                  onPressed: onDelete,
-                  padding: EdgeInsets.zero,
-                  iconSize: 20,
-                  icon: const Icon(
-                    Icons.cancel_rounded,
-                    color: Colors.white,
-                  ),
-                ),
-              )
-            : const SizedBox.shrink(),
-      ],
+      ),
     );
+    final removeImageButton = Positioned(
+      right: 1,
+      child: IconButton(
+        alignment: Alignment.topRight,
+        onPressed: onDelete,
+        padding: EdgeInsets.zero,
+        iconSize: 20,
+        icon: const Icon(
+          Icons.cancel_rounded,
+          color: Colors.white,
+        ),
+      ),
+    );
+    return isEditMode
+        ? Stack(children: [
+            imageRect,
+            removeImageButton,
+          ])
+        : imageRect;
   }
 }
