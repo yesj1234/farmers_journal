@@ -25,256 +25,10 @@ class CustomImageWidgetLayout extends StatelessWidget {
   /// Required. A list of images to display. Supports both [UrlImage] and [XFileImage] types.
   final List<ImageType> images;
 
-  RectTween _createRectTween(Rect? begin, Rect? end) {
-    return MaterialRectCenterArcTween(begin: begin, end: end);
-  }
-
   static const opacityCurve = Interval(0.0, 0.75, curve: Curves.fastOutSlowIn);
 
-  @override
-  Widget build(BuildContext context) {
-    if (images.isNotEmpty) {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          double maxWidth = constraints.maxWidth;
-          double maxHeight = constraints.maxHeight;
-
-          Widget buildLayout() {
-            switch (images.length) {
-              case 1:
-                return _buildSingleImage(maxWidth, maxHeight, context);
-              case 2:
-                return _buildTwoImages(
-                  maxWidth,
-                  maxHeight,
-                  context,
-                );
-              case 3:
-                return _buildThreeImages(
-                  maxWidth,
-                  maxHeight,
-                  context,
-                );
-              case 4:
-                return _buildFourImages(
-                  maxWidth,
-                  maxHeight,
-                  context,
-                );
-              case 5:
-                return _buildFiveImages(
-                  maxWidth,
-                  maxHeight,
-                  context,
-                );
-              default:
-                return _buildMoreThanSixImages(
-                  maxWidth,
-                  maxHeight,
-                  context,
-                );
-            }
-          }
-
-          return buildLayout();
-        },
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
-  }
-
-  /// Full-width display.
-  Widget _buildSingleImage(
-    double width,
-    double height,
-    context,
-  ) {
-    return _buildImageTile(0, width, height, 1, context);
-  }
-
-  /// Side-by-side layout
-  Widget _buildTwoImages(double width, double height, context) {
-    return Row(
-      spacing: 2,
-      children: [
-        Expanded(
-          child: _buildImageTile(0, width / 2, height, 2, context),
-        ),
-        Expanded(
-          child: _buildImageTile(1, width / 2, height, 2, context),
-        ),
-      ],
-    );
-  }
-
-  /// One large image with two smaller images stacked
-  Widget _buildThreeImages(double width, double height, context) {
-    return Row(
-      spacing: 2,
-      children: [
-        Expanded(
-          child: _buildImageTile(0, width / 2, height, 3, context),
-        ),
-        Column(
-          spacing: 2,
-          children: [
-            Expanded(
-              child: _buildImageTile(1, width / 2, height / 2, 3, context),
-            ),
-            Expanded(
-              child: _buildImageTile(2, width / 2, height / 2, 3, context),
-            )
-          ],
-        )
-      ],
-    );
-  }
-
-  /// One large image, one medium image, and two smaller images
-  Widget _buildFourImages(double width, double height, context) {
-    return Row(spacing: 2, children: [
-      Expanded(
-        child: _buildImageTile(0, width / 2, height, 4, context),
-      ),
-      Expanded(
-        child: Column(
-          spacing: 2,
-          children: [
-            Expanded(
-              child: _buildImageTile(1, width / 2, height / 2, 4, context),
-            ),
-            Row(spacing: 2, children: [
-              Expanded(
-                child: _buildImageTile(2, width / 4, height / 2, 4, context),
-              ),
-              Expanded(
-                child: _buildImageTile(3, width / 4, height / 2, 4, context),
-              ),
-            ]),
-          ],
-        ),
-      ),
-    ]);
-  }
-
-  /// One large image, two medium images, and two smaller images.
-  Widget _buildFiveImages(double width, double height, context) {
-    return Row(spacing: 2, children: [
-      Expanded(
-        child: _buildImageTile(0, width / 2, height, 5, context),
-      ),
-      Expanded(
-        child: Column(
-          spacing: 2,
-          children: [
-            Expanded(
-              child: Row(
-                spacing: 2,
-                children: [
-                  Expanded(
-                    child:
-                        _buildImageTile(1, width / 2, height / 2, 5, context),
-                  ),
-                  Expanded(
-                    child:
-                        _buildImageTile(2, width / 2, height / 2, 5, context),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Row(spacing: 2, children: [
-                Expanded(
-                  child: _buildImageTile(3, width / 4, height / 2, 5, context),
-                ),
-                Expanded(
-                  child: _buildImageTile(4, width / 4, height / 2, 5, context),
-                ),
-              ]),
-            )
-          ],
-        ),
-      ),
-    ]);
-  }
-
-  /// First 5 images displayed with a "+X" overlay indicating additional images.
-  Widget _buildMoreThanSixImages(double width, double height, context) {
-    return Stack(
-      children: [
-        Row(
-          spacing: 2,
-          children: [
-            Expanded(
-              child: _buildImageTile(0, width / 2, height, 5, context),
-            ),
-            Expanded(
-              child: Column(
-                spacing: 2,
-                children: [
-                  Expanded(
-                    child: Row(
-                      spacing: 2,
-                      children: [
-                        Expanded(
-                          child: _buildImageTile(
-                              1, width / 2, height / 2, 5, context),
-                        ),
-                        Expanded(
-                          child: _buildImageTile(
-                              2, width / 2, height / 2, 5, context),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      spacing: 2,
-                      children: [
-                        Expanded(
-                          child: _buildImageTile(
-                              3, width / 4, height / 2, 5, context),
-                        ),
-                        Expanded(
-                          child: Stack(
-                            children: [
-                              _buildImageTile(
-                                  4, width / 4, height / 2, 5, context),
-                              Positioned.fill(
-                                child: Container(
-                                  color: Colors.black54,
-                                  child: Center(
-                                    child: Text(
-                                      "+${images.length - 4}",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
   /// Depending on the index of the image and total count of [images], URLImageTile will get different border radius.
-  Widget _buildImageTile(
-      int index, double width, double height, int total, context) {
-    final image = images[index];
+  static BorderRadius calculateBorderRadius(int total, int index) {
     BorderRadius? borderRadius;
     if (index == 0) {
       if (total == 1) {
@@ -332,31 +86,426 @@ class CustomImageWidgetLayout extends StatelessWidget {
         topRight: Radius.zero,
       );
     }
+    return borderRadius;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (images.isNotEmpty) {
+      final maxWidth = MediaQuery.sizeOf(context).width;
+      final maxHeight = MediaQuery.sizeOf(context).height;
+
+      switch (images.length) {
+        case 1:
+          return _buildSingleImage(maxWidth, maxHeight, context);
+        case 2:
+          return _buildTwoImages(
+            maxWidth,
+            maxHeight,
+            context,
+          );
+        case 3:
+          return _buildThreeImages(
+            maxWidth,
+            maxHeight,
+            context,
+          );
+        case 4:
+          return _buildFourImages(
+            maxWidth,
+            maxHeight,
+            context,
+          );
+        case 5:
+          return _buildFiveImages(
+            maxWidth,
+            maxHeight,
+            context,
+          );
+        default:
+          return _buildMoreThanSixImages(
+            maxWidth,
+            maxHeight,
+            context,
+          );
+      }
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  /// Full-width display.
+  Widget _buildSingleImage(
+    double width,
+    double height,
+    context,
+  ) {
+    return _buildImageTile(
+        minWidth: width,
+        maxWidth: width,
+        maxHeight: height,
+        index: 0,
+        minHeight: height,
+        total: 1,
+        context: context);
+  }
+
+  /// Side-by-side layout
+  Widget _buildTwoImages(double width, double height, context) {
+    return Row(
+      spacing: 2,
+      children: [
+        Expanded(
+          child: _buildImageTile(
+              index: 0,
+              maxWidth: width,
+              maxHeight: height,
+              minWidth: width / 2,
+              minHeight: height,
+              total: 2,
+              context: context),
+        ),
+        Expanded(
+          child: _buildImageTile(
+              index: 1,
+              maxWidth: width,
+              maxHeight: height,
+              minWidth: width / 2,
+              minHeight: height,
+              total: 2,
+              context: context),
+        ),
+      ],
+    );
+  }
+
+  /// One large image with two smaller images stacked
+  Widget _buildThreeImages(double width, double height, context) {
+    return Row(
+      spacing: 2,
+      children: [
+        Expanded(
+          child: _buildImageTile(
+              index: 0,
+              maxWidth: width,
+              maxHeight: height,
+              minWidth: width / 2,
+              minHeight: height,
+              total: 3,
+              context: context),
+        ),
+        Column(
+          spacing: 2,
+          children: [
+            Expanded(
+              child: _buildImageTile(
+                  index: 1,
+                  maxWidth: width,
+                  maxHeight: height,
+                  minWidth: width / 2,
+                  minHeight: height / 2,
+                  total: 3,
+                  context: context),
+            ),
+            Expanded(
+              child: _buildImageTile(
+                  index: 2,
+                  maxWidth: width,
+                  maxHeight: height,
+                  minWidth: width / 2,
+                  minHeight: height / 2,
+                  total: 3,
+                  context: context),
+            )
+          ],
+        )
+      ],
+    );
+  }
+
+  /// One large image, one medium image, and two smaller images
+  Widget _buildFourImages(double width, double height, context) {
+    return Row(spacing: 2, children: [
+      Expanded(
+        child: _buildImageTile(
+            index: 0,
+            maxWidth: width,
+            maxHeight: height,
+            minWidth: width / 2,
+            minHeight: height,
+            total: 4,
+            context: context),
+      ),
+      Expanded(
+        child: Column(
+          spacing: 2,
+          children: [
+            Expanded(
+              child: _buildImageTile(
+                  index: 1,
+                  maxWidth: width,
+                  maxHeight: height,
+                  minWidth: width / 2,
+                  minHeight: height / 2,
+                  total: 4,
+                  context: context),
+            ),
+            Expanded(
+              child: Row(
+                spacing: 2,
+                children: [
+                  Expanded(
+                    child: _buildImageTile(
+                        index: 2,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 4,
+                        minHeight: height / 4,
+                        total: 4,
+                        context: context),
+                  ),
+                  Expanded(
+                    child: _buildImageTile(
+                        index: 3,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 4,
+                        minHeight: height / 4,
+                        total: 4,
+                        context: context),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ]);
+  }
+
+  /// One large image, two medium images, and two smaller images.
+  Widget _buildFiveImages(double width, double height, context) {
+    return Row(spacing: 2, children: [
+      Expanded(
+        child: _buildImageTile(
+            index: 0,
+            maxWidth: width,
+            maxHeight: height,
+            minWidth: width / 2,
+            minHeight: height,
+            total: 5,
+            context: context),
+      ),
+      Expanded(
+        child: Column(
+          spacing: 2,
+          children: [
+            Expanded(
+              child: Row(
+                spacing: 2,
+                children: [
+                  Expanded(
+                    child: _buildImageTile(
+                        index: 1,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 2,
+                        minHeight: height / 2,
+                        total: 5,
+                        context: context),
+                  ),
+                  Expanded(
+                    child: _buildImageTile(
+                        index: 2,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 2,
+                        minHeight: height / 2,
+                        total: 5,
+                        context: context),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                spacing: 2,
+                children: [
+                  Expanded(
+                    child: _buildImageTile(
+                        index: 3,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 4,
+                        minHeight: height / 2,
+                        total: 5,
+                        context: context),
+                  ),
+                  Expanded(
+                    child: _buildImageTile(
+                        index: 4,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 4,
+                        minHeight: height / 2,
+                        total: 5,
+                        context: context),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    ]);
+  }
+
+  /// First 5 images displayed with a "+X" overlay indicating additional images.
+  Widget _buildMoreThanSixImages(double width, double height, context) {
+    return Stack(
+      children: [
+        Row(
+          spacing: 2,
+          children: [
+            Expanded(
+                child: _buildImageTile(
+              index: 0,
+              minWidth: width / 2,
+              maxWidth: width,
+              minHeight: height,
+              total: 5,
+              context: context,
+              maxHeight: height,
+            )),
+            Expanded(
+              child: Column(
+                spacing: 2,
+                children: [
+                  Expanded(
+                    child: Row(
+                      spacing: 2,
+                      children: [
+                        Expanded(
+                          child: _buildImageTile(
+                              index: 1,
+                              minWidth: width / 2,
+                              maxWidth: width,
+                              minHeight: height / 2,
+                              maxHeight: height,
+                              total: 5,
+                              context: context),
+                        ),
+                        Expanded(
+                          child: _buildImageTile(
+                              index: 2,
+                              minWidth: width / 2,
+                              maxWidth: width,
+                              minHeight: height / 2,
+                              maxHeight: height,
+                              total: 5,
+                              context: context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      spacing: 2,
+                      children: [
+                        Expanded(
+                          child: _buildImageTile(
+                              index: 3,
+                              minWidth: width / 4,
+                              maxWidth: width,
+                              minHeight: height / 2,
+                              maxHeight: height,
+                              total: 5,
+                              context: context),
+                        ),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              _buildImageTile(
+                                  index: 4,
+                                  maxWidth: width,
+                                  maxHeight: height,
+                                  minWidth: width / 4,
+                                  minHeight: height / 2,
+                                  total: 5,
+                                  context: context),
+                              Positioned.fill(
+                                child: Container(
+                                  color: Colors.black54,
+                                  child: Center(
+                                    child: Text(
+                                      "+${images.length - 4}",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImageTile(
+      {required int index,
+      required double minWidth,
+      required double maxWidth,
+      required double minHeight,
+      required double maxHeight,
+      required int total,
+      context}) {
+    final image = images[index];
+    BorderRadius? borderRadius =
+        CustomImageWidgetLayout.calculateBorderRadius(total, index);
+    final imageTile = switch (image) {
+      UrlImage(:final value) => URLImageTile(
+          url: value,
+          onDelete: () => onDelete?.call(index),
+          minWidth: minWidth,
+          minHeight: minHeight,
+          maxWidth: maxWidth,
+          maxHeight: maxHeight,
+          isEditMode: isEditMode,
+          borderRadius: borderRadius,
+        ),
+      XFileImage(:final value) => _XFileImageTile(
+          id: index,
+          image: value,
+          onDelete: () => onDelete?.call(index),
+          width: minWidth,
+          height: minHeight,
+          isEditMode: isEditMode,
+          borderRadius: borderRadius,
+        ),
+    };
 
     switch (image) {
       case UrlImage(:final value):
         final child = isEditMode
-            ? _URLImageTile(
-                id: index,
-                url: value,
-                onDelete: () => onDelete?.call(index),
-                width: width,
-                height: height,
-                isEditMode: isEditMode,
-                borderRadius: borderRadius,
-              )
+            ? imageTile
             : Hero(
                 tag: value,
-                createRectTween: _createRectTween,
-                child: _URLImageTile(
-                  id: index,
-                  url: value,
-                  onDelete: () => onDelete?.call(index),
-                  width: width,
-                  height: height,
-                  isEditMode: isEditMode,
-                  borderRadius: borderRadius,
-                ),
+                createRectTween: (Rect? begin, Rect? end) {
+                  return RectTween(begin: begin, end: end);
+                },
+                child: imageTile,
               );
         return GestureDetector(
           onTap: isEditMode
@@ -364,70 +513,63 @@ class CustomImageWidgetLayout extends StatelessWidget {
               : () {
                   Navigator.of(context).push(
                     PageRouteBuilder(
-                      transitionDuration: const Duration(seconds: 1),
+                      transitionsBuilder: (context, animation, _, child) =>
+                          Opacity(
+                              opacity: opacityCurve.transform(animation.value),
+                              child: child),
                       pageBuilder: (
                         context,
-                        animation,
-                        secondaryAnimation,
+                        _,
+                        __,
                       ) =>
-                          AnimatedBuilder(
-                              animation: animation,
-                              builder: (context, child) {
-                                return Opacity(
-                                  opacity:
-                                      opacityCurve.transform(animation.value),
-                                  child: LayoutImagesDetailScreen(
-                                    tags: images as List<UrlImage>,
-                                    initialIndex: index,
-                                  ),
-                                );
-                              }),
+                          DetailScreenPageView(
+                        tags: images as List<UrlImage>,
+                        initialIndex: index,
+                      ),
                     ),
                   );
                 },
           child: child,
         );
-      case XFileImage(:final value):
-        return _XFileImageTile(
-          id: index,
-          image: value,
-          onDelete: () => onDelete?.call(index),
-          width: width,
-          height: height,
-          isEditMode: isEditMode,
-          borderRadius: borderRadius,
-        );
+      case XFileImage():
+        return imageTile;
     }
   }
 }
 
 /// Displays network images with caching support via CachedNetworkImage. Shows delete button in edit mode.
-class _URLImageTile extends StatelessWidget {
-  const _URLImageTile({
-    required this.id,
+class URLImageTile extends StatelessWidget {
+  const URLImageTile({
+    super.key,
     required this.url,
     required this.onDelete,
     required this.isEditMode,
-    this.width,
-    this.height,
+    required this.maxWidth,
+    required this.maxHeight,
+    required this.minWidth,
+    required this.minHeight,
     this.borderRadius,
-    this.scaleEffect,
   });
-  final int id;
+
   final String url;
   final void Function()? onDelete;
   final bool isEditMode;
-  final double? width;
-  final double? height;
+  final double maxWidth;
+  final double maxHeight;
+  final double minWidth;
+  final double minHeight;
   final BorderRadius? borderRadius;
-  final double? scaleEffect;
 
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      SizedBox(
-        width: width,
-        height: height,
+      ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: minHeight,
+          minWidth: minWidth,
+          maxWidth: maxWidth,
+          maxHeight: maxHeight,
+        ),
         child: ClipRRect(
           borderRadius: borderRadius ??
               const BorderRadius.only(
@@ -438,8 +580,8 @@ class _URLImageTile extends StatelessWidget {
               ),
           child: CachedNetworkImage(
             imageUrl: url,
-            width: width,
-            height: height,
+            width: maxWidth,
+            height: maxHeight,
             fit: BoxFit.cover,
             errorWidget: (context, url, error) => const Icon(
               Icons.broken_image,

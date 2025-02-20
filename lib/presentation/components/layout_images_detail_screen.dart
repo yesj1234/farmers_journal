@@ -1,71 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
-import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
-
-// TODO: Fix Hero animation not working as expected when context.pop fires.
-class LayoutImagesDetailScreen extends StatelessWidget {
-  LayoutImagesDetailScreen({
-    super.key,
-    required this.tags,
-    required this.initialIndex,
-  }) : clipTween = Tween<double>(
-            begin: kMinRadius, end: 2 * (kMaxRadius / math.sqrt2));
-  final List<UrlImage> tags;
-  final int initialIndex;
-  final Tween<double> clipTween;
-
-  static const double kMinRadius = 32.0;
-  static const double kMaxRadius = 128.0;
-  RectTween _createRectTween(Rect? begin, Rect? end) {
-    return MaterialRectCenterArcTween(begin: begin, end: end);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final heroWidgets = tags
-        .map(
-          (path) => SizedBox(
-            width: kMinRadius,
-            height: kMaxRadius,
-            child: Hero(
-              tag: path.value,
-              createRectTween: _createRectTween,
-              child: LayoutBuilder(builder: (context, size) {
-                final double t = (size.biggest.width / 2.0) / (128 - 34);
-                final double rectClipExtent = clipTween.transform(t);
-                return SizedBox(
-                  width: rectClipExtent,
-                  height: rectClipExtent,
-                  child: ClipRect(
-                    child: CachedNetworkImage(
-                      imageUrl: path.value,
-                    ),
-                  ),
-                );
-              }),
-            ),
-          ),
-        )
-        .toList();
-
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: DetailScreenPageView(
-          widgets: heroWidgets,
-          initialIndex: initialIndex,
-        ),
-      ),
-    );
-  }
-}
 
 class DetailScreenPageView extends StatefulWidget {
   const DetailScreenPageView(
-      {super.key, required this.widgets, required this.initialIndex});
-  final List<Widget> widgets;
+      {super.key, required this.tags, required this.initialIndex});
+
+  final List<UrlImage> tags;
   final int initialIndex;
+  static const double kMinRadius = 32.0;
+  static const double kMaxRadius = 128.0;
+
   @override
   State<DetailScreenPageView> createState() => _DetailScreenPageView();
 }
@@ -82,7 +29,7 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
 
     _tabController = TabController(
         initialIndex: widget.initialIndex,
-        length: widget.widgets.length,
+        length: widget.tags.length,
         vsync: this);
   }
 
@@ -95,20 +42,54 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        PageView(
-            controller: _pageViewController,
-            onPageChanged: _handlePageViewChanged,
-            children: widget.widgets),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 40),
-          child: PageIndicator(
-            tabController: _tabController,
+    final heroWidgets = widget.tags.map(
+      (path) {
+        final tag = path.value;
+        return SizedBox(
+          width: MediaQuery.sizeOf(context).width,
+          height: MediaQuery.sizeOf(context).height,
+          child: Hero(
+            tag: tag,
+            createRectTween: (Rect? begin, Rect? end) {
+              return RectTween(begin: begin, end: end);
+            },
+            transitionOnUserGestures: true,
+            child: Center(
+              child: URLImageTile(
+                url: tag,
+                onDelete: () {},
+                isEditMode: false,
+                maxWidth: MediaQuery.sizeOf(context).width,
+                minWidth: MediaQuery.sizeOf(context).width,
+                maxHeight: MediaQuery.sizeOf(context).height,
+                minHeight: MediaQuery.sizeOf(context).height,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        );
+      },
+    ).toList();
+
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: SizedBox(
+          height: MediaQuery.sizeOf(context).width,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              PageView(
+                  controller: _pageViewController,
+                  onPageChanged: _handlePageViewChanged,
+                  children: heroWidgets),
+              PageIndicator(
+                tabController: _tabController,
+              )
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 
