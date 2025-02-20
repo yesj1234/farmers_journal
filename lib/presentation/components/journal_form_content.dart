@@ -2,7 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 
+/// A form widget for creating content, including text input and image picking.
+///
+/// Displays the user's first plant's name and place if available.
+/// Provides a text input field and an option to pick an image.
+///
+/// {@tool snippet}
+/// ```dart
+/// ContentForm(
+///   controller: TextEditingController(),
+///   onImagePick: () {
+///     // Handle image picking
+///   },
+/// );
+/// ```
+/// {@end-tool}
 class ContentForm extends ConsumerWidget {
+  /// Creates a [ContentForm] widget.
+  ///
+  /// The [controller] parameter is required to control the text input field.
+  /// The [onImagePick] parameter is required and is called when the image
+  /// pick button is pressed.
   const ContentForm(
       {super.key, required this.controller, required this.onImagePick});
 

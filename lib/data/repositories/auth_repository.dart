@@ -13,6 +13,8 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart'
     as kakao_auth;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+/// Implementation of [AuthRepository] using Firebase auth backend service.
+///
 class FirebaseAuthRepository implements AuthRepository {
   FirebaseAuthRepository.setLanguage({required this.instance}) {
     instance.setLanguageCode('kr');

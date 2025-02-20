@@ -1,15 +1,36 @@
 import 'package:flutter/material.dart';
 
+/// A form widget that allows users to input a title.
+///
+/// The [TitleForm] widget provides a text input field with validation.
+/// If the [notValid] flag is set to true, an error message is displayed
+/// when attempting to submit an empty input.
+/// Example usage:
+/// ```dart
+/// TitleForm(
+///   controller: TextEditingController(),
+///   notValid: true,
+/// )
+/// ```
+///
 class TitleForm extends StatelessWidget {
+  /// Creates a [TitleForm] widget.
+  ///
+  /// Requires a [controller] for managing text input and a [notValid] flag to indicate whether validation should be enforced
   const TitleForm({
     super.key,
     required this.controller,
     required this.notValid,
   });
 
+  ///  Controls the text being edited.
   final TextEditingController controller;
+
+  /// Whether the input is required.
+  /// If true, an error message is shown when the input is empty.
   final bool notValid;
 
+  /// The text style applied to the input field.
   TextStyle get textStyle => const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,

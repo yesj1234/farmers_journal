@@ -2,6 +2,8 @@ import 'dart:developer';
 import 'package:excel/excel.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+/// Base class for Excel repository.
+///
 class ExcelRepository {
   final String? filePath;
   final FirebaseStorage instance;
@@ -33,6 +35,11 @@ class ExcelRepository {
   }
 }
 
+/// [HScode](https://ko.wikipedia.org/wiki/HS%EC%BD%94%EB%93%9C)(Harmonized System code) excel repository provided by [AT Center](https://at.agromarket.kr/codeInfo/introduce.do).
+///
+/// * 부류 (Category / Section) : he highest-level classification concept in the HS Code, representing broad groups of agricultural products
+/// * 품목 (Item / Subcategory / Heading) : A classification concept that distinguishes specific types of agricultural products, such as grains, fruits, and vegetables.
+/// * 품종 (Variety / Cultivar) : A concept that refers to specific varieties within a crop, such as ‘Fuji’ for apples or ‘Shine Muscat’ for grapes.
 class HSCodeRepository extends ExcelRepository {
   HSCodeRepository({required super.filePath, required super.instance});
   late final List<TextCellValue?> varieties;
@@ -80,6 +87,7 @@ class HSCodeRepository extends ExcelRepository {
     }
   }
 
+  /// Return varieties that might possibly match the [input] string.
   Map<String, List<dynamic>> findMatchingVariety({required String input}) {
     if (input.isEmpty) {
       return {
@@ -102,6 +110,7 @@ class HSCodeRepository extends ExcelRepository {
     }
   }
 
+  /// Return HSCode of the variety for later use, such as querying the real time auction price of that variety.
   String? getHsCode({required String variety}) {
     final trimmed = variety.trim();
     final currentTable = excel!.tables[excel!.tables.keys.first];

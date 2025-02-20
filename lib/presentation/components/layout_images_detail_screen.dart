@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
+// TODO: Fix Hero animation not working as expected when context.pop fires.
 class LayoutImagesDetailScreen extends StatelessWidget {
   LayoutImagesDetailScreen({
     super.key,

@@ -1,8 +1,5 @@
 import 'dart:developer';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:farmers_journal/data/firestore_providers.dart';
 import 'package:farmers_journal/data/interface/user_interface.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
@@ -10,14 +7,13 @@ import 'package:farmers_journal/domain/model/plant.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
+/// Implementation of [AuthRepository] using Firebase auth backend service.
 class FireStoreUserRepository implements UserRepository {
   final FirebaseFirestore instance;
   final Ref _ref;

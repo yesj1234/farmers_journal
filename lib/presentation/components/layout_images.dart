@@ -5,6 +5,9 @@ import 'dart:io';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:farmers_journal/presentation/components/layout_images_detail_screen.dart';
 
+/// A stateless widget that creates beautiful grid-like layouts for displaying images.
+///
+/// The layout adapts automatically based on the number of images, creating visually appealing arrangements.
 class CustomImageWidgetLayout extends StatelessWidget {
   const CustomImageWidgetLayout({
     super.key,
@@ -12,8 +15,14 @@ class CustomImageWidgetLayout extends StatelessWidget {
     this.isEditMode = false,
     this.onDelete,
   });
+
+  /// Optional. Whether  gallery is in edit mode, which shows delete buttons. Default is false.
   final bool isEditMode;
+
+  /// Optional. Callback function that is triggered when an image is deleted.
   final void Function(int id)? onDelete;
+
+  /// Required. A list of images to display. Supports both [UrlImage] and [XFileImage] types.
   final List<ImageType> images;
 
   RectTween _createRectTween(Rect? begin, Rect? end) {
@@ -75,6 +84,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
     }
   }
 
+  /// Full-width display.
   Widget _buildSingleImage(
     double width,
     double height,
@@ -83,6 +93,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
     return _buildImageTile(0, width, height, 1, context);
   }
 
+  /// Side-by-side layout
   Widget _buildTwoImages(double width, double height, context) {
     return Row(
       spacing: 2,
@@ -97,6 +108,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
     );
   }
 
+  /// One large image with two smaller images stacked
   Widget _buildThreeImages(double width, double height, context) {
     return Row(
       spacing: 2,
@@ -119,6 +131,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
     );
   }
 
+  /// One large image, one medium image, and two smaller images
   Widget _buildFourImages(double width, double height, context) {
     return Row(spacing: 2, children: [
       Expanded(
@@ -145,6 +158,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
     ]);
   }
 
+  /// One large image, two medium images, and two smaller images.
   Widget _buildFiveImages(double width, double height, context) {
     return Row(spacing: 2, children: [
       Expanded(
@@ -185,6 +199,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
     ]);
   }
 
+  /// First 5 images displayed with a "+X" overlay indicating additional images.
   Widget _buildMoreThanSixImages(double width, double height, context) {
     return Stack(
       children: [
@@ -386,92 +401,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
   }
 }
 
-class ImageWidgetLayout extends StatelessWidget {
-  const ImageWidgetLayout({
-    super.key,
-    required this.images,
-    this.isEditMode = false,
-    this.onDelete,
-  });
-  final bool isEditMode;
-  final void Function(int id)? onDelete;
-  final List<ImageType> images;
-
-  int _getCrossAxisCount(int imageCount) {
-    if (imageCount == 1) return 1;
-    if (imageCount <= 4) return 2;
-    if (imageCount <= 9) return 3;
-    return 4;
-  }
-
-  int _getRowCount(int imageCount, int crossAxisCount) {
-    return (imageCount / crossAxisCount).ceil();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (images.isNotEmpty) {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          int crossAxisCount = _getCrossAxisCount(images.length);
-
-          double totalHorizontalPadding = 8.0 * (crossAxisCount + 1);
-          double availableWidth = constraints.maxWidth - totalHorizontalPadding;
-          double tileWidth = availableWidth / crossAxisCount;
-
-          double totalVerticalPadding =
-              8.0 * ((_getRowCount(images.length, crossAxisCount)) + 1);
-          double availableHeight = constraints.maxHeight - totalVerticalPadding;
-          double tileHeight =
-              availableHeight / _getRowCount(images.length, crossAxisCount);
-
-          return GridView.builder(
-            padding: const EdgeInsets.all(8.0),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: 8.0,
-              mainAxisSpacing: 8.0,
-              childAspectRatio: tileWidth / tileHeight, // Dynamic aspect ratio
-            ),
-            itemCount: images.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              switch (images[index]) {
-                case UrlImage(:final value):
-                  return _URLImageTile(
-                    id: index,
-                    url: value,
-                    onDelete: () {
-                      onDelete!(index);
-                    },
-                    width: tileWidth,
-                    height: tileHeight,
-                    isEditMode: isEditMode,
-                  );
-
-                case XFileImage(:final value):
-                  return _XFileImageTile(
-                    id: index,
-                    image: value,
-                    onDelete: () {
-                      onDelete!(index);
-                    },
-                    width: tileWidth,
-                    height: tileHeight,
-                    isEditMode: isEditMode,
-                  );
-              }
-            },
-          );
-        },
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
-  }
-}
-
+/// Displays network images with caching support via CachedNetworkImage. Shows delete button in edit mode.
 class _URLImageTile extends StatelessWidget {
   const _URLImageTile({
     required this.id,
@@ -537,6 +467,7 @@ class _URLImageTile extends StatelessWidget {
   }
 }
 
+/// Displays local images selected from device storage. Shows delete button in edit mode.
 class _XFileImageTile extends StatelessWidget {
   const _XFileImageTile({
     required this.id,
