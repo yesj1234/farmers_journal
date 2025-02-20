@@ -2,7 +2,6 @@ import 'package:farmers_journal/data/firestore_providers.dart';
 
 import 'package:farmers_journal/data/repositories/excel_repository.dart';
 import 'package:farmers_journal/data/repositories/googleAPI.dart';
-import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/domain/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,11 +12,6 @@ import 'package:farmers_journal/enums.dart';
 import 'dart:math';
 
 part 'providers.g.dart';
-
-Future<List<Journal>> paginatedJournals(Ref ref) async {
-  final journalRef = ref.watch(journalRepositoryProvider);
-  return journalRef.fetchPaginatedJournals();
-}
 
 @Riverpod(keepAlive: true)
 Future<HSCodeRepository> hsCodeRepository(Ref ref) async {
