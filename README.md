@@ -30,7 +30,9 @@ Track your farming journey, share insights, and optimize your methods with real-
 
 ### Overview
 
-**Farmer's Journal** is a tool designed to assist modern farmers in enhancing their farming methodologies. Whether managing a small garden or a large-scale farm, this app helps document, analyze, and improve farming processes step-by-step.
+**Farmer's Journal** is a tool designed to assist modern farmers in enhancing their farming methodologies. 
+
+Whether managing a small garden or a large-scale farm, this app helps document, analyze, and improve farming processes step-by-step.
 
 ### Key Features
 
@@ -56,10 +58,10 @@ The code structure reflects the Riverpod architecture. For detailed insights int
 ```
 ./lib
 ├── data
-│   ├── interface
 │   └── repositories
 ├── domain
 │   ├── firebase
+│   ├── interface
 │   └── model
 └── presentation
     ├── components
@@ -67,47 +69,51 @@ The code structure reflects the Riverpod architecture. For detailed insights int
     └── pages
 ```
 
+
+### Data
+
+The gateway between the remote database and the application.
+
+
+- **Repositories**
+
+Concrete implementations of the interfaces, handling data operations such as fetching, caching, and updating.
+
+### Domain
+
+Defines application-specific model classes representing the data from the data layer.
+
+- **Firebase**
+
+Handles interactions with Firebase services, including authentication, database operations, and storage.
+
+- **Interface**
+
+Defines abstract classes or interfaces that outline the methods for data retrieval and manipulation.
+
+- **Model**
+
+Defines the data structures used throughout the application, ensuring consistency and type safety.
+
 ### Presentation
 
 The UI displays application data and serves as the primary point of user interaction. 
 
 It updates to reflect changes due to user actions or external inputs, effectively representing the application state as retrieved from the data layer.
 
-#### Components
+- **Components**
 
 Reusable UI elements that form the building blocks of the application's interface.
 
-#### Controller
+- **Controller**
 
 Manages the flow of data to and from the UI components, handling user interactions and updating the state accordingly.
 
-#### Pages
+- **Pages**
 
 Individual screens or views within the application, each representing a specific section or functionality.
 
-### Domain
 
-Defines application-specific model classes representing the data from the data layer.
-
-#### Firebase
-
-Handles interactions with Firebase services, including authentication, database operations, and storage.
-
-#### Model
-
-Defines the data structures used throughout the application, ensuring consistency and type safety.
-
-### Data
-
-The gateway between the remote database and the application.
-
-#### Interface
-
-Defines abstract classes or interfaces that outline the methods for data retrieval and manipulation.
-
-#### Repositories
-
-Concrete implementations of the interfaces, handling data operations such as fetching, caching, and updating.
 
 ## Installation
 
