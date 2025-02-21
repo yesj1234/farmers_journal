@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
@@ -21,8 +20,6 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
     with TickerProviderStateMixin {
   late PageController _pageViewController;
   late TabController _tabController;
-  double _dragOffset = 0.0;
-  bool _isDragging = false;
 
   @override
   void initState() {
@@ -55,7 +52,6 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            transform: Matrix4.translationValues(0, _dragOffset, 0),
             child: SizedBox(
               width: MediaQuery.sizeOf(context).width,
               height: MediaQuery.sizeOf(context).height,
