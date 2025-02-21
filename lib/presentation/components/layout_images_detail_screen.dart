@@ -51,7 +51,7 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
           child: Hero(
             tag: tag,
             createRectTween: (Rect? begin, Rect? end) {
-              return RectTween(begin: begin, end: end);
+              return MaterialRectArcTween(begin: begin, end: end);
             },
             transitionOnUserGestures: true,
             child: Center(

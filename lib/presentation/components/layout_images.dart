@@ -503,7 +503,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
             : Hero(
                 tag: value,
                 createRectTween: (Rect? begin, Rect? end) {
-                  return RectTween(begin: begin, end: end);
+                  return MaterialRectArcTween(begin: begin, end: end);
                 },
                 child: imageTile,
               );
