@@ -14,11 +14,12 @@ class PaginationController extends _$PaginationController {
   Journal? _lastJournal;
   bool noMoreItems = false;
   Timer _timer = Timer(const Duration(milliseconds: 0), () {});
+  bool _isFetching = false;
   @override
   PaginationState build() {
     _lastJournal = null;
-    _totalJournals.removeRange(
-        0, _totalJournals.length); // re-initialize the _totalJournals
+    _totalJournals.clear(); // re-initialize the _totalJournals
+    state = const PaginationState.initial();
     fetchFirstBatch(); // Future that will eventually change the state to data or loading.
     return const PaginationState.initial();
   }
@@ -40,19 +41,20 @@ class PaginationController extends _$PaginationController {
     final blockedJournals = user?.blockedJournals ?? [];
     final blockedUsers = user?.blockedUsers ?? [];
 
-    _lastJournal = journals.last;
     final filteredJournals = journals
         .where((journal) =>
             !blockedJournals.contains(journal.id) &&
             !blockedUsers.contains(journal.writer))
         .toList();
-
-    noMoreItems = journals.length < 10; //
-    if (journals.isEmpty) {
-      state = PaginationState.data(_totalJournals);
-    } else {
-      state = PaginationState.data(_totalJournals..addAll(filteredJournals));
+    if (filteredJournals.isNotEmpty) {
+      _lastJournal = journals.last;
     }
+    noMoreItems = journals.length < 10;
+    final existingIds = _totalJournals.map((journal) => journal?.id).toSet();
+    final uniqueJournals = filteredJournals
+        .where((journal) => !existingIds.contains(journal.id))
+        .toList();
+    state = PaginationState.data(_totalJournals..addAll(uniqueJournals));
   }
 
   Future<List<Journal>> _fetchNextItems({required Journal? lastJournal}) {
@@ -62,14 +64,11 @@ class PaginationController extends _$PaginationController {
   }
 
   Future<void> fetchNextBatch() async {
-    if (_timer.isActive && _totalJournals.isNotEmpty) {
+    if (_isFetching || _timer.isActive || noMoreItems) {
       return;
     }
+    _isFetching = true;
     _timer = Timer(const Duration(milliseconds: 1000), () {});
-
-    if (noMoreItems) {
-      return;
-    }
 
     if (state == PaginationState.onGoingLoading(_totalJournals)) {
       // Rejecting the concurrent request.
@@ -83,26 +82,20 @@ class PaginationController extends _$PaginationController {
       updateState(result);
     } catch (error, stackTrace) {
       state = PaginationState.error(error, stackTrace);
+    } finally {
+      _isFetching = false;
     }
   }
 
   void updateStateOnJournalReport({required String id}) {
-    for (int i = 0; i < _totalJournals.length; i++) {
-      if (_totalJournals[i]?.id == id) {
-        _totalJournals[i] = null; // Replace the journal
-      }
-    }
-    _totalJournals.removeWhere((journal) => journal == null); // Clean up nulls
+    _totalJournals
+        .removeWhere((journal) => journal?.id == id); // Clean up nulls
     state = PaginationState.data(_totalJournals);
   }
 
   void updateStateOnUserBlock({required String id}) {
-    for (int i = 0; i < _totalJournals.length; i++) {
-      if (_totalJournals[i]?.writer == id) {
-        _totalJournals[i] = null; // Replace the journal
-      }
-    }
-    _totalJournals.removeWhere((journal) => journal == null); // Clean up nulls
+    _totalJournals
+        .removeWhere((journal) => journal?.writer == id); // Clean up nulls
     state = PaginationState.data(_totalJournals);
   }
 }
