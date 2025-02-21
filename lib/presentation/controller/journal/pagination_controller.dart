@@ -8,7 +8,7 @@ import 'package:farmers_journal/presentation/controller/journal/pagination_state
 
 part 'pagination_controller.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class PaginationController extends _$PaginationController {
   final List<Journal?> _totalJournals = [];
   Journal? _lastJournal;
