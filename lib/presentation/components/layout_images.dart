@@ -194,30 +194,32 @@ class CustomImageWidgetLayout extends StatelessWidget {
               total: 3,
               context: context),
         ),
-        Column(
-          spacing: 2,
-          children: [
-            Expanded(
-              child: _buildImageTile(
-                  index: 1,
-                  maxWidth: width,
-                  maxHeight: height,
-                  minWidth: width / 2,
-                  minHeight: height / 2,
-                  total: 3,
-                  context: context),
-            ),
-            Expanded(
-              child: _buildImageTile(
-                  index: 2,
-                  maxWidth: width,
-                  maxHeight: height,
-                  minWidth: width / 2,
-                  minHeight: height / 2,
-                  total: 3,
-                  context: context),
-            )
-          ],
+        Expanded(
+          child: Column(
+            spacing: 2,
+            children: [
+              Expanded(
+                child: _buildImageTile(
+                    index: 1,
+                    maxWidth: width,
+                    maxHeight: height,
+                    minWidth: width / 2,
+                    minHeight: height / 2,
+                    total: 3,
+                    context: context),
+              ),
+              Expanded(
+                child: _buildImageTile(
+                    index: 2,
+                    maxWidth: width,
+                    maxHeight: height,
+                    minWidth: width / 2,
+                    minHeight: height / 2,
+                    total: 3,
+                    context: context),
+              )
+            ],
+          ),
         )
       ],
     );
@@ -505,6 +507,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
                 createRectTween: (Rect? begin, Rect? end) {
                   return MaterialRectArcTween(begin: begin, end: end);
                 },
+                transitionOnUserGestures: true,
                 child: imageTile,
               );
         return GestureDetector(
@@ -513,6 +516,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
               : () {
                   Navigator.of(context).push(
                     PageRouteBuilder(
+                      maintainState: true,
                       transitionsBuilder: (context, animation, _, child) =>
                           Opacity(
                               opacity: opacityCurve.transform(animation.value),
