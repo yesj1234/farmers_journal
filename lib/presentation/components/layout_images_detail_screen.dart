@@ -3,14 +3,19 @@ import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart'
 
 import 'package:flutter/material.dart';
 
+/// A screen that displays images in a page view with hero animations.
+///
+/// It supports swipe gestures to navigate between images and to dismiss the screen.
 class DetailScreenPageView extends StatefulWidget {
+  /// Creates a detail screen for viewing images.
+  ///
+  /// [tags] is a list of `UrlImage` objects representing images to be displayed.
+  /// [initialIndex] determines which image should be shown first.
   const DetailScreenPageView(
       {super.key, required this.tags, required this.initialIndex});
 
   final List<UrlImage> tags;
   final int initialIndex;
-  static const double kMinRadius = 32.0;
-  static const double kMaxRadius = 128.0;
 
   @override
   State<DetailScreenPageView> createState() => _DetailScreenPageView();
@@ -41,13 +46,14 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
 
   @override
   Widget build(BuildContext context) {
+    /// Creates a list of widgets for the page view, each wrapped in a Hero animation.
     final heroWidgets = widget.tags.map(
       (path) {
         final tag = path.value;
         return GestureDetector(
           onVerticalDragUpdate: (details) {
             if (details.primaryDelta!.abs() > 20) {
-              Navigator.pop(context);
+              Navigator.pop(context); // Swipe up/down to close
             }
           },
           child: AnimatedContainer(
@@ -93,11 +99,15 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
               height: MediaQuery.sizeOf(context).width,
               child: Stack(
                 alignment: Alignment.bottomCenter,
+
+                /// PageView for swiping between images
                 children: [
                   PageView(
                       controller: _pageViewController,
                       onPageChanged: _handlePageViewChanged,
                       children: heroWidgets),
+
+                  /// Page Indicator to show progress in the gallery
                   PageIndicator(
                     tabController: _tabController,
                   )
@@ -108,11 +118,14 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
         ));
   }
 
+  /// Updates the tab indicator when the page view is swiped.
   void _handlePageViewChanged(int currentPageIndex) {
     _tabController.index = currentPageIndex;
   }
 }
 
+/// A widget that displays a page indicator for the `DetailScreenPageView`.
+///
 class PageIndicator extends StatelessWidget {
   const PageIndicator({
     super.key,

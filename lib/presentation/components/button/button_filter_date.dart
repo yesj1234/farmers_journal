@@ -4,13 +4,24 @@ import 'package:farmers_journal/enums.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/data/providers.dart';
 
+/// A segmented button widget that allows users to filter the main view
+/// by day, week, month, or community.
+///
+/// This widget uses Riverpod's state management to watch and update the
+/// currently selected view filter.
+///
 class ButtonMainViewFilter extends ConsumerWidget {
+  /// Creates a `ButtonMainViewFilter` with an optional background color.
   const ButtonMainViewFilter({
     super.key,
     this.backgroundColor = Colors.white,
   });
+
+  /// Background color of the button.
   final Color backgroundColor;
 
+  /// Defines the button's style properties, including shape, size, padding,
+  /// and text styling.
   ButtonStyle get buttonStyle => ButtonStyle(
         shape: WidgetStateProperty.all(const BeveledRectangleBorder()),
         minimumSize: WidgetStateProperty.all(const Size(0, 48)),

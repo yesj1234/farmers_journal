@@ -7,7 +7,13 @@ import 'package:go_router/go_router.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/card/card_single.dart';
 
+/// A widget that displays a journal entry as a card with images, text, and action buttons.
+///
+/// This widget is used in the week view to present journal entries with optional images,
+/// title, content preview, and date, along with edit and delete actions.
+
 class WeekViewCard extends ConsumerWidget {
+  /// Constructs a [WeekViewCard] widget.
   const WeekViewCard({
     super.key,
     required this.journal,
@@ -19,15 +25,32 @@ class WeekViewCard extends ConsumerWidget {
     this.textMaxLine = 3,
     this.dateFontSize = 12,
   });
+
+  /// The journal entry to be displayed in the card.
   final Journal journal;
+
+  /// Minimum height of the card.
   final double cardMinHeight;
+
+  /// Maximum height of the card.
   final double cardMaxHeight;
+
+  /// Maximum width of the card.
   final double cardMaxWidth;
+
+  /// Horizontal padding for content inside the card.
   final double horizontalPadding;
+
+  /// Vertical padding for content inside the card.
   final double verticalPadding;
+
+  /// Maximum number of lines to display for the journal content.
   final int textMaxLine;
+
+  /// Font size for the date display.
   final double dateFontSize;
 
+  /// Displays a confirmation dialog before deleting a journal entry.
   Future<void> _showDeleteAlertDialog(context, cb) async {
     return showDialog(
         context: context,

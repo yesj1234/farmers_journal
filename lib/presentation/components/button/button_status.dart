@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 
+/// A reusable button widget displaying a status label, icon, and value.
+///
+/// This button is designed to be tappable, triggering a navigation or action
+/// when pressed. It visually represents a status with an icon and text.
+///
 class ButtonStatus extends StatelessWidget {
-  final String status;
-  final String statusValue;
-  final IconData statusIcon;
-  final Color statusIconColor;
-  final VoidCallback onNavigateTap;
-
+  /// Creates a [ButtonStatus] widget.
+  ///
+  /// * [status] - The main status text.
+  /// * [statusValue] - The value associated with the status.
+  /// * [statusIcon] - The icon representing the status.
+  /// * [onNavigateTap] - The function executed on tap.
+  /// * [statusIconColor] (optional) - Defaults to black.
   const ButtonStatus({
     super.key,
     required this.status,
@@ -15,6 +21,21 @@ class ButtonStatus extends StatelessWidget {
     required this.onNavigateTap,
     this.statusIconColor = Colors.black,
   });
+
+  /// The label describing the status (e.g., "Active", "Pending").
+  final String status;
+
+  /// The value associated with the status (e.g., "Online", "3 tasks").
+  final String statusValue;
+
+  /// The icon representing the status.
+  final IconData statusIcon;
+
+  /// The color of the status icon. Defaults to black.
+  final Color statusIconColor;
+
+  /// The callback function triggered when the button is tapped.
+  final VoidCallback onNavigateTap;
 
   @override
   Widget build(BuildContext context) {
