@@ -584,8 +584,6 @@ class URLImageTile extends StatelessWidget {
               ),
           child: CachedNetworkImage(
             imageUrl: url,
-            width: maxWidth,
-            height: maxHeight,
             fit: BoxFit.cover,
             errorWidget: (context, url, error) => const Icon(
               Icons.broken_image,
