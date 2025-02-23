@@ -141,7 +141,13 @@ class CustomImageWidgetLayout extends StatelessWidget {
     context,
   ) {
     return _buildImageTile(
-        width: width, index: 0, height: height, total: 1, context: context);
+        minWidth: width,
+        maxWidth: width,
+        maxHeight: height,
+        index: 0,
+        minHeight: height,
+        total: 1,
+        context: context);
   }
 
   /// Side-by-side layout
@@ -152,16 +158,20 @@ class CustomImageWidgetLayout extends StatelessWidget {
         Expanded(
           child: _buildImageTile(
               index: 0,
-              width: width / 2,
-              height: height,
+              maxWidth: width,
+              maxHeight: height,
+              minWidth: width / 2,
+              minHeight: height,
               total: 2,
               context: context),
         ),
         Expanded(
           child: _buildImageTile(
               index: 1,
-              width: width / 2,
-              height: height,
+              maxWidth: width,
+              maxHeight: height,
+              minWidth: width / 2,
+              minHeight: height,
               total: 2,
               context: context),
         ),
@@ -177,8 +187,10 @@ class CustomImageWidgetLayout extends StatelessWidget {
         Expanded(
           child: _buildImageTile(
               index: 0,
-              width: width / 2,
-              height: height,
+              maxWidth: width,
+              maxHeight: height,
+              minWidth: width / 2,
+              minHeight: height,
               total: 3,
               context: context),
         ),
@@ -189,16 +201,20 @@ class CustomImageWidgetLayout extends StatelessWidget {
               Expanded(
                 child: _buildImageTile(
                     index: 1,
-                    width: width / 2,
-                    height: height / 2,
+                    maxWidth: width,
+                    maxHeight: height,
+                    minWidth: width / 2,
+                    minHeight: height / 2,
                     total: 3,
                     context: context),
               ),
               Expanded(
                 child: _buildImageTile(
                     index: 2,
-                    width: width / 2,
-                    height: height / 2,
+                    maxWidth: width,
+                    maxHeight: height,
+                    minWidth: width / 2,
+                    minHeight: height / 2,
                     total: 3,
                     context: context),
               )
@@ -215,8 +231,10 @@ class CustomImageWidgetLayout extends StatelessWidget {
       Expanded(
         child: _buildImageTile(
             index: 0,
-            width: width / 2,
-            height: height,
+            maxWidth: width,
+            maxHeight: height,
+            minWidth: width / 2,
+            minHeight: height,
             total: 4,
             context: context),
       ),
@@ -227,8 +245,10 @@ class CustomImageWidgetLayout extends StatelessWidget {
             Expanded(
               child: _buildImageTile(
                   index: 1,
-                  width: width / 2,
-                  height: height / 2,
+                  maxWidth: width,
+                  maxHeight: height,
+                  minWidth: width / 2,
+                  minHeight: height / 2,
                   total: 4,
                   context: context),
             ),
@@ -239,16 +259,20 @@ class CustomImageWidgetLayout extends StatelessWidget {
                   Expanded(
                     child: _buildImageTile(
                         index: 2,
-                        width: width / 4,
-                        height: height / 4,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 4,
+                        minHeight: height / 4,
                         total: 4,
                         context: context),
                   ),
                   Expanded(
                     child: _buildImageTile(
                         index: 3,
-                        width: width / 4,
-                        height: height / 4,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 4,
+                        minHeight: height / 4,
                         total: 4,
                         context: context),
                   ),
@@ -267,8 +291,10 @@ class CustomImageWidgetLayout extends StatelessWidget {
       Expanded(
         child: _buildImageTile(
             index: 0,
-            width: width / 2,
-            height: height,
+            maxWidth: width,
+            maxHeight: height,
+            minWidth: width / 2,
+            minHeight: height,
             total: 5,
             context: context),
       ),
@@ -283,16 +309,20 @@ class CustomImageWidgetLayout extends StatelessWidget {
                   Expanded(
                     child: _buildImageTile(
                         index: 1,
-                        width: width / 2,
-                        height: height / 2,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 2,
+                        minHeight: height / 2,
                         total: 5,
                         context: context),
                   ),
                   Expanded(
                     child: _buildImageTile(
                         index: 2,
-                        width: width / 2,
-                        height: height / 2,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 2,
+                        minHeight: height / 2,
                         total: 5,
                         context: context),
                   ),
@@ -306,16 +336,20 @@ class CustomImageWidgetLayout extends StatelessWidget {
                   Expanded(
                     child: _buildImageTile(
                         index: 3,
-                        width: width / 4,
-                        height: height / 2,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 4,
+                        minHeight: height / 2,
                         total: 5,
                         context: context),
                   ),
                   Expanded(
                     child: _buildImageTile(
                         index: 4,
-                        width: width / 4,
-                        height: height / 2,
+                        maxWidth: width,
+                        maxHeight: height,
+                        minWidth: width / 4,
+                        minHeight: height / 2,
                         total: 5,
                         context: context),
                   ),
@@ -338,10 +372,12 @@ class CustomImageWidgetLayout extends StatelessWidget {
             Expanded(
                 child: _buildImageTile(
               index: 0,
-              width: width / 2,
-              height: height,
+              minWidth: width / 2,
+              maxWidth: width,
+              minHeight: height,
               total: 5,
               context: context,
+              maxHeight: height,
             )),
             Expanded(
               child: Column(
@@ -354,16 +390,20 @@ class CustomImageWidgetLayout extends StatelessWidget {
                         Expanded(
                           child: _buildImageTile(
                               index: 1,
-                              width: width / 2,
-                              height: height / 2,
+                              minWidth: width / 2,
+                              maxWidth: width,
+                              minHeight: height / 2,
+                              maxHeight: height,
                               total: 5,
                               context: context),
                         ),
                         Expanded(
                           child: _buildImageTile(
                               index: 2,
-                              width: width / 2,
-                              height: height / 2,
+                              minWidth: width / 2,
+                              maxWidth: width,
+                              minHeight: height / 2,
+                              maxHeight: height,
                               total: 5,
                               context: context),
                         ),
@@ -377,8 +417,10 @@ class CustomImageWidgetLayout extends StatelessWidget {
                         Expanded(
                           child: _buildImageTile(
                               index: 3,
-                              width: width / 4,
-                              height: height / 2,
+                              minWidth: width / 4,
+                              maxWidth: width,
+                              minHeight: height / 2,
+                              maxHeight: height,
                               total: 5,
                               context: context),
                         ),
@@ -387,10 +429,12 @@ class CustomImageWidgetLayout extends StatelessWidget {
                             children: [
                               _buildImageTile(
                                   index: 4,
+                                  maxWidth: width,
+                                  maxHeight: height,
+                                  minWidth: width / 4,
+                                  minHeight: height / 2,
                                   total: 5,
-                                  context: context,
-                                  width: width / 4,
-                                  height: height / 2),
+                                  context: context),
                               Positioned.fill(
                                 child: Container(
                                   color: Colors.black54,
@@ -421,48 +465,34 @@ class CustomImageWidgetLayout extends StatelessWidget {
     );
   }
 
-  /// Builds an image tile based on the provided parameters.
-  ///
-  /// This function determines the type of image (either `UrlImage` or `XFileImage`)
-  /// and returns the appropriate widget for display. If the image is a `UrlImage`,
-  /// it applies a `Hero` animation and allows navigation to a detailed view when tapped.
-  ///
-  /// - [index]: The index of the image in the list.
-  /// - [minWidth]: The minimum width of the image tile.
-  /// - [maxWidth]: The maximum width of the image tile.
-  /// - [minHeight]: The minimum height of the image tile.
-  /// - [maxHeight]: The maximum height of the image tile.
-  /// - [total]: The total number of images.
-  /// - [context]: The BuildContext used for navigation.
-  ///
-  /// Returns a `Widget` representing the image tile.
   Widget _buildImageTile(
       {required int index,
-      required double width,
-      required double height,
+      required double minWidth,
+      required double maxWidth,
+      required double minHeight,
+      required double maxHeight,
       required int total,
       context}) {
     final image = images[index];
     BorderRadius? borderRadius =
         CustomImageWidgetLayout.calculateBorderRadius(total, index);
-
-    /// Determines the correct widget based on the image type.
     final imageTile = switch (image) {
       UrlImage(:final value) => URLImageTile(
           url: value,
           onDelete: () => onDelete?.call(index),
-          width: width,
-          height: height,
+          minWidth: minWidth,
+          minHeight: minHeight,
+          maxWidth: maxWidth,
+          maxHeight: maxHeight,
           isEditMode: isEditMode,
           borderRadius: borderRadius,
-          boxFit: BoxFit.fitWidth,
         ),
       XFileImage(:final value) => _XFileImageTile(
           id: index,
           image: value,
           onDelete: () => onDelete?.call(index),
-          width: width,
-          height: height,
+          width: minWidth,
+          height: minHeight,
           isEditMode: isEditMode,
           borderRadius: borderRadius,
         ),
@@ -480,20 +510,17 @@ class CustomImageWidgetLayout extends StatelessWidget {
                 transitionOnUserGestures: true,
                 child: imageTile,
               );
-
-        /// Wraps the image tile in a GestureDetector to handle tap interactions.
         return GestureDetector(
           onTap: isEditMode
               ? null
               : () {
                   Navigator.of(context).push(
                     PageRouteBuilder(
-                      transitionDuration: const Duration(seconds: 2),
-                      reverseTransitionDuration: const Duration(seconds: 2),
                       maintainState: true,
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) =>
-                              FadeTransition(opacity: animation, child: child),
+                      transitionsBuilder: (context, animation, _, child) =>
+                          Opacity(
+                              opacity: opacityCurve.transform(animation.value),
+                              child: child),
                       pageBuilder: (
                         context,
                         _,
@@ -521,27 +548,33 @@ class URLImageTile extends StatelessWidget {
     required this.url,
     required this.onDelete,
     required this.isEditMode,
-    required this.width,
-    required this.height,
+    required this.maxWidth,
+    required this.maxHeight,
+    required this.minWidth,
+    required this.minHeight,
     this.borderRadius,
-    this.boxFit = BoxFit.cover,
   });
 
   final String url;
   final void Function()? onDelete;
   final bool isEditMode;
-  final double width;
-  final double height;
+  final double maxWidth;
+  final double maxHeight;
+  final double minWidth;
+  final double minHeight;
   final BorderRadius? borderRadius;
-  final BoxFit? boxFit;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: Stack(children: [
-        ClipRRect(
+    return Stack(children: [
+      ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: minHeight,
+          minWidth: minWidth,
+          maxWidth: maxWidth,
+          maxHeight: maxHeight,
+        ),
+        child: ClipRRect(
           borderRadius: borderRadius ??
               const BorderRadius.only(
                 bottomLeft: Radius.zero,
@@ -551,30 +584,32 @@ class URLImageTile extends StatelessWidget {
               ),
           child: CachedNetworkImage(
             imageUrl: url,
-            fit: boxFit,
+            width: maxWidth,
+            height: maxHeight,
+            fit: BoxFit.cover,
             errorWidget: (context, url, error) => const Icon(
               Icons.broken_image,
               size: 50,
             ),
           ),
         ),
-        isEditMode
-            ? Positioned(
-                right: 1,
-                child: IconButton(
-                  alignment: Alignment.topRight,
-                  onPressed: onDelete,
-                  padding: EdgeInsets.zero,
-                  iconSize: 20,
-                  icon: const Icon(
-                    Icons.cancel_rounded,
-                    color: Colors.white,
-                  ),
+      ),
+      isEditMode
+          ? Positioned(
+              right: 1,
+              child: IconButton(
+                alignment: Alignment.topRight,
+                onPressed: onDelete,
+                padding: EdgeInsets.zero,
+                iconSize: 20,
+                icon: const Icon(
+                  Icons.cancel_rounded,
+                  color: Colors.white,
                 ),
-              )
-            : const SizedBox.shrink(),
-      ]),
-    );
+              ),
+            )
+          : const SizedBox.shrink(),
+    ]);
   }
 }
 

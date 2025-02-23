@@ -9,6 +9,8 @@ class DetailScreenPageView extends StatefulWidget {
 
   final List<UrlImage> tags;
   final int initialIndex;
+  static const double kMinRadius = 32.0;
+  static const double kMaxRadius = 128.0;
 
   @override
   State<DetailScreenPageView> createState() => _DetailScreenPageView();
@@ -48,21 +50,30 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
               Navigator.pop(context);
             }
           },
-          child: Hero(
-            tag: tag,
-            createRectTween: (Rect? begin, Rect? end) {
-              return MaterialRectArcTween(begin: begin, end: end);
-            },
-            transitionOnUserGestures: true,
-            child: Center(
-              child: URLImageTile(
-                  url: tag,
-                  onDelete: () {},
-                  isEditMode: false,
-                  width: MediaQuery.sizeOf(context).width,
-                  height: MediaQuery.sizeOf(context).height,
-                  borderRadius: BorderRadius.circular(10),
-                  boxFit: BoxFit.fitWidth),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            child: SizedBox(
+              width: MediaQuery.sizeOf(context).width,
+              height: MediaQuery.sizeOf(context).height,
+              child: Hero(
+                tag: tag,
+                createRectTween: (Rect? begin, Rect? end) {
+                  return MaterialRectArcTween(begin: begin, end: end);
+                },
+                transitionOnUserGestures: true,
+                child: Center(
+                  child: URLImageTile(
+                    url: tag,
+                    onDelete: () {},
+                    isEditMode: false,
+                    maxWidth: MediaQuery.sizeOf(context).width,
+                    minWidth: MediaQuery.sizeOf(context).width,
+                    maxHeight: MediaQuery.sizeOf(context).height,
+                    minHeight: MediaQuery.sizeOf(context).height,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
             ),
           ),
         );
@@ -70,29 +81,31 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
     ).toList();
 
     return Scaffold(
-      appBar: AppBar(),
-      body: GestureDetector(
-        onVerticalDragUpdate: (details) {
-          if (details.primaryDelta!.abs() > 20) {
-            Navigator.pop(context);
-          }
-        },
-        child: Center(
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              PageView(
-                  controller: _pageViewController,
-                  onPageChanged: _handlePageViewChanged,
-                  children: heroWidgets),
-              PageIndicator(
-                tabController: _tabController,
-              )
-            ],
+        appBar: AppBar(),
+        body: GestureDetector(
+          onVerticalDragUpdate: (details) {
+            if (details.primaryDelta!.abs() > 20) {
+              Navigator.pop(context);
+            }
+          },
+          child: Center(
+            child: SizedBox(
+              height: MediaQuery.sizeOf(context).width,
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  PageView(
+                      controller: _pageViewController,
+                      onPageChanged: _handlePageViewChanged,
+                      children: heroWidgets),
+                  PageIndicator(
+                    tabController: _tabController,
+                  )
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   void _handlePageViewChanged(int currentPageIndex) {
