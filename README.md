@@ -30,7 +30,7 @@ Track your farming journey, share insights, and optimize your methods with real-
 
 ### Overview
 
-**Farmer's Journal** is a tool designed to assist modern farmers in enhancing their farming methodologies. 
+**Farmer's Journal** is a tool designed to assist modern farmers in enhancing their farming methodologies.
 
 Whether managing a small garden or a large-scale farm, this app helps document, analyze, and improve farming processes step-by-step.
 
@@ -97,7 +97,7 @@ Defines the data structures used throughout the application, ensuring consistenc
 
 ### Presentation
 
-The UI displays application data and serves as the primary point of user interaction. 
+The UI displays application data and serves as the primary point of user interaction.
 
 It updates to reflect changes due to user actions or external inputs, effectively representing the application state as retrieved from the data layer.
 
@@ -113,7 +113,14 @@ Manages the flow of data to and from the UI components, handling user interactio
 
 Individual screens or views within the application, each representing a specific section or functionality.
 
+## Trouble shooting experience
 
+- [What are some best practices in Flutter for responsive layout?](https://yesj1234.github.io/posts/responsive_layout)
+- [How can I manage important states used in application?](https://yesj1234.github.io/posts/riverpod)
+- [How can I handle union types in Dart gracefully?](https://yesj1234.github.io/posts/union_types)
+- [How can I structure application code for maintainability and readability?](https://yesj1234.github.io/posts/flutter_app_architecture)
+- [How can I document my code for future coworkers?](https://yesj1234.github.io/posts/dart_docs)
+- [Why is my Hero animation not work as expected?](https://yesj1234.github.io/posts/understanding_hero_animation)
 
 ## Installation
 
