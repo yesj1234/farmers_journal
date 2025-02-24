@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 ///
 /// This button is designed to be tappable, triggering a navigation or action
 /// when pressed. It visually represents a status with an icon and text.
-///
 class ButtonStatus extends StatelessWidget {
   /// Creates a [ButtonStatus] widget.
   ///
