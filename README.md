@@ -2,6 +2,8 @@
 
 **Simplify farming, enhance productivity.**
 
+App store: [Farmers Journal](https://apps.apple.com/app/6741880762)
+
 ## Introduction
 
 Track your farming journey, share insights, and optimize your methods with real-time data and visualizations.
