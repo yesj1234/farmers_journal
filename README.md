@@ -2,6 +2,8 @@
 
 **Simplify farming, enhance productivity.**
 
+App store: [Farmers Journal](https://apps.apple.com/app/6741880762)
+
 ## Introduction
 
 Track your farming journey, share insights, and optimize your methods with real-time data and visualizations.
@@ -30,7 +32,9 @@ Track your farming journey, share insights, and optimize your methods with real-
 
 ### Overview
 
-**Farmer's Journal** is a tool designed to assist modern farmers in enhancing their farming methodologies. Whether managing a small garden or a large-scale farm, this app helps document, analyze, and improve farming processes step-by-step.
+**Farmer's Journal** is a tool designed to assist modern farmers in enhancing their farming methodologies.
+
+Whether managing a small garden or a large-scale farm, this app helps document, analyze, and improve farming processes step-by-step.
 
 ### Key Features
 
@@ -56,10 +60,10 @@ The code structure reflects the Riverpod architecture. For detailed insights int
 ```
 ./lib
 ├── data
-│   ├── interface
 │   └── repositories
 ├── domain
 │   ├── firebase
+│   ├── interface
 │   └── model
 └── presentation
     ├── components
@@ -67,45 +71,89 @@ The code structure reflects the Riverpod architecture. For detailed insights int
     └── pages
 ```
 
-### Presentation
-
-The UI displays application data and serves as the primary point of user interaction. It updates to reflect changes due to user actions or external inputs, effectively representing the application state as retrieved from the data layer.
-
-#### Components
-
-Reusable UI elements that form the building blocks of the application's interface.
-
-#### Controller
-
-Manages the flow of data to and from the UI components, handling user interactions and updating the state accordingly.
-
-#### Pages
-
-Individual screens or views within the application, each representing a specific section or functionality.
-
-### Domain
-
-Defines application-specific model classes representing the data from the data layer.
-
-#### Firebase
-
-Handles interactions with Firebase services, including authentication, database operations, and storage.
-
-#### Model
-
-Defines the data structures used throughout the application, ensuring consistency and type safety.
 
 ### Data
 
 The gateway between the remote database and the application.
 
-#### Interface
+
+- **Repositories**
+
+Concrete implementations of the interfaces, handling data operations such as fetching, caching, and updating.
+
+### Domain
+
+Defines application-specific model classes representing the data from the data layer.
+
+- **Firebase**
+
+Handles interactions with Firebase services, including authentication, database operations, and storage.
+
+- **Interface**
 
 Defines abstract classes or interfaces that outline the methods for data retrieval and manipulation.
 
-#### Repositories
+- **Model**
 
-Concrete implementations of the interfaces, handling data operations such as fetching, caching, and updating.
+Defines the data structures used throughout the application, ensuring consistency and type safety.
+
+### Presentation
+
+The UI displays application data and serves as the primary point of user interaction.
+
+It updates to reflect changes due to user actions or external inputs, effectively representing the application state as retrieved from the data layer.
+
+- **Components**
+
+Reusable UI elements that form the building blocks of the application's interface.
+
+- **Controller**
+
+Manages the flow of data to and from the UI components, handling user interactions and updating the state accordingly.
+
+- **Pages**
+
+Individual screens or views within the application, each representing a specific section or functionality.
+
+## Trouble shooting experience
+
+- [What are some best practices in Flutter for responsive layout?](https://yesj1234.github.io/posts/responsive_layout)
+- [How can I manage important states used in application?](https://yesj1234.github.io/posts/riverpod)
+- [How can I handle union types in Dart gracefully?](https://yesj1234.github.io/posts/union_types)
+- [How can I structure application code for maintainability and readability?](https://yesj1234.github.io/posts/flutter_app_architecture)
+- [How can I document my code for future coworkers?](https://yesj1234.github.io/posts/dart_docs)
+- [Why is my Hero animation not work as expected?](https://yesj1234.github.io/posts/understanding_hero_animation)
+
+## Packages in use 
+These are the main packages. 
+- [Flutter Riverpod](https://pub.dev/packages/flutter_riverpod) for data caching, dependency injection, and more
+- [GoRouter](https://pub.dev/packages/go_router) for navigation
+- [Firebase Auth](https://pub.dev/packages/firebase_auth) for authentication
+- [Cloud Firestore](https://pub.dev/packages/cloud_firestore) as a realtime database
+- [Firebase Storage](https://pub.dev/packages/firebase_storage) for Cloud storage solution provided by firebase.
+- [Flex Color Scheme](https://pub.dev/packages/flex_color_scheme) for advanced theming for Flutter apps
+- [Image Picker](https://pub.dev/packages/image_picker) to select images from gallery or camera.
+- [uuid](https://pub.dev/packages/uuid) to generates unique identifiers (UUIDs).
+- [Shimmer](https://pub.dev/packages/shimmer) to create shimmer loading effects.
+- [url_launcher](https://pub.dev/packages/url_launcher) to opens URLs, emails, and phone numbers.
+- [Cached Network Image](https://pub.dev/packages/cached_network_image) for caching and loading network images efficiently.
+
+These are the dev dependencies .
+- [Json Serializable](https://pub.dev/packages/json_serializable) to generate JSON serialization code.
+- [Freezed](https://pub.dev/packages/freezed) to automate code generation for immutable classes.
+- [Build Runner](https://pub.dev/packages/build_runner) runs code generators like freezed and json_serializable.
+
+
+See the [pubspec.yaml](/pubspec.yaml) file for the complete list.
+
+## TODO
+
+- [] Fix detail view for image to show the whole image while maintaining the hero animation clear.
+- [] Add charts and graphical status of the user's journals, such as badges, various graphs, etc. 
+- [] Add filters for community view. 
+- [] Upgrade the overall design of the application. 
+- [] Automate the publishing process via Xcode or github. 
+- [] Add missing test.
 
 ## Installation
 
@@ -138,14 +186,11 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/YourFeature`).
 5. Open a Pull Request.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
 ## Contact
 
 For questions or suggestions, please contact Yang Seung Jun at [juesc007@gmail.com](mailto:juesc007@gmail.com).
 
-
 Track what things to be done based on your past notes and ohter farmers notes. 
+
+## License: [MIT](/LICENSE.md)
 

@@ -1,4 +1,4 @@
-// enum DateView { day, week, month }
+/// Types used for main page segmented button.
 enum MainView { day, week, month, community }
 
 /// PlaceAutocompleteStatus from [here](https://developers.google.com/maps/documentation/places/web-service/autocomplete?_gl=1*j7omyq*_up*MQ..*_ga*ODQ3MzE0MDQuMTczMjA4MjE0MA..*_ga_NRWSTWS78N*MTczMjA4MjEzOS4xLjEuMTczMjA4MjU1OS4wLjAuMA..#PlacesAutocompleteStatus)

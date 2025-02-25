@@ -7,14 +7,23 @@ import 'package:farmers_journal/presentation/pages/page_main/community_view/scro
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// Displays a daily view of journal entries, organized by date.
+///
+/// This page retrieves and displays journal entries grouped by day, allowing users to view and interact with each entry.
+/// A stateful widget that displays journal entries grouped by day.
 class DayView extends ConsumerStatefulWidget {
+  /// Creates a [DayView] widget.
   const DayView({super.key});
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _DayViewState();
 }
 
+/// The state class for [DayView].
 class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
+  /// A future that retrieves sorted journal entries grouped by date.
   late Future<Map<DateTime, List<Journal?>>> _sortedJournal;
+
+  /// Scroll controller for the list view.
   final ScrollController scrollController = ScrollController();
   @override
   void initState() {
@@ -68,7 +77,10 @@ class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
                               });
                             });
                       },
-                      child: _DayViewCard(journal: journal),
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        child: _DayViewCard(journal: journal),
+                      ),
                     ),
                   );
                 }
@@ -93,8 +105,12 @@ class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
   }
 }
 
+/// A wrapper widget that displays a [DayViewCard] for a given journal entry.
 class _DayViewCard extends StatelessWidget {
+  /// Creates a [_DayViewCard] widget.
   const _DayViewCard({super.key, required this.journal});
+
+  /// The journal entry to display.
   final Journal journal;
   @override
   Widget build(BuildContext context) {

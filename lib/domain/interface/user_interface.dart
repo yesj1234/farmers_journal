@@ -5,6 +5,8 @@ import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart'
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
+/// Abstract class for user repository
+///
 abstract class UserRepository {
   Future<AppUser?> getUser();
   Future<void> setProfileImage({required Uint8List bytes});
@@ -15,7 +17,7 @@ abstract class UserRepository {
       required String? newPlantName,
       required String code});
   Future<void> setPlace({required String? id, required String? newPlantPlace});
-  Future<void> setPlantAndPlace({required Plant plant});
+  Future<void> setInitial({required Plant plant, required String name});
 
   Future<List<Journal?>> getJournals();
 

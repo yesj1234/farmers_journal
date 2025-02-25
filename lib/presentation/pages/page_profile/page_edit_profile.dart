@@ -226,6 +226,7 @@ class _ProfileForm extends ConsumerWidget {
       spacing: 30,
       children: [
         TextFormField(
+          initialValue: user.value?.name,
           onChanged: onNameChange,
           decoration: inputDecoration.copyWith(
             constraints:
@@ -235,6 +236,7 @@ class _ProfileForm extends ConsumerWidget {
           ),
         ),
         TextFormField(
+          initialValue: user.value?.nickName,
           onChanged: onNickNameChange,
           decoration: inputDecoration.copyWith(
             constraints:

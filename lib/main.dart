@@ -1,11 +1,8 @@
 // Flutter imports
-
 import 'package:flutter/material.dart';
 
 //Firebase imports
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/rendering.dart';
-
 import 'firebase_options.dart';
 
 // pub import
@@ -14,16 +11,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 //config import
 import 'package:farmers_journal/gorouter_config.dart';
 
-// pages import
-
 // provider observer
 import 'package:farmers_journal/data/my_observer.dart';
-
-// temp import for development
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,8 +30,6 @@ void main() async {
     javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_KEY'],
   );
 
-  // debugPaintSizeEnabled = true;
-  // debugPaintLayerBordersEnabled = true;
   initializeDateFormatting('ko_KR').then(
     (_) => runApp(
       ProviderScope(
@@ -54,8 +46,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('ko'),
+      ],
       routerConfig: router,
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       theme: FlexThemeData.light(
         scheme: FlexScheme.green,
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,

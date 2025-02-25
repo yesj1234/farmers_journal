@@ -1,7 +1,5 @@
-import 'package:farmers_journal/data/firestore_providers.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/auth/auth_controller.dart';
-import 'package:farmers_journal/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +17,7 @@ class _PageSignUpState extends ConsumerState<PageSignup> {
   String? password;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
+  bool isAgreed = false;
   @override
   void dispose() {
     _passwordController.dispose();
@@ -92,88 +91,108 @@ class _PageSignUpState extends ConsumerState<PageSignup> {
   @override
   Widget build(BuildContext context) {
     final authRef = ref.watch(authControllerProvider);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Registration',
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.sizeOf(context).width / 1.1,
-            ),
-            child: Form(
-              key: _formKey,
-              child: ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 16,
-                      left: 16,
-                      bottom: 16,
-                    ),
-                    child: Text(
-                      '회원 가입을 위해\n정보를 입력해주세요',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                    ),
-                  ),
-                  _RegistrationFormTextField(
-                      text: '이름',
-                      onValidate: validateName,
-                      onSaved: onNameSaved),
-                  _RegistrationFormTextField(
-                      text: '이메일',
-                      onValidate: validateEmail,
-                      onSaved: onEmailSaved),
-                  _RegistrationFormTextField(
-                      text: '비밀번호',
-                      onValidate: validatePassword,
-                      onSaved: onPasswordSaved,
-                      obscureText: true,
-                      controller: _passwordController),
-                  _RegistrationFormTextField(
-                    text: '비밀번호확인',
-                    onValidate: validateDoubleCheckPassword,
-                    onSaved: onPasswordSaved,
-                    obscureText: true,
-                  ),
-                  ElevatedButton(
-                    onPressed: authRef.isLoading ? null : onFormSubmitted,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: authRef.isLoading
-                        ? const CircularProgressIndicator()
-                        : const Text(
-                            '가입하기',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                  ),
-                ],
+    return GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'Registration',
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-        ),
-      ),
-    );
+          body: SafeArea(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.sizeOf(context).width / 1.1,
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 16,
+                          left: 16,
+                          bottom: 16,
+                        ),
+                        child: Text(
+                          '회원 가입을 위해\n정보를 입력해주세요',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                        ),
+                      ),
+                      _RegistrationFormTextField(
+                          text: '이름',
+                          onValidate: validateName,
+                          onSaved: onNameSaved),
+                      _RegistrationFormTextField(
+                          text: '이메일',
+                          onValidate: validateEmail,
+                          onSaved: onEmailSaved),
+                      _RegistrationFormTextField(
+                          text: '비밀번호',
+                          onValidate: validatePassword,
+                          onSaved: onPasswordSaved,
+                          obscureText: true,
+                          controller: _passwordController),
+                      _RegistrationFormTextField(
+                        text: '비밀번호확인',
+                        onValidate: validateDoubleCheckPassword,
+                        onSaved: onPasswordSaved,
+                        obscureText: true,
+                      ),
+                      Row(children: [
+                        Checkbox(
+                          value: isAgreed,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              if (value != null) {
+                                isAgreed = value;
+                              }
+                            });
+                          },
+                        ),
+                        const Text("이용약관에 동의합니다."),
+                      ]),
+                      ElevatedButton(
+                        onPressed: authRef.isLoading || !isAgreed
+                            ? null
+                            : onFormSubmitted,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: authRef.isLoading
+                            ? const CircularProgressIndicator()
+                            : const Text(
+                                '가입하기',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ));
   }
 }
 

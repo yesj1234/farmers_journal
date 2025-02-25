@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
 
+/// Enum representing the type of alert dialog.
+///
+/// - [delete]: Used for deletion confirmations.
+/// - [block]: Used for blocking confirmations.
 enum AlertDialogType {
   delete,
   block,
 }
 
+/// Displays a confirmation alert dialog based on the specified [AlertDialogType].
+///
+/// The dialog prompts the user with a title and description, and provides confirm and cancel actions.
+///
+/// - [context]: The build context where the dialog should be displayed.
+/// - [type]: The type of the alert dialog, either [AlertDialogType.delete] or [AlertDialogType.block].
+/// - [cb]: A callback function executed when the confirm button is pressed.
+///
 Future<void> showMyAlertDialog(
     {required context, required AlertDialogType type, required cb}) async {
   final alertTitle = switch (type) {

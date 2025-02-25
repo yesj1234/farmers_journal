@@ -1,9 +1,6 @@
 // packages
-import 'dart:developer';
-
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_main/community_view/community_view.dart';
-import 'package:farmers_journal/presentation/pages/page_main/community_view/scroll_to_top_button.dart';
 import 'package:farmers_journal/presentation/pages/page_main/day_view.dart';
 import 'package:farmers_journal/presentation/pages/page_main/month_view.dart';
 import 'package:farmers_journal/presentation/pages/page_main/top_nav.dart';
@@ -22,7 +19,11 @@ import 'package:farmers_journal/enums.dart';
 // models
 import 'package:farmers_journal/domain/model/journal.dart';
 
+/// The main page widget that consumes Riverpod providers.
+///
+/// Displays the navigation, content sections, and a floating action button for creating posts.
 class PageMain extends ConsumerWidget {
+  /// Creates a [PageMain] widget.
   const PageMain({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,7 +50,10 @@ class PageMain extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               const SizedBox(height: 10),
-              const TopNav(),
+              const Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: TopNav(),
+              ),
               Divider(
                 thickness: 0.5,
                 indent: 10,
@@ -58,7 +62,7 @@ class PageMain extends ConsumerWidget {
               ),
               journalRef.hasValue && journalRef.value!.isNotEmpty
                   ? const Align(
-                      alignment: Alignment.centerLeft,
+                      alignment: Alignment.center,
                       child: ButtonMainViewFilter(),
                     )
                   : const SizedBox.shrink(),
@@ -71,10 +75,9 @@ class PageMain extends ConsumerWidget {
         onClick: () {
           // 초기 설정 없으면 초기 설정 페이지로 이동
           if (userRef.value!.isInitialSettingRequired) {
-            log('..');
             context.go('/initial_setting');
           } else {
-            context.go('/create');
+            context.push('/create');
           }
         },
       ),
@@ -83,7 +86,9 @@ class PageMain extends ConsumerWidget {
   }
 }
 
+/// The main content section of the page, displaying journal entries.
 class _Content extends ConsumerWidget {
+  /// Creates a [_Content] widget.
   const _Content({super.key});
 
   @override
@@ -106,8 +111,12 @@ class _Content extends ConsumerWidget {
   }
 }
 
+/// Displays journal entries based on the selected view filter.
 class _UserContent extends ConsumerWidget {
+  /// Creates a [_UserContent] widget.
   const _UserContent({super.key, required this.journals});
+
+  /// The list of journal entries to display.
   final List<Journal?> journals;
 
   @override
@@ -126,7 +135,9 @@ class _UserContent extends ConsumerWidget {
   }
 }
 
+/// Displays default content when no journal entries exist.
 class _DefaultContent extends StatelessWidget {
+  /// Creates a [_DefaultContent] widget.
   const _DefaultContent({super.key});
 
   @override

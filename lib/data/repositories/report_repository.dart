@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmers_journal/data/interface/report_interface.dart';
+import 'package:farmers_journal/domain/interface/report_interface.dart';
 import 'package:farmers_journal/domain/model/report.dart';
 import 'package:uuid/uuid.dart';
 
+/// Implementation of [ReportRepository] using Firebase firestore backend service.
 class FireStoreReportRepository implements ReportRepository {
   FireStoreReportRepository({required this.instance});
   final FirebaseFirestore instance;

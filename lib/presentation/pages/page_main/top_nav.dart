@@ -13,68 +13,60 @@ class TopNav extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userControllerProvider);
     final journal = ref.watch(journalControllerProvider);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IntrinsicHeight(
-          child: SizedBox(
-            height: 60,
-            child: Row(
+    return IntrinsicHeight(
+      child: SizedBox(
+        height: 60,
+        child: Row(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    user.value != null
-                        ? user.value!.plants.isNotEmpty
-                            ? ButtonStatus(
-                                status: "작물",
-                                statusValue: user.value?.plants[0].name,
-                                statusIcon: Icons.eco,
-                                statusIconColor: Colors.green,
-                                onNavigateTap: () =>
-                                    context.go('/main/statistics'),
-                              )
-                            : ButtonStatus(
-                                status: "작물",
-                                statusValue: '설정 필요',
-                                statusIcon: Icons.eco,
-                                statusIconColor: Colors.green,
-                                onNavigateTap: () =>
-                                    context.go('/initial_setting'),
-                              )
+                user.value != null
+                    ? user.value!.plants.isNotEmpty
+                        ? ButtonStatus(
+                            status: "작물",
+                            statusValue: user.value?.plants[0].name,
+                            statusIcon: Icons.eco,
+                            statusIconColor: Colors.green,
+                            onNavigateTap: () => context.go('/main/statistics'),
+                          )
                         : ButtonStatus(
                             status: "작물",
                             statusValue: '설정 필요',
                             statusIcon: Icons.eco,
                             statusIconColor: Colors.green,
                             onNavigateTap: () => context.go('/initial_setting'),
-                          ),
-                    const VerticalDivider(
-                      thickness: 2,
-                    ),
-                    ButtonStatus(
-                      status: "일지",
-                      statusValue: journal.value != null
-                          ? '${journal.value?.length} 개'
-                          : '0 개',
-                      statusIcon: Icons.local_fire_department_sharp,
-                      statusIconColor: Colors.red,
-                      onNavigateTap: () => context.go('/main/statistics'),
-                    )
-                  ],
+                          )
+                    : ButtonStatus(
+                        status: "작물",
+                        statusValue: '설정 필요',
+                        statusIcon: Icons.eco,
+                        statusIconColor: Colors.green,
+                        onNavigateTap: () => context.go('/initial_setting'),
+                      ),
+                const VerticalDivider(
+                  thickness: 2,
                 ),
-                const Spacer(),
-                AvatarProfile(
-                  width: 60,
-                  height: 60,
-                  onNavigateTap: () => context.go('/main/profile'),
-                ),
+                ButtonStatus(
+                  status: "일지",
+                  statusValue: journal.value != null
+                      ? '${journal.value?.length} 개'
+                      : '0 개',
+                  statusIcon: Icons.local_fire_department_sharp,
+                  statusIconColor: Colors.red,
+                  onNavigateTap: () => context.go('/main/statistics'),
+                )
               ],
             ),
-          ),
-        )
-      ],
+            const Spacer(),
+            AvatarProfile(
+              width: 60,
+              height: 60,
+              onNavigateTap: () => context.go('/main/profile'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

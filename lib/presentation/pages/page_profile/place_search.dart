@@ -1,5 +1,5 @@
-import 'dart:developer';
 import 'package:farmers_journal/data/providers.dart';
+import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_profile/place_map.dart';
 import 'package:farmers_journal/presentation/pages/page_profile/place_predictedItem.dart';
@@ -14,45 +14,15 @@ class PagePlaceSearch extends ConsumerStatefulWidget {
   final String actionText;
   final IconData actionIcon;
   @override
-  ConsumerState<PagePlaceSearch> createState() => _PageTempState();
+  ConsumerState<PagePlaceSearch> createState() => _PagePlaceSearchState();
 }
 
-class _PageTempState extends ConsumerState<PagePlaceSearch> {
+class _PagePlaceSearchState extends ConsumerState<PagePlaceSearch> {
   String selectedPlace = '';
   void onSelect(String value) {
     setState(() {
       selectedPlace = value;
     });
-  }
-
-  Future<bool> _showAlertDialog(context, cb) async {
-    return await showDialog<bool>(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                  title: const Text('확정'),
-                  content: SingleChildScrollView(
-                    child: ListBody(
-                      children: [
-                        Text('plant: $selectedPlace'),
-                      ],
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('취소'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                        cb();
-                      },
-                      child: const Text('확정'),
-                    )
-                  ]);
-            }) ??
-        false;
   }
 
   @override
@@ -69,16 +39,14 @@ class _PageTempState extends ConsumerState<PagePlaceSearch> {
         ),
         actions: [
           TextButton.icon(
-            onPressed: () {
+            onPressed: () async {
               final plantId = userRef.value?.plants[0].id;
-              _showAlertDialog(context, () {
-                ref
-                    .read(userControllerProvider.notifier)
-                    .setPlace(id: plantId, newPlantPlace: selectedPlace);
-              }).then((v) {
-                if (v) {
-                  context.pop();
-                }
+              await ref
+                  .read(userControllerProvider.notifier)
+                  .setPlace(id: plantId, newPlantPlace: selectedPlace)
+                  .then((_) {
+                showSnackBar(context, '위치가 $selectedPlace(으)로 변경되었습니다.');
+                context.pop();
               });
             },
             icon: Icon(
@@ -101,7 +69,10 @@ class _PageTempState extends ConsumerState<PagePlaceSearch> {
           child: Column(
             spacing: 10,
             children: [
-              PlaceSearch(onSelect: onSelect),
+              PlaceSearch(
+                onSelect: onSelect,
+                autoFocus: true,
+              ),
               selectedPlace.isNotEmpty
                   ? PlaceMap2(
                       finalAddress: selectedPlace,
@@ -116,8 +87,13 @@ class _PageTempState extends ConsumerState<PagePlaceSearch> {
 }
 
 class PlaceSearch extends ConsumerStatefulWidget {
-  const PlaceSearch({super.key, required this.onSelect});
+  const PlaceSearch({
+    super.key,
+    required this.onSelect,
+    this.autoFocus = false,
+  });
   final void Function(String) onSelect;
+  final bool autoFocus;
 
   @override
   ConsumerState<PlaceSearch> createState() => _PlaceSearchState();
@@ -130,14 +106,16 @@ class _PlaceSearchState extends ConsumerState<PlaceSearch> {
       builder: (context, controller) {
         return SearchBar(
           controller: controller,
+          autoFocus: widget.autoFocus,
           onChanged: (value) {
             controller.openView();
           },
           leading: IconButton(
-              onPressed: () {
-                controller.openView();
-              },
-              icon: const Icon(Icons.search)),
+            onPressed: () {
+              controller.openView();
+            },
+            icon: const Icon(Icons.search),
+          ),
         );
       },
       viewHintText: '위치를 검색해 보세요.',
@@ -148,16 +126,18 @@ class _PlaceSearchState extends ConsumerState<PlaceSearch> {
         return ref
             .read(googleAPIProvider)
             .googlePlaceAPI(controller.text, const Uuid().v4())
-            .then((response) {
-          return response.predictions.map((prediction) {
-            return PlaceAutoCompletePredictionItem(
-                onTap: () {
-                  controller.closeView(prediction.description);
-                  widget.onSelect(prediction.description);
-                },
-                description: prediction.description);
-          }).toList();
-        });
+            .then(
+          (response) {
+            return response.predictions.map((prediction) {
+              return PlaceAutoCompletePredictionItem(
+                  onTap: () {
+                    controller.closeView(prediction.description);
+                    widget.onSelect(prediction.description);
+                  },
+                  description: prediction.description);
+            }).toList();
+          },
+        );
       },
     );
   }

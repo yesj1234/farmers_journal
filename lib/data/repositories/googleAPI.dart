@@ -4,6 +4,7 @@ import 'package:farmers_journal/domain/model/places_autocomplete_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+/// Dart class for Google APIs.
 class GoogleAPI {
   Future<GooglePlaceResponse> googlePlaceAPI(String place, String token) async {
     String? key = dotenv.env['GOOGLE_MAPS_API_KEY'];

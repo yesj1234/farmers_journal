@@ -16,8 +16,8 @@ class DayViewShimmer extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             elevation: 2.0,
-            child: const SizedBox(
-              width: 270,
+            child: SizedBox(
+              width: MediaQuery.sizeOf(context).width - 32,
               height: 170,
             ),
           ),
