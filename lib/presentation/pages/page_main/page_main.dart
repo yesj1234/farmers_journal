@@ -19,7 +19,11 @@ import 'package:farmers_journal/enums.dart';
 // models
 import 'package:farmers_journal/domain/model/journal.dart';
 
+/// The main page widget that consumes Riverpod providers.
+///
+/// Displays the navigation, content sections, and a floating action button for creating posts.
 class PageMain extends ConsumerWidget {
+  /// Creates a [PageMain] widget.
   const PageMain({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -82,7 +86,9 @@ class PageMain extends ConsumerWidget {
   }
 }
 
+/// The main content section of the page, displaying journal entries.
 class _Content extends ConsumerWidget {
+  /// Creates a [_Content] widget.
   const _Content({super.key});
 
   @override
@@ -105,8 +111,12 @@ class _Content extends ConsumerWidget {
   }
 }
 
+/// Displays journal entries based on the selected view filter.
 class _UserContent extends ConsumerWidget {
+  /// Creates a [_UserContent] widget.
   const _UserContent({super.key, required this.journals});
+
+  /// The list of journal entries to display.
   final List<Journal?> journals;
 
   @override
@@ -125,7 +135,9 @@ class _UserContent extends ConsumerWidget {
   }
 }
 
+/// Displays default content when no journal entries exist.
 class _DefaultContent extends StatelessWidget {
+  /// Creates a [_DefaultContent] widget.
   const _DefaultContent({super.key});
 
   @override

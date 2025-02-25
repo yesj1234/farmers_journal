@@ -6,15 +6,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+/// A widget that displays a calendar view of journal entries grouped by month.
+///
+/// This widget retrieves and displays journal entries in a monthly calendar format,
+/// allowing users to view and select specific days to see their corresponding journal entries.
 class MonthView extends ConsumerStatefulWidget {
+  /// Creates a [MonthView] widget.
   const MonthView({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MonthViewState();
 }
 
+/// The state class for [MonthView].
 class _MonthViewState extends ConsumerState<ConsumerStatefulWidget> {
+  /// A future that retrieves journal entries organized by month.
   late Future<LinkedHashMap<DateTime, List<Journal?>>> _linkedHashMap;
+
   @override
   void initState() {
     super.initState();
@@ -36,8 +44,12 @@ class _MonthViewState extends ConsumerState<ConsumerStatefulWidget> {
   }
 }
 
+/// A widget that displays a calendar and allows users to interact with journal entries.
 class CalendarWidget extends StatefulWidget {
+  /// Creates a [CalendarWidget] widget.
   const CalendarWidget({super.key, required this.events});
+
+  /// A map of journal entries grouped by date.
   final LinkedHashMap<DateTime, List<Journal?>> events;
 
   @override
@@ -64,11 +76,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     super.dispose();
   }
 
+  /// Retrieves the journal entries for a specific day.
   List<Journal?> _getEventsForDay(DateTime day) {
     DateTime formattedDate = CustomDateUtils.formatDate(day);
     return widget.events[formattedDate] ?? [];
   }
 
+  /// Handles selection of a day in the calendar.
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {

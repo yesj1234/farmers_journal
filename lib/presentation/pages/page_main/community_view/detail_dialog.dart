@@ -14,10 +14,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
+/// A dialog widget displaying detailed journal information for a user.
+///
+/// This widget shows a user's profile, journal details like plant and place,
+/// and provides options to edit/delete (for the journal writer) or report/block
+/// (for community members).
 class DataStateDialog extends StatelessWidget {
+  /// The user information to display in the dialog.
   final AppUser info;
+
+  /// The journal information to display in the dialog.
   final Journal journalInfo;
 
+  /// Creates a [DataStateDialog] with required user and journal info.
   const DataStateDialog({
     super.key,
     required this.info,
@@ -66,10 +75,8 @@ class DataStateDialog extends StatelessWidget {
                             onCallBack1: () => context
                                 .push('/update/${journalInfo.id}')
                                 .then((value) {
-                              if (value == true) {
-                                if (context.mounted) {
-                                  context.pop();
-                                }
+                              if (value == true && context.mounted) {
+                                context.pop();
                               }
                             }),
                             onCallBack2: () {
@@ -94,7 +101,6 @@ class DataStateDialog extends StatelessWidget {
                                   journalId: journalInfo.id!,
                                   onConfirm: (String? value) {
                                     try {
-                                      // Side effects for the user who reports the journal.
                                       ref
                                           .read(journalControllerProvider
                                               .notifier)
@@ -103,14 +109,14 @@ class DataStateDialog extends StatelessWidget {
                                             userId: userInfo.value!.id,
                                             reason: value ?? '',
                                           );
-                                      // and create the Report for later review
                                       ref
                                           .read(
                                               reportControllerProvider.notifier)
                                           .createReport(
-                                              journalId: journalInfo.id!,
-                                              writerId: userInfo.value!.id,
-                                              reason: value ?? '');
+                                            journalId: journalInfo.id!,
+                                            writerId: userInfo.value!.id,
+                                            reason: value ?? '',
+                                          );
                                       showSnackBar(context,
                                           "신고가 정상적으로 처리되었습니다. 적절한 조치를 취하겠습니다.");
                                     } catch (error) {
@@ -167,9 +173,7 @@ class DataStateDialog extends StatelessWidget {
                   if (journalInfo.title!.isNotEmpty)
                     Text(
                       journalInfo.title!,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   if (journalInfo.content!.isNotEmpty)
                     SizedBox(
@@ -177,9 +181,7 @@ class DataStateDialog extends StatelessWidget {
                       child: SingleChildScrollView(
                         child: SizedBox(
                           width: MediaQuery.sizeOf(context).width,
-                          child: Text(
-                            journalInfo.content!,
-                          ),
+                          child: Text(journalInfo.content!),
                         ),
                       ),
                     ),
@@ -200,13 +202,19 @@ class DataStateDialog extends StatelessWidget {
                       .withValues(alpha: 0.5),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
+  /// Formats a [DateTime] into a localized Korean date string.
+  ///
+  /// For example, "2월 24일 월요일" for February 24th, a Monday.
+  ///
+  /// [date]: The date to format.
+  /// Returns a formatted string or null if the date is invalid.
   String? _formatDate(DateTime date) {
     final localDateTime = date.toLocal();
     final weekDayOrder = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"];
@@ -218,7 +226,11 @@ class DataStateDialog extends StatelessWidget {
   }
 }
 
+/// A dialog widget displaying a shimmer loading effect for journal data.
+///
+/// This is used as a placeholder while data is being fetched.
 class ShimmerLoadingStateDialog extends StatelessWidget {
+  /// Creates a [ShimmerLoadingStateDialog].
   const ShimmerLoadingStateDialog({super.key});
 
   @override
@@ -232,7 +244,6 @@ class ShimmerLoadingStateDialog extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Shimmer for profile row
               Row(
                 children: [
                   _shimmerCircle(size: 50),
@@ -248,7 +259,6 @@ class ShimmerLoadingStateDialog extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              // Shimmer for content placeholder
               _shimmerRectangle(width: 200, height: 16),
               const SizedBox(height: 10),
               _shimmerRectangle(width: double.infinity, height: 14),
@@ -259,6 +269,11 @@ class ShimmerLoadingStateDialog extends StatelessWidget {
     );
   }
 
+  /// Creates a rectangular shimmer effect widget.
+  ///
+  /// [width]: The width of the rectangle.
+  /// [height]: The height of the rectangle.
+  /// Returns a shimmering rectangle widget.
   Widget _shimmerRectangle({required double width, required double height}) {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
@@ -274,6 +289,10 @@ class ShimmerLoadingStateDialog extends StatelessWidget {
     );
   }
 
+  /// Creates a circular shimmer effect widget.
+  ///
+  /// [size]: The diameter of the circle.
+  /// Returns a shimmering circle widget.
   Widget _shimmerCircle({required double size}) {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
@@ -290,7 +309,11 @@ class ShimmerLoadingStateDialog extends StatelessWidget {
   }
 }
 
+/// A dialog widget displaying an error state for journal data loading.
+///
+/// Shown when an error occurs during data retrieval.
 class ErrorStateDialog extends StatelessWidget {
+  /// Creates an [ErrorStateDialog].
   const ErrorStateDialog({super.key});
 
   @override
@@ -313,13 +336,17 @@ class ErrorStateDialog extends StatelessWidget {
   }
 }
 
+/// Displays a dialog for reporting a journal with selectable reasons.
+///
+/// [context]: The build context to show the dialog in.
+/// [journalId]: The ID of the journal being reported.
+/// [onConfirm]: Callback function invoked with the selected reason when confirmed.
 void showReportDialog({
   required BuildContext context,
   required String journalId,
   required void Function(String? value) onConfirm,
 }) {
   String? selectedReason;
-
   final TextEditingController customReasonController = TextEditingController();
 
   showDialog(
@@ -329,7 +356,7 @@ void showReportDialog({
         return AlertDialog(
           title: const Text('게시물 신고'),
           content: Column(
-            mainAxisSize: MainAxisSize.min, // Use min to avoid expanding
+            mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButtonFormField<String>(
                 hint: const FittedBox(
@@ -386,10 +413,9 @@ void showReportDialog({
                     controller: customReasonController,
                     decoration: const InputDecoration(
                       labelText: '신고 사유를 입력해주세요.',
-                      border:
-                          OutlineInputBorder(), // Add a border for better UI
+                      border: OutlineInputBorder(),
                     ),
-                    maxLines: 3, // Limit the number of lines
+                    maxLines: 3,
                   ),
                 ),
             ],

@@ -7,14 +7,20 @@ import 'package:farmers_journal/presentation/pages/page_main/community_view/scro
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// A stateful widget that displays a paginated list of journal entries in a community view.
+///
+/// This view supports infinite scrolling and refresh functionality to load more journal entries dynamically.
 class CommunityView extends ConsumerStatefulWidget {
+  /// Creates a [CommunityView] widget.
   const CommunityView({super.key});
 
   @override
   ConsumerState<CommunityView> createState() => _CommunityViewState();
 }
 
+/// The state class for [CommunityView].
 class _CommunityViewState extends ConsumerState<CommunityView> {
+  /// Scroll controller to track the user's scroll position.
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -24,6 +30,8 @@ class _CommunityViewState extends ConsumerState<CommunityView> {
       double maxScroll = scrollController.position.maxScrollExtent;
       double currentScroll = scrollController.position.pixels;
       double delta = MediaQuery.sizeOf(context).width * 0.2;
+
+      // Fetches the next batch of journal entries when nearing the bottom of the list.
       if (maxScroll - currentScroll <= delta) {
         ref.read(paginationControllerProvider.notifier).fetchNextBatch();
       }
