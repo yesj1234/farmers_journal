@@ -1,13 +1,13 @@
 import 'dart:math' hide log;
-
 import 'dart:typed_data';
-import 'package:farmers_journal/domain/interface/auth_interface.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmers_journal/domain/interface/auth_interface.dart';
 import 'package:farmers_journal/domain/model/user.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart'
     as kakao_auth;

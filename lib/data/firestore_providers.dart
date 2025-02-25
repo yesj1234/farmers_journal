@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/data/repositories/auth_repository.dart';
 import 'package:farmers_journal/data/repositories/default_image_repository.dart';
 import 'package:farmers_journal/data/repositories/journal_repository.dart';
@@ -11,8 +12,6 @@ import 'package:farmers_journal/domain/interface/user_interface.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return FirebaseAuthRepository.setLanguage(instance: FirebaseAuth.instance);

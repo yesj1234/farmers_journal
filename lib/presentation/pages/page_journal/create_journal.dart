@@ -6,7 +6,6 @@ import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/components/styles/button.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_form_controller.dart';
-import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -119,8 +118,8 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
                       await ref
                           .read(journalFormControllerProvider.notifier)
                           .createJournal(
-                              title: titleController.text ?? '',
-                              content: contentController.text ?? '',
+                              title: titleController.text,
+                              content: contentController.text,
                               date: date ?? DateTime.now(),
                               images: images)
                           .then(

@@ -99,7 +99,7 @@ class _UserDisplayNameState extends ConsumerState<_UserDisplayName> {
           FittedBox(
             child: Text('', style: displayNameTextStyle),
           ),
-          Text('' ?? '', style: subTextStyle),
+          Text('', style: subTextStyle),
         ],
       ),
       data: (value) {
