@@ -1,3 +1,4 @@
+import 'package:farmers_journal/presentation/components/image_tile.dart';
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
