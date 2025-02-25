@@ -122,6 +122,28 @@ Individual screens or views within the application, each representing a specific
 - [How can I document my code for future coworkers?](https://yesj1234.github.io/posts/dart_docs)
 - [Why is my Hero animation not work as expected?](https://yesj1234.github.io/posts/understanding_hero_animation)
 
+## Packages in use 
+These are the main packages. 
+- [Flutter Riverpod](https://pub.dev/packages/flutter_riverpod) for data caching, dependency injection, and more
+- [GoRouter](https://pub.dev/packages/go_router) for navigation
+- [Firebase Auth](https://pub.dev/packages/firebase_auth) for authentication
+- [Cloud Firestore](https://pub.dev/packages/cloud_firestore) as a realtime database
+- [Firebase Storage](https://pub.dev/packages/firebase_storage) for Cloud storage solution provided by firebase.
+- [Flex Color Scheme](https://pub.dev/packages/flex_color_scheme) for advanced theming for Flutter apps
+- [Image Picker](https://pub.dev/packages/image_picker) to select images from gallery or camera.
+- [uuid](https://pub.dev/packages/uuid) to generates unique identifiers (UUIDs).
+- [Shimmer](https://pub.dev/packages/shimmer) to create shimmer loading effects.
+- [url_launcher](https://pub.dev/packages/url_launcher) to opens URLs, emails, and phone numbers.
+- [Cached Network Image](https://pub.dev/packages/cached_network_image) for caching and loading network images efficiently.
+
+These are the dev dependencies .
+- [Json Serializable](https://pub.dev/packages/json_serializable) to generate JSON serialization code.
+- [Freezed](https://pub.dev/packages/freezed) to automate code generation for immutable classes.
+- [Build Runner](https://pub.dev/packages/build_runner) runs code generators like freezed and json_serializable.
+
+
+See the [pubspec.yaml](/pubspec.yaml) file for the complete list.
+
 ## Installation
 
 To get started with **Farmer's Journal**, follow these steps:
