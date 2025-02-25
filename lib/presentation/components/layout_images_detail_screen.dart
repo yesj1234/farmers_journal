@@ -51,21 +51,16 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
       (path) {
         final tag = path.value;
         return GestureDetector(
-          onVerticalDragUpdate: (details) {
-            if (details.primaryDelta!.abs() > 20) {
-              Navigator.pop(context); // Swipe up/down to close
-            }
-          },
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            onVerticalDragUpdate: (details) {
+              if (details.primaryDelta!.abs() > 20) {
+                Navigator.pop(context); // Swipe up/down to close
+              }
+            },
             child: SizedBox(
               width: MediaQuery.sizeOf(context).width,
               height: MediaQuery.sizeOf(context).height,
               child: Hero(
                 tag: tag,
-                createRectTween: (Rect? begin, Rect? end) {
-                  return MaterialRectArcTween(begin: begin, end: end);
-                },
                 transitionOnUserGestures: true,
                 child: Center(
                   child: URLImageTile(
@@ -80,9 +75,7 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
                   ),
                 ),
               ),
-            ),
-          ),
-        );
+            ));
       },
     ).toList();
 

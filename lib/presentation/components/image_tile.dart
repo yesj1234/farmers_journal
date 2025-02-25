@@ -29,28 +29,22 @@ class URLImageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: minHeight,
-          minWidth: minWidth,
-          maxWidth: maxWidth,
-          maxHeight: maxHeight,
-        ),
-        child: ClipRRect(
-          borderRadius: borderRadius ??
-              const BorderRadius.only(
-                bottomLeft: Radius.zero,
-                bottomRight: Radius.zero,
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
-          child: CachedNetworkImage(
-            imageUrl: url,
-            fit: BoxFit.cover,
-            errorWidget: (context, url, error) => const Icon(
-              Icons.broken_image,
-              size: 50,
+      ClipRRect(
+        borderRadius: borderRadius ??
+            const BorderRadius.only(
+              bottomLeft: Radius.zero,
+              bottomRight: Radius.zero,
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
             ),
+        child: CachedNetworkImage(
+          imageUrl: url,
+          width: maxWidth,
+          height: maxHeight,
+          fit: BoxFit.cover,
+          errorWidget: (context, url, error) => const Icon(
+            Icons.broken_image,
+            size: 50,
           ),
         ),
       ),

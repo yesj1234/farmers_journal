@@ -502,9 +502,6 @@ class CustomImageWidgetLayout extends StatelessWidget {
             ? imageTile
             : Hero(
                 tag: value,
-                createRectTween: (Rect? begin, Rect? end) {
-                  return MaterialRectArcTween(begin: begin, end: end);
-                },
                 transitionOnUserGestures: true,
                 child: imageTile,
               );
@@ -515,6 +512,8 @@ class CustomImageWidgetLayout extends StatelessWidget {
                   Navigator.of(context).push(
                     PageRouteBuilder(
                       maintainState: true,
+                      reverseTransitionDuration: const Duration(seconds: 3),
+                      transitionDuration: const Duration(seconds: 3),
                       transitionsBuilder: (context, animation, _, child) =>
                           Opacity(
                               opacity: opacityCurve.transform(animation.value),
