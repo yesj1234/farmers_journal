@@ -1,4 +1,5 @@
 import 'package:farmers_journal/data/firestore_providers.dart';
+import 'package:farmers_journal/presentation/controller/journal/day_view_controller.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_form_controller_state.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,6 +30,7 @@ class JournalFormController extends _$JournalFormController {
           title: title, content: content, date: date, images: images);
       state = const JournalFormControllerState.done();
     }
+    ref.invalidate(dayViewControllerProvider);
   }
 
   Future<void> updateJournal(
@@ -47,5 +49,6 @@ class JournalFormController extends _$JournalFormController {
       await ref.read(userRepositoryProvider).updateJournal(
           id: id, title: title, content: content, date: date, images: images);
     }
+    ref.invalidate(dayViewControllerProvider);
   }
 }
