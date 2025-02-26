@@ -512,8 +512,6 @@ class CustomImageWidgetLayout extends StatelessWidget {
                   Navigator.of(context).push(
                     PageRouteBuilder(
                       maintainState: true,
-                      reverseTransitionDuration: const Duration(seconds: 3),
-                      transitionDuration: const Duration(seconds: 3),
                       transitionsBuilder: (context, animation, _, child) =>
                           Opacity(
                               opacity: opacityCurve.transform(animation.value),
