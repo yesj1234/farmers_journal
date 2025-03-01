@@ -146,14 +146,22 @@ These are the dev dependencies .
 
 See the [pubspec.yaml](/pubspec.yaml) file for the complete list.
 
+
+
 ## TODO
 
-- [] Fix detail view for image to show the whole image while maintaining the hero animation clear.
-- [] Add charts and graphical status of the user's journals, such as badges, various graphs, etc. 
-- [] Add filters for community view. 
-- [] Upgrade the overall design of the application. 
-- [] Automate the publishing process via Xcode or github. 
-- [] Add missing test.
+- [ ] Fix detail view for image to show the whole image while maintaining the hero animation clear.
+- [ ] Add charts and graphical status of the user's journals, such as badges, various graphs, etc. 
+- [ ] Add filters for community view. 
+- [ ] Upgrade the overall design of the application. 
+- [ ] Automate the publishing process via Xcode or github. 
+- [ ] Add missing test.
+- [ ] Fix Android Kakao login error
+
+## Version note 
+- version 1.0.0: Initial release 
+- version 1.0.1: Fix Hero animation, change image border radius rules.  
+- version 1.0.2: Add draggable gesture for day view journals. 
 
 ## Installation
 
