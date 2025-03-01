@@ -47,8 +47,23 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/update/:id',
-      builder: (context, state) =>
-          PageUpdateJournal(id: state.pathParameters['id']),
+      pageBuilder: (context, state) => CustomTransitionPage(
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+
+            const curve = Curves.easeOut;
+            final curveTween = CurveTween(curve: curve);
+
+            final tween = Tween(begin: begin, end: end).chain(curveTween);
+
+            final offsetAnimation = animation.drive(tween);
+
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+          opaque: false,
+          barrierColor: Colors.black.withAlpha(60),
+          child: PageUpdateJournal(id: state.pathParameters['id'])),
     ),
     GoRoute(
       path: '/main',
