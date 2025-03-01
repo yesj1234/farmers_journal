@@ -161,7 +161,7 @@ See the [pubspec.yaml](/pubspec.yaml) file for the complete list.
 ## Version note 
 - version 1.0.0: Initial release 
 - version 1.0.1: Fix Hero animation, change image border radius rules.  
-- version 1.0.2: Add draggable gesture for day view journals. 
+- version 1.0.2: Add draggable gesture for day view journals. Filter community view journals date over current date. 
 
 ## Installation
 
