@@ -302,13 +302,18 @@ class _DayViewCardState extends ConsumerState<_DayViewCard>
                               ),
                             ),
                           ),
-                          const Divider(),
+                          const Divider(
+                            height: 0,
+                          ),
                           Expanded(
                             child: TextButton(
-                              onPressed: () => ref
-                                  .read(journalControllerProvider.notifier)
-                                  .deleteJournal(
-                                      id: widget.journal.id as String),
+                              onPressed: () {
+                                ref
+                                    .read(journalControllerProvider.notifier)
+                                    .deleteJournal(
+                                        id: widget.journal.id as String);
+                                Navigator.of(context).pop();
+                              },
                               child: const SizedBox(
                                 width: double.infinity,
                                 child: Center(
