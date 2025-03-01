@@ -12,6 +12,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
     required this.images,
     this.isEditMode = false,
     this.onDelete,
+    this.onTapCallback,
   });
 
   /// Optional. Whether  gallery is in edit mode, which shows delete buttons. Default is false.
@@ -22,6 +23,9 @@ class CustomImageWidgetLayout extends StatelessWidget {
 
   /// Required. A list of images to display. Supports both [UrlImage] and [XFileImage] types.
   final List<ImageType> images;
+
+  /// Optional. Callback function that is triggered when an image is tapped.
+  final void Function()? onTapCallback;
 
   static const opacityCurve = Interval(0.0, 0.75, curve: Curves.fastOutSlowIn);
 
@@ -509,11 +513,10 @@ class CustomImageWidgetLayout extends StatelessWidget {
           onTap: isEditMode
               ? null
               : () {
+                  onTapCallback?.call();
                   Navigator.of(context).push(
                     PageRouteBuilder(
                       maintainState: true,
-                      reverseTransitionDuration: const Duration(seconds: 3),
-                      transitionDuration: const Duration(seconds: 3),
                       transitionsBuilder: (context, animation, _, child) =>
                           Opacity(
                               opacity: opacityCurve.transform(animation.value),

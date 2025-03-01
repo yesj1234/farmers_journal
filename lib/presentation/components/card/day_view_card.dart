@@ -33,6 +33,7 @@ class DayViewCard extends ConsumerWidget {
     this.verticalPadding = 0.0,
     this.textMaxLine = 3,
     this.dateFontSize = 12,
+    this.onTapCallback,
   });
 
   final Journal journal;
@@ -44,7 +45,7 @@ class DayViewCard extends ConsumerWidget {
   final double verticalPadding;
   final int textMaxLine;
   final double dateFontSize;
-
+  final void Function()? onTapCallback;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -78,6 +79,7 @@ class DayViewCard extends ConsumerWidget {
                                 'Invalid type in list: ${item.runtimeType}');
                           }
                         }).toList(),
+                        onTapCallback: onTapCallback,
                       ),
                     ),
                   )
@@ -126,16 +128,22 @@ class DayViewCard extends ConsumerWidget {
                 verticalPadding: verticalPadding,
                 date: journal.date!,
                 editable: editable,
-                onEdit: () => context
-                    .push('/update/${journal.id}'), // Navigate to edit page
-                onDelete: () => showMyAlertDialog(
-                  context: context,
-                  type: AlertDialogType.delete,
-                  cb: () => ref
-                      .read(journalControllerProvider.notifier)
-                      .deleteJournal(
-                          id: journal.id as String), // Delete via controller
-                ),
+                onEdit: () {
+                  onTapCallback?.call();
+                  context.push('/update/${journal.id}');
+                }, // Navigate to edit page
+                onDelete: () {
+                  onTapCallback?.call();
+                  showMyAlertDialog(
+                    context: context,
+                    type: AlertDialogType.delete,
+                    cb: () => ref
+                        .read(journalControllerProvider.notifier)
+                        .deleteJournal(
+                            id: journal.id as String), // Delete via controller
+                  );
+                },
+                onTapCallback: onTapCallback,
               ),
             ),
           ],

@@ -42,8 +42,11 @@ class FireStoreJournalRepository implements JournalRepository {
     // initial fetching
     if (lastJournal == null) {
       try {
-        final journals =
-            await journalRef.orderBy('date', descending: true).limit(10).get();
+        final journals = await journalRef
+            .where('date', isLessThanOrEqualTo: DateTime.now())
+            .orderBy('date', descending: true)
+            .limit(10)
+            .get();
         return journals.docs
             .map((doc) => Journal.fromJson(doc.data()))
             .toList();

@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:farmers_journal/domain/model/journal.dart';
+import 'package:farmers_journal/presentation/controller/journal/day_view_controller.dart';
 import 'package:farmers_journal/presentation/controller/journal/pagination_controller.dart';
 import 'package:farmers_journal/utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -79,8 +80,10 @@ class JournalController extends _$JournalController {
 
   Future<void> deleteJournal({required String id}) async {
     state = const AsyncLoading();
+
     state = await AsyncValue.guard(
         () => ref.read(userRepositoryProvider).deleteJournal(id: id));
+    ref.invalidate(dayViewControllerProvider);
   }
 
   Future<void> reportJournal(
