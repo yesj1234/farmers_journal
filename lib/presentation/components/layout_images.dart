@@ -7,6 +7,7 @@ import 'package:farmers_journal/presentation/components/layout_images_detail_scr
 ///
 /// The layout adapts automatically based on the number of images, creating visually appealing arrangements.
 class CustomImageWidgetLayout extends StatelessWidget {
+  /// Creates [CustomImageWidgetLayout] widget.
   const CustomImageWidgetLayout({
     super.key,
     required this.images,

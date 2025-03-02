@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
-import '../../components/show_alert_dialog.dart';
 import '../../controller/journal/journal_controller.dart';
 
 /// Displays a daily view of journal entries, organized by date.
@@ -146,6 +145,7 @@ class _DayViewCardState extends ConsumerState<_DayViewCard>
   void _updateStatus(AnimationStatus status) {}
   void handleDragDown(DragDownDetails details) {}
   void handleDragStart(DragStartDetails details) {}
+
   void handleDragUpdate(DragUpdateDetails details) {
     _controller.value += details.primaryDelta!;
     if (_controller.value.abs() > deleteOnDragThreshold && !didVibrate) {
@@ -233,10 +233,13 @@ class _DayViewCardState extends ConsumerState<_DayViewCard>
   /// pixels based on this value.
   double get editIconStartFrom => iconSize * 2;
 
+  /// Position of which the drag will end up on user drag gesture to open edit and delete icon buttons.
   double get dragEndsAt => editIconStartFrom + opacityDistance + 10;
 
+  /// Threshold of which the drag gesture fires the on delete callback.
   double get deleteOnDragThreshold => 2 * (iconSize + (opacityDistance)) + 40;
 
+  /// Returns delete icon opacity based on the user drag position.
   double deleteIconOpacity(value) {
     final offset = _controller.value.abs();
     if (offset < deleteIconStartFrom) {
@@ -250,6 +253,7 @@ class _DayViewCardState extends ConsumerState<_DayViewCard>
     }
   }
 
+  /// Returns edit icon opacity based on the user drag position.
   double editIconOpacity(value) {
     final offset = _controller.value.abs();
     if (offset < editIconStartFrom) {
@@ -355,27 +359,18 @@ class _DayViewCardState extends ConsumerState<_DayViewCard>
   }
 }
 
-class AnimatedOpacityBuilder extends AnimatedWidget {
-  const AnimatedOpacityBuilder({
-    super.key,
-    required this.animation,
-    required this.rules,
-    required this.child,
-  }) : super(listenable: animation);
-  final Animation<double> animation;
-  final Function(double value) rules;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Opacity(
-      opacity: rules(animation.value),
-      child: child,
-    );
-  }
-}
-
+/// Widget that animates the DayView journal's drag gestures.
 class AnimatedDayViewBuilder extends AnimatedWidget {
+  /// Creates [AnimateDayViewBuilder] widget.
+  ///
+  /// The [animation] is passed from outside to control the user gesture.
+  /// The [journal] is the data that holds the information of journal.
+  /// The [iconSize] specifies the size of edit and delete icon.
+  /// The [deleteIconOpacity] and [editIconOpacity] handles the opacity of each icons respectively.
+  /// Its passed as the opacity parameter of the AnimatedOpacity, combined with animation.value as a parameter.
+  /// The [deleteIconStartFrom] and [editIconStartFrom] decides the position of which each icon will start
+  /// appearing.
+  /// The [deleteOnDragThreshold] decides the position of which the [onDeleteCallback] will fire.
   const AnimatedDayViewBuilder({
     super.key,
     required this.animation,
@@ -392,6 +387,7 @@ class AnimatedDayViewBuilder extends AnimatedWidget {
     this.onTapCallback,
     this.isOverThreshold,
   }) : super(listenable: animation);
+
   final Animation<double> animation;
   final Journal journal;
   final double iconSize;
@@ -428,9 +424,9 @@ class AnimatedDayViewBuilder extends AnimatedWidget {
             duration: const Duration(milliseconds: 100),
             curve: Curves.decelerate,
             child: Center(
-              child: AnimatedOpacityBuilder(
-                  animation: animation,
-                  rules: deleteIconOpacity,
+              child: AnimatedOpacity(
+                  opacity: deleteIconOpacity(animation.value),
+                  duration: const Duration(milliseconds: 100),
                   child: deleteIconButton),
             ),
           )
@@ -456,9 +452,9 @@ class AnimatedDayViewBuilder extends AnimatedWidget {
             bottom: 0,
             right: iconSize + 24,
             child: Center(
-              child: AnimatedOpacityBuilder(
-                animation: animation,
-                rules: editIconOpacity,
+              child: AnimatedOpacity(
+                opacity: editIconOpacity(animation.value),
+                duration: const Duration(milliseconds: 100),
                 child: editIconButton,
               ),
             ),
