@@ -117,7 +117,6 @@ class _DayViewCard extends ConsumerStatefulWidget {
 
 class _DayViewCardState extends ConsumerState<_DayViewCard>
     with SingleTickerProviderStateMixin {
-  double dx = 0;
   late final AnimationController _controller;
 
   @override
@@ -130,19 +129,14 @@ class _DayViewCardState extends ConsumerState<_DayViewCard>
         upperBound: 0);
 
     _controller.value = 0.0;
-    _controller.addStatusListener(_updateStatus);
   }
 
   @override
   void dispose() {
-    _controller.removeStatusListener(_updateStatus);
     _controller.dispose();
     super.dispose();
   }
 
-  bool didVibrate = false;
-
-  void _updateStatus(AnimationStatus status) {}
   void handleDragDown(DragDownDetails details) {}
   void handleDragStart(DragStartDetails details) {}
 
@@ -171,12 +165,13 @@ class _DayViewCardState extends ConsumerState<_DayViewCard>
 
     const velocityThreshold = 2.0;
 
-    if (_controller.value.abs() < deleteIconStartFrom) {
-      _controller.forward(); // Set to initial location.
-      return;
-    }
     if (details.primaryVelocity! >= velocityThreshold) {
       _controller.fling();
+      return;
+    }
+
+    if (_controller.value.abs() < deleteIconStartFrom) {
+      _controller.forward(); // Set to initial location.
       return;
     }
 
@@ -217,6 +212,9 @@ class _DayViewCardState extends ConsumerState<_DayViewCard>
       ),
     );
   }
+
+  /// Whether the user dragged the journal over [deleteOnDragThreshold] offset value.
+  bool didVibrate = false;
 
   /// Distance of which the icon
   double opacityDistance = 25;
