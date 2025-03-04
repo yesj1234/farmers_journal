@@ -28,7 +28,7 @@ class DateForm extends StatelessWidget {
   final DateTime? datePicked;
 
   /// A callback function triggered when a new date is selected
-  final ValueChanged<DateTime?> onDatePicked;
+  final ValueChanged<DateTime> onDatePicked;
 
   /// The text style applied to the displayed date.
   TextStyle get textStyle => const TextStyle(
@@ -92,7 +92,7 @@ class DatePickerWrapper extends StatelessWidget {
       {super.key, required this.child, required this.onDatePicked});
 
   /// The callback function that is triggered when a date is selected.
-  final ValueChanged<DateTime?> onDatePicked;
+  final ValueChanged<DateTime> onDatePicked;
 
   /// The widget that is wrapped with date selection functionality.
   final Widget child;
