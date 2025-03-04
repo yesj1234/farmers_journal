@@ -1,6 +1,7 @@
 import 'package:farmers_journal/data/firestore_providers.dart';
 import 'package:farmers_journal/presentation/controller/journal/day_view_controller.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_form_controller_state.dart';
+import 'package:farmers_journal/presentation/controller/journal/month_view_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -31,6 +32,7 @@ class JournalFormController extends _$JournalFormController {
       state = const JournalFormControllerState.done();
     }
     ref.invalidate(dayViewControllerProvider);
+    ref.invalidate(monthViewControllerProvider);
   }
 
   Future<void> updateJournal(
@@ -50,5 +52,6 @@ class JournalFormController extends _$JournalFormController {
           id: id, title: title, content: content, date: date, images: images);
     }
     ref.invalidate(dayViewControllerProvider);
+    ref.invalidate(monthViewControllerProvider);
   }
 }

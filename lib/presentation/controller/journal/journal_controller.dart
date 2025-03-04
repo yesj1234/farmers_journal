@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/controller/journal/day_view_controller.dart';
+import 'package:farmers_journal/presentation/controller/journal/month_view_controller.dart';
 import 'package:farmers_journal/presentation/controller/journal/pagination_controller.dart';
 import 'package:farmers_journal/utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -24,22 +25,10 @@ class JournalController extends _$JournalController {
     }
   }
 
-  Future<Map<DateTime, List<Journal?>>> getDayViewJournals() async {
-    final repository = ref.read(userRepositoryProvider);
-    List<Journal?> journals = await repository.getJournals();
-    return CustomDateUtils.groupItemsByDay(journals);
-  }
-
   Future<List<WeeklyGroup<Journal>>> getWeekViewJournals() async {
     final repository = ref.read(userRepositoryProvider);
     List<Journal?> journals = await repository.getJournals();
     return CustomDateUtils.groupItemsByWeek(journals);
-  }
-
-  Future<LinkedHashMap<DateTime, List<Journal?>>> getMonthlyJournals() async {
-    final repository = ref.read(userRepositoryProvider);
-    List<Journal?> journals = await repository.getJournals();
-    return CustomDateUtils.getMonthlyJournal(journals);
   }
 
   Future<LinkedHashMap<int, int>> getJournalCountByYear(
@@ -84,6 +73,7 @@ class JournalController extends _$JournalController {
     state = await AsyncValue.guard(
         () => ref.read(userRepositoryProvider).deleteJournal(id: id));
     ref.invalidate(dayViewControllerProvider);
+    ref.invalidate(monthViewControllerProvider);
   }
 
   Future<void> reportJournal(
