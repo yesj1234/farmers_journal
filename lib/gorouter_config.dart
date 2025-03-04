@@ -43,7 +43,8 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/create',
-      builder: (context, state) => const PageCreateJournal(),
+      builder: (context, state) =>
+          PageCreateJournal(initialDate: state.extra as DateTime?),
     ),
     GoRoute(
       path: '/update/:id',
