@@ -6,38 +6,27 @@ import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/components/styles/button.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_form_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
 // TODO: Refactoring needed. Merge create journal and update journal page.
-class CreateJournalForm extends StatefulHookConsumerWidget {
-  const CreateJournalForm({super.key});
-
+class CreateJournalForm extends ConsumerStatefulWidget {
+  const CreateJournalForm({super.key, this.initialDate});
+  final DateTime? initialDate;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _CreateJournalFormState();
 }
 
-class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
+class _CreateJournalFormState extends ConsumerState<CreateJournalForm> {
   bool get isFormEmpty {
     return images.isEmpty &&
         titleController.text.trim().isEmpty &&
         contentController.text.trim().isEmpty;
-  }
-
-  final ImagePicker _imagePicker = ImagePicker();
-
-  DateTime? date = DateTime.now();
-
-  List<XFile> images = [];
-
-  void onDatePicked(DateTime? value) {
-    setState(() {
-      date = value;
-    });
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -46,11 +35,29 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
 
   final TextEditingController contentController = TextEditingController();
 
+  final ImagePicker _imagePicker = ImagePicker();
+
+  late final DateTime date;
+
+  List<XFile> images = [];
+
+  void onDatePicked(DateTime value) {
+    setState(() {
+      date = value;
+    });
+  }
+
   void deleteImage(int id) {
     setState(() {
       images.removeAt(id);
     });
     _formKey.currentState?.validate();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    date = widget.initialDate ?? DateTime.now();
   }
 
   @override
@@ -63,7 +70,7 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
         spacing: 10,
         children: [
           DateForm(
-            datePicked: date,
+            datePicked: widget.initialDate ?? date,
             onDatePicked: onDatePicked,
           ),
           images.isNotEmpty
@@ -120,12 +127,15 @@ class _CreateJournalFormState extends ConsumerState<ConsumerStatefulWidget> {
                           .createJournal(
                               title: titleController.text,
                               content: contentController.text,
-                              date: date ?? DateTime.now(),
+                              date: date,
                               images: images)
                           .then(
                         (_) {
                           ref.invalidate(journalControllerProvider);
-                          context.go('/main');
+                          if (context.mounted) {
+                            context.pop();
+                            context.pop();
+                          }
                         },
                         onError: (e, st) => showSnackBar(
                           context,

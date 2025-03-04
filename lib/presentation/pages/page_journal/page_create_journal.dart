@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/create_journal.dart';
 
 class PageCreateJournal extends StatelessWidget {
-  const PageCreateJournal({super.key});
-
+  const PageCreateJournal({super.key, this.initialDate});
+  final DateTime? initialDate;
   TextStyle get textStyle => const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w500,
@@ -24,8 +24,8 @@ class PageCreateJournal extends StatelessWidget {
           ),
         ),
       ),
-      body: const SafeArea(
-        child: Center(child: CreateJournalForm()),
+      body: SafeArea(
+        child: Center(child: CreateJournalForm(initialDate: initialDate)),
       ),
     );
   }
