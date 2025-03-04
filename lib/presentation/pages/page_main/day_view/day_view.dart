@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import '../../controller/journal/journal_controller.dart';
+import 'day_view/animated_day_view.dart';
 
 /// Displays a daily view of journal entries, organized by date.
 ///
@@ -74,7 +75,7 @@ class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 4),
-                      child: _DayViewCard(journal: journal),
+                      child: AnimatedDayViewCard(journal: journal),
                     ),
                   ),
                 );
@@ -104,18 +105,18 @@ class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
 }
 
 /// A wrapper widget that displays a [DayViewCard] for a given journal entry.
-class _DayViewCard extends ConsumerStatefulWidget {
-  /// Creates a [_DayViewCard] widget.
-  const _DayViewCard({super.key, required this.journal});
+class AnimatedDayViewCard extends ConsumerStatefulWidget {
+  /// Creates a [AnimatedDayViewCard] widget.
+  const AnimatedDayViewCard({super.key, required this.journal});
 
   /// The journal entry to display.
   final Journal journal;
 
   @override
-  ConsumerState<_DayViewCard> createState() => _DayViewCardState();
+  ConsumerState<AnimatedDayViewCard> createState() => _DayViewCardState();
 }
 
-class _DayViewCardState extends ConsumerState<_DayViewCard>
+class _DayViewCardState extends ConsumerState<AnimatedDayViewCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
@@ -354,128 +355,5 @@ class _DayViewCardState extends ConsumerState<_DayViewCard>
             ),
           );
         });
-  }
-}
-
-/// Widget that animates the DayView journal's drag gestures.
-class AnimatedDayViewBuilder extends AnimatedWidget {
-  /// Creates [AnimateDayViewBuilder] widget.
-  ///
-  /// The [animation] is passed from outside to control the user gesture.
-  /// The [journal] is the data that holds the information of journal.
-  /// The [iconSize] specifies the size of edit and delete icon.
-  /// The [deleteIconOpacity] and [editIconOpacity] handles the opacity of each icons respectively.
-  /// Its passed as the opacity parameter of the AnimatedOpacity, combined with animation.value as a parameter.
-  /// The [deleteIconStartFrom] and [editIconStartFrom] decides the position of which each icon will start
-  /// appearing.
-  /// The [deleteOnDragThreshold] decides the position of which the [onDeleteCallback] will fire.
-  const AnimatedDayViewBuilder({
-    super.key,
-    required this.animation,
-    required this.journal,
-    required this.iconSize,
-    required this.deleteIconOpacity,
-    required this.editIconOpacity,
-    required this.deleteIconStartFrom,
-    required this.editIconStartFrom,
-    required this.deleteOnDragThreshold,
-    this.opacityDistance,
-    this.onEditCallback,
-    this.onDeleteCallback,
-    this.onTapCallback,
-    this.isOverThreshold,
-  }) : super(listenable: animation);
-
-  final Animation<double> animation;
-  final Journal journal;
-  final double iconSize;
-  final double Function(double value) deleteIconOpacity;
-  final double Function(double value) editIconOpacity;
-  final double deleteIconStartFrom;
-  final double editIconStartFrom;
-  final double deleteOnDragThreshold;
-  final double? opacityDistance;
-  final void Function()? onEditCallback;
-  final void Function(BuildContext)? onDeleteCallback;
-  final void Function()? onTapCallback;
-  final bool? isOverThreshold;
-
-  @override
-  Widget build(BuildContext context) {
-    final Widget deleteIconButton = IconButton(
-      onPressed: () => onDeleteCallback?.call(context),
-      iconSize: iconSize,
-      style: IconButton.styleFrom(
-        shape: const CircleBorder(),
-        backgroundColor: Colors.redAccent,
-        foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
-      icon: const Icon(Icons.delete_forever),
-    );
-    final Widget deleteIcon = animation.value < -deleteIconStartFrom
-        ? AnimatedPositioned(
-            top: 0,
-            bottom: 0,
-            right: animation.value < -deleteOnDragThreshold
-                ? -(animation.value + 72)
-                : 0,
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.decelerate,
-            child: Center(
-              child: AnimatedOpacity(
-                  opacity: deleteIconOpacity(animation.value),
-                  duration: const Duration(milliseconds: 100),
-                  child: deleteIconButton),
-            ),
-          )
-        : const SizedBox.shrink();
-
-    final editIconButton = IconButton(
-      onPressed: () {
-        onEditCallback?.call();
-        context.push('/update/${journal.id}');
-      },
-      style: IconButton.styleFrom(
-        shape: const CircleBorder(),
-        backgroundColor: Colors.lightGreen,
-        foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
-      iconSize: iconSize,
-      icon: const Icon(Icons.edit),
-    );
-    final Widget editIcon = animation.value < -editIconStartFrom &&
-            animation.value > -deleteOnDragThreshold
-        ? Positioned(
-            top: 0,
-            bottom: 0,
-            right: iconSize + 24,
-            child: Center(
-              child: AnimatedOpacity(
-                opacity: editIconOpacity(animation.value),
-                duration: const Duration(milliseconds: 100),
-                child: editIconButton,
-              ),
-            ),
-          )
-        : const SizedBox.shrink();
-    return Stack(
-      children: [
-        deleteIcon,
-        editIcon,
-        Transform.translate(
-          offset: Offset(animation.value, 0),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Center(
-              child: DayViewCard(
-                verticalPadding: 0,
-                journal: journal,
-                onTapCallback: onTapCallback,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }
