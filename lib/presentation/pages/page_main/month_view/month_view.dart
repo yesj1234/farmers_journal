@@ -1,46 +1,25 @@
 import 'dart:collection';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
+import 'package:farmers_journal/presentation/controller/journal/month_view_controller.dart';
 import 'package:farmers_journal/utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-/// A widget that displays a calendar view of journal entries grouped by month.
-///
-/// This widget retrieves and displays journal entries in a monthly calendar format,
-/// allowing users to view and select specific days to see their corresponding journal entries.
-class MonthView extends ConsumerStatefulWidget {
-  /// Creates a [MonthView] widget.
+import 'month_view_details.dart';
+
+class MonthView extends ConsumerWidget {
   const MonthView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MonthViewState();
-}
-
-/// The state class for [MonthView].
-class _MonthViewState extends ConsumerState<ConsumerStatefulWidget> {
-  /// A future that retrieves journal entries organized by month.
-  late Future<LinkedHashMap<DateTime, List<Journal?>>> _linkedHashMap;
-
-  @override
-  void initState() {
-    super.initState();
-    _linkedHashMap =
-        ref.read(journalControllerProvider.notifier).getMonthlyJournals();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _linkedHashMap,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Center(child: CalendarWidget(events: snapshot.data!));
-          } else {
-            return const SizedBox.shrink();
-          }
-        });
+  Widget build(BuildContext context, WidgetRef ref) {
+    final journals = ref.watch(monthViewControllerProvider);
+    return journals.maybeWhen(
+        orElse: () => const SizedBox.shrink(),
+        data: (sortedJournals) => Center(
+              child: CalendarWidget(events: sortedJournals),
+            ));
   }
 }
 
@@ -92,6 +71,25 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
       _selectedEvents.value = _getEventsForDay(selectedDay);
     }
+    Navigator.of(context).push(
+      PageRouteBuilder(
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+
+        const curve = Curves.easeOut;
+        final curveTween = CurveTween(curve: curve);
+
+        final tween = Tween(begin: begin, end: end).chain(curveTween);
+
+        final offsetAnimation = animation.drive(tween);
+
+        return SlideTransition(position: offsetAnimation, child: child);
+      }, pageBuilder: (BuildContext context, Animation<double> animation,
+              Animation<double> secondaryAnimation) {
+        return MonthViewDetails(initialDate: selectedDay);
+      }),
+    );
   }
 
   @override
@@ -178,34 +176,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             _focusedDay = focusedDay;
           },
           eventLoader: _getEventsForDay,
-        ),
-        const SizedBox(height: 8),
-        Expanded(
-          child: ValueListenableBuilder<List<Journal?>>(
-            valueListenable: _selectedEvents,
-            builder: (context, value, _) {
-              return ListView.builder(
-                itemCount: value.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 4.0,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: ListTile(
-                      title: Text('${value[index]?.title}',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text('${value[index]?.content}'),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
         ),
       ],
     );

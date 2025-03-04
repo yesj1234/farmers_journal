@@ -2,72 +2,146 @@ import 'package:farmers_journal/presentation/controller/journal/journal_controll
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../day_view/animated_day_view.dart';
 
-import '../../components/card/day_view_card.dart';
+class MonthViewDetails extends StatefulWidget {
+  const MonthViewDetails({super.key, required this.initialDate});
+  final DateTime initialDate;
 
-class MonthViewDetails extends ConsumerWidget {
-  const MonthViewDetails({super.key});
+  @override
+  State<MonthViewDetails> createState() => _MonthViewDetailsState();
+}
+
+class _MonthViewDetailsState extends State<MonthViewDetails> {
+  late final PageController _pageController;
+  late DateTime currentDate;
+  int currentIndex = 999;
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: currentIndex);
+    currentDate = widget.initialDate;
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: _pageController,
+      onPageChanged: _handlePageChanged,
+      itemBuilder: (BuildContext context, int index) {
+        if (index == currentIndex) {
+          return MonthViewDetailPageBuilder(date: currentDate);
+        }
+        if (index > (_pageController.page ?? currentIndex)) {
+          return MonthViewDetailPageBuilder(
+              date: currentDate.add(const Duration(days: 1)));
+        } else {
+          return MonthViewDetailPageBuilder(
+              date: currentDate.subtract(const Duration(days: 1)));
+        }
+      },
+    );
+  }
+
+  void _handlePageChanged(dynamic index) {
+    // moving left
+    if (index < currentIndex) {
+      currentIndex -= 1;
+      currentDate = currentDate.subtract(const Duration(days: 1));
+      return;
+    }
+
+    // moving right
+    if (index > currentIndex) {
+      currentIndex += 1;
+      currentDate = currentDate.add(const Duration(days: 1));
+      return;
+    }
+  }
+}
+
+class MonthViewDetailPageBuilder extends ConsumerWidget {
+  const MonthViewDetailPageBuilder({super.key, required this.date});
+  final DateTime date;
+  String get appBarTitle => '${date.year}년 ${date.month}월 ${date.day}일';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final journalRef = ref.watch(journalControllerProvider);
-    final now = DateTime.now();
-    const Widget emptyJournals = Center(
-        child: Column(
-      spacing: 4,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Flexible(
-          child: FittedBox(
-            child: Text(
-              "입력 항목 없음",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-          ),
-        ),
-        Flexible(
-          child: FittedBox(
-            child: Text(
-              '이 날은 현재 일기 입력 항목이 없습니다.',
-              style: TextStyle(
-                color: CupertinoColors.secondaryLabel,
-              ),
-            ),
-          ),
-        )
-      ],
-    ));
 
-    final journals = journalRef.value!
-        .map((journal) => Container(
-              margin: const EdgeInsets.symmetric(vertical: 4),
-              child: DayViewCard(journal: journal!),
-            ))
-        .toList();
-    final child = journalRef.value!.isEmpty ? [emptyJournals] : journals;
-    final String title = '${now.year}년 ${now.month}월 ${now.day}일';
+    const Widget emptyJournals = Center(
+      child: Column(
+        spacing: 4,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: FittedBox(
+              child: Text(
+                "입력 항목 없음",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ),
+          Flexible(
+            child: FittedBox(
+              child: Text(
+                '이 날은 현재 일기 입력 항목이 없습니다.',
+                style: TextStyle(
+                  color: CupertinoColors.secondaryLabel,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    final filteredJournals = journalRef.maybeWhen(
+        data: (value) {
+          final items = value
+              .where((journal) =>
+                  journal!.date!.year == date.year &&
+                  journal.date!.month == date.month &&
+                  journal.date!.day == date.day)
+              .map((journal) => Container(
+                    margin: const EdgeInsets.symmetric(vertical: 4),
+                    child: AnimatedDayViewCard(journal: journal!),
+                  ))
+              .toList();
+          return items.isEmpty ? emptyJournals : ListView(children: items);
+        },
+        loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
+        orElse: () => emptyJournals);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          title,
+          appBarTitle,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => context.push('/create', extra: date),
             icon: const Icon(Icons.add),
           )
         ],
       ),
-      body: ListView(
-        children: child,
-      ),
+      body: filteredJournals,
     );
   }
 }
