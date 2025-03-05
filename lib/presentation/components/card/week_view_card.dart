@@ -61,11 +61,9 @@ class WeekViewCard extends ConsumerWidget {
           maxWidth: cardMaxWidth,
           minHeight: cardMinHeight,
           maxHeight: cardMaxHeight),
-      child: Card.outlined(
-        shape: ContinuousRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+      child: Card(
         elevation: 2.0,
+        margin: const EdgeInsets.symmetric(vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.end,
