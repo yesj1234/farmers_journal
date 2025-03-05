@@ -17,6 +17,8 @@ class _MonthViewDetailsState extends State<MonthViewDetails> {
   late final PageController _pageController;
   late DateTime currentDate;
   int currentIndex = 999;
+  String get appBarTitle =>
+      '${currentDate.year}년 ${currentDate.month}월 ${currentDate.day}일';
   @override
   void initState() {
     super.initState();
@@ -32,36 +34,56 @@ class _MonthViewDetailsState extends State<MonthViewDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return PageView.builder(
-      controller: _pageController,
-      onPageChanged: _handlePageChanged,
-      itemBuilder: (BuildContext context, int index) {
-        if (index == currentIndex) {
-          return MonthViewDetailPageBuilder(date: currentDate);
-        }
-        if (index > (_pageController.page ?? currentIndex)) {
-          return MonthViewDetailPageBuilder(
-              date: currentDate.add(const Duration(days: 1)));
-        } else {
-          return MonthViewDetailPageBuilder(
-              date: currentDate.subtract(const Duration(days: 1)));
-        }
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          appBarTitle,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => context.push('/create', extra: currentDate),
+            icon: const Icon(Icons.add),
+          )
+        ],
+      ),
+      body: PageView.builder(
+        controller: _pageController,
+        onPageChanged: _handlePageChanged,
+        itemBuilder: (BuildContext context, int index) {
+          if (index == currentIndex) {
+            return MonthViewDetailPageBuilder(date: currentDate);
+          }
+          if (index > (_pageController.page ?? currentIndex)) {
+            return MonthViewDetailPageBuilder(
+                date: currentDate.add(const Duration(days: 1)));
+          } else {
+            return MonthViewDetailPageBuilder(
+                date: currentDate.subtract(const Duration(days: 1)));
+          }
+        },
+      ),
     );
   }
 
   void _handlePageChanged(dynamic index) {
     // moving left
     if (index < currentIndex) {
-      currentIndex -= 1;
-      currentDate = currentDate.subtract(const Duration(days: 1));
+      setState(() {
+        currentIndex -= 1;
+        currentDate = currentDate.subtract(const Duration(days: 1));
+      });
       return;
     }
 
     // moving right
     if (index > currentIndex) {
-      currentIndex += 1;
-      currentDate = currentDate.add(const Duration(days: 1));
+      setState(() {
+        currentIndex += 1;
+        currentDate = currentDate.add(const Duration(days: 1));
+      });
       return;
     }
   }
@@ -70,7 +92,6 @@ class _MonthViewDetailsState extends State<MonthViewDetails> {
 class MonthViewDetailPageBuilder extends ConsumerWidget {
   const MonthViewDetailPageBuilder({super.key, required this.date});
   final DateTime date;
-  String get appBarTitle => '${date.year}년 ${date.month}월 ${date.day}일';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -107,7 +128,7 @@ class MonthViewDetailPageBuilder extends ConsumerWidget {
         ],
       ),
     );
-    final filteredJournals = journalRef.maybeWhen(
+    return journalRef.maybeWhen(
         data: (value) {
           final items = value
               .where((journal) =>
@@ -125,23 +146,5 @@ class MonthViewDetailPageBuilder extends ConsumerWidget {
               child: CircularProgressIndicator(),
             ),
         orElse: () => emptyJournals);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          appBarTitle,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => context.push('/create', extra: date),
-            icon: const Icon(Icons.add),
-          )
-        ],
-      ),
-      body: filteredJournals,
-    );
   }
 }
