@@ -99,15 +99,15 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           calendarBuilders: CalendarBuilders(
             selectedBuilder: (context, day, focusedDay) {
               return Container(
-                decoration: const BoxDecoration(
-                  color: Colors.blueAccent,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
                   child: Text(
                     '${day.day}',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -116,15 +116,15 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             },
             todayBuilder: (context, day, focusedDay) {
               return Container(
-                decoration: const BoxDecoration(
-                  color: Colors.orangeAccent,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
                   child: Text(
                     '${day.day}',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSecondary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -138,13 +138,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.tertiary,
                       shape: BoxShape.circle,
                     ),
                     child: Text(
                       '${events.length}',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onTertiary,
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),

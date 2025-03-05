@@ -14,6 +14,7 @@ class NoMoreItems extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     // Watch the pagination controller state
     final state = ref.watch(paginationControllerProvider);
 
@@ -35,11 +36,9 @@ class NoMoreItems extends ConsumerWidget {
                     TextSpan(
                       // Display message in Korean indicating no more entries
                       text: "일지가 더 존재하지 않습니다.",
-                      style: TextStyle(
-                        // Use theme's primary color for text
-                        color: Theme.of(context).primaryColor,
-                        // Make text bold for emphasis
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                     // Center the text horizontally

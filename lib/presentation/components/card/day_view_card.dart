@@ -1,8 +1,6 @@
 import 'dart:math' hide log;
 import 'package:farmers_journal/presentation/components/handle_journal_delete.dart';
 import 'package:farmers_journal/presentation/components/layout_images.dart';
-import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
-import 'package:farmers_journal/presentation/components/show_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

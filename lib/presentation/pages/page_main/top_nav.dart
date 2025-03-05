@@ -27,21 +27,21 @@ class TopNav extends ConsumerWidget {
                             status: "작물",
                             statusValue: user.value?.plants[0].name,
                             statusIcon: Icons.eco,
-                            statusIconColor: Colors.green,
+                            statusIconColor: Theme.of(context).primaryColor,
                             onNavigateTap: () => context.go('/main/statistics'),
                           )
                         : ButtonStatus(
                             status: "작물",
                             statusValue: '설정 필요',
                             statusIcon: Icons.eco,
-                            statusIconColor: Colors.green,
+                            statusIconColor: Theme.of(context).primaryColor,
                             onNavigateTap: () => context.go('/initial_setting'),
                           )
                     : ButtonStatus(
                         status: "작물",
                         statusValue: '설정 필요',
                         statusIcon: Icons.eco,
-                        statusIconColor: Colors.green,
+                        statusIconColor: Theme.of(context).primaryColor,
                         onNavigateTap: () => context.go('/initial_setting'),
                       ),
                 const VerticalDivider(

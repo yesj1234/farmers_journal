@@ -16,6 +16,7 @@ class OnGoingBottomWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SliverPadding(
       // Add consistent padding around the content
       padding: const EdgeInsets.all(10),
@@ -33,15 +34,15 @@ class OnGoingBottomWidget extends StatelessWidget {
                 child: DayViewShimmer(),
               ),
               // Display error state with icon and message
-              onGoingError: (items, e, st) => const Center(
+              onGoingError: (items, e, st) => Center(
                 child: Column(
                   children: [
-                    Icon(Icons.info), // Visual indicator of error
-                    SizedBox(height: 20), // Spacing between elements
+                    const Icon(Icons.info), // Visual indicator of error
+                    const SizedBox(height: 20), // Spacing between elements
                     Text(
                       "Something Went Wrong!",
-                      style: TextStyle(
-                        color: Colors.black,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.error,
                       ),
                     ),
                   ],

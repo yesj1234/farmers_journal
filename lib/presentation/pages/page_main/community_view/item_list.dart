@@ -18,6 +18,7 @@ class ItemsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final PaginationState state = ref.watch(paginationControllerProvider);
 
     return state.when(
@@ -34,10 +35,19 @@ class ItemsList extends ConsumerWidget {
                             .read(paginationControllerProvider.notifier)
                             .fetchFirstBatch();
                       },
-                      icon: const Icon(Icons.replay),
+                      icon: Icon(
+                        Icons.replay,
+                        color: theme.colorScheme.primary,
+                      ),
                     ),
-                    const Chip(
-                      label: Text("No items found!"),
+                    Chip(
+                      label: Text(
+                        "일지가 더 존재 하지 않습니다!",
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),

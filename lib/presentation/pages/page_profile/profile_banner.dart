@@ -44,9 +44,9 @@ class ProfileBanner extends StatelessWidget {
             onPressed: () {
               context.go('/main/profile/edit_profile');
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.edit_rounded,
-              color: Colors.black54,
+              color: Theme.of(context).primaryColor,
               size: 25,
             ),
           ),

@@ -59,6 +59,23 @@ class MyApp extends StatelessWidget {
       ],
       routerConfig: router,
       debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.system,
+      darkTheme: FlexThemeData.dark(
+        scheme: FlexScheme.green,
+        surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
+        blendLevel: 7,
+        fontFamily: 'Pretandard',
+        subThemesData: const FlexSubThemesData(
+          blendOnLevel: 10,
+          blendOnColors: false,
+          useM2StyleDividerInM3: true,
+          inputDecoratorBorderType: FlexInputBorderType.underline,
+          inputDecoratorUnfocusedBorderIsColored: false,
+        ),
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        useMaterial3: true,
+        swapLegacyOnMaterial3: true,
+      ),
       theme: FlexThemeData.light(
         scheme: FlexScheme.green,
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,

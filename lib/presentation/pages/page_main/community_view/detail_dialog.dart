@@ -35,6 +35,7 @@ class DataStateDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Dialog(
       child: SizedBox(
         width: MediaQuery.sizeOf(context).width * 0.7,
@@ -57,12 +58,15 @@ class DataStateDialog extends StatelessWidget {
                     children: [
                       Text(
                         info.name!,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         info.nickName!,
-                        style: const TextStyle(
-                            color: Color.fromRGBO(0, 0, 0, 0.5)),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant
+                                .withAlpha((0.5 * 255).toInt())),
                       ),
                     ],
                   ),
@@ -150,16 +154,14 @@ class DataStateDialog extends StatelessWidget {
                 textAlign: TextAlign.start,
                 text: TextSpan(
                   text: '${journalInfo.plant}, ',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.primary,
                     fontWeight: FontWeight.bold,
                   ),
                   children: [
                     TextSpan(
-                      text: journalInfo.place,
-                      style: const TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.normal),
-                    ),
+                        text: journalInfo.place,
+                        style: theme.textTheme.bodyMedium),
                   ],
                 ),
               ),
@@ -173,7 +175,9 @@ class DataStateDialog extends StatelessWidget {
                   if (journalInfo.title!.isNotEmpty)
                     Text(
                       journalInfo.title!,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onSurfaceVariant),
                     ),
                   if (journalInfo.content!.isNotEmpty)
                     SizedBox(

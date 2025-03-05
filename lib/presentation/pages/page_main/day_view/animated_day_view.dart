@@ -222,8 +222,8 @@ class AnimatedDayViewBuilder extends AnimatedWidget {
       style: IconButton.styleFrom(
         shape: const CircleBorder(),
         alignment: Alignment.center,
-        backgroundColor: Colors.redAccent,
-        foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.error,
+        foregroundColor: Theme.of(context).colorScheme.onError,
       ),
       icon: const Icon(Icons.delete_forever),
     );
@@ -252,8 +252,8 @@ class AnimatedDayViewBuilder extends AnimatedWidget {
       },
       style: IconButton.styleFrom(
         shape: const CircleBorder(),
-        backgroundColor: Colors.lightGreen,
-        foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
       ),
       iconSize: iconSize,
       icon: const Icon(Icons.edit),

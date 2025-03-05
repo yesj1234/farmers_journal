@@ -6,8 +6,11 @@ class DayViewShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.black26,
-      highlightColor: Colors.black12,
+      baseColor: Theme.of(context).colorScheme.surfaceContainer,
+      highlightColor: Theme.of(context)
+          .colorScheme
+          .onSurface
+          .withAlpha((0.3 * 255).toInt()),
       child: Padding(
         padding: const EdgeInsets.only(top: 4.0),
         child: Center(

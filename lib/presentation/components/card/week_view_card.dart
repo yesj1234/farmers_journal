@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/card/card_single.dart';
 
+import '../handle_journal_delete.dart';
+
 /// A widget that displays a journal entry as a card with images, text, and action buttons.
 ///
 /// This widget is used in the week view to present journal entries with optional images,
@@ -49,40 +51,6 @@ class WeekViewCard extends ConsumerWidget {
 
   /// Font size for the date display.
   final double dateFontSize;
-
-  /// Displays a confirmation dialog before deleting a journal entry.
-  Future<void> _showDeleteAlertDialog(context, cb) async {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('삭제', style: TextStyle(color: Colors.red)),
-            content: const SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text('정말 삭제하시겠습니까?'),
-                  Text('이 동작은 되돌릴 수 없습니다.')
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('취소')),
-              TextButton(
-                child: const Text('삭제',
-                    style: TextStyle(
-                      color: Colors.red,
-                    )),
-                onPressed: () {
-                  cb();
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
-        });
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -156,12 +124,9 @@ class WeekViewCard extends ConsumerWidget {
                 verticalPadding: verticalPadding,
                 date: journal.date!,
                 onEdit: () => context.go('/update/${journal.id}'),
-                onDelete: () => _showDeleteAlertDialog(
-                  context,
-                  () => ref
-                      .read(journalControllerProvider.notifier)
-                      .deleteJournal(id: journal.id as String),
-                ),
+                onDelete: () {
+                  handleJournalDelete(context, ref, journal.id!);
+                },
               ),
             ),
           ],

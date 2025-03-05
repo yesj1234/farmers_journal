@@ -13,12 +13,6 @@ class JournalRecord extends ConsumerStatefulWidget {
 }
 
 class _JournalRecordState extends ConsumerState<JournalRecord> {
-  TextStyle get titleTextStyle => const TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 22,
-        color: Colors.black,
-      );
-
   BoxDecoration get journalRecordContainerDecoration => const BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.horizontal(
