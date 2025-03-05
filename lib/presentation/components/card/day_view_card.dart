@@ -1,4 +1,5 @@
 import 'dart:math' hide log;
+import 'package:farmers_journal/presentation/components/handle_journal_delete.dart';
 import 'package:farmers_journal/presentation/components/layout_images.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/components/show_alert_dialog.dart';
@@ -134,14 +135,7 @@ class DayViewCard extends ConsumerWidget {
                 }, // Navigate to edit page
                 onDelete: () {
                   onTapCallback?.call();
-                  showMyAlertDialog(
-                    context: context,
-                    type: AlertDialogType.delete,
-                    cb: () => ref
-                        .read(journalControllerProvider.notifier)
-                        .deleteJournal(
-                            id: journal.id as String), // Delete via controller
-                  );
+                  handleJournalDelete(context, ref, journal.id!);
                 },
                 onTapCallback: onTapCallback,
               ),

@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'package:farmers_journal/domain/model/journal.dart';
-import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/presentation/controller/journal/month_view_controller.dart';
 import 'package:farmers_journal/utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
