@@ -43,6 +43,7 @@ dependencies:
     sdk: flutter
   url_launcher: ^6.3.1
   dart_firebase_admin: ^0.4.0
+  flutter_svg_provider: ^1.0.7
 
 
 
