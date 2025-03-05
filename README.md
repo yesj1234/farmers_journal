@@ -161,8 +161,9 @@ See the [pubspec.yaml](/pubspec.yaml) file for the complete list.
 ## Version note 
 - version 1.0.0: Initial release 
 - version 1.0.1: Fix Hero animation, change image border radius rules.  
-- version 1.0.2: Add draggable gesture for day view journals. Filter community view journals date over current date. 
-
+- version 1.0.2: Add draggable gesture for day view journals. Block community view journals that has date set over current date. 
+- version 1.0.3: Change monthly view UI. Removed the items shown underneath the calendar. When clicking a certain date from calendar, show the daily view of that selected day in a page view.
+- version 1.0.4: Fix handling on deleting the journal callback. 
 ## Installation
 
 To get started with **Farmer's Journal**, follow these steps:
