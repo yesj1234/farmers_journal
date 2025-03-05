@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 //Firebase imports
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'firebase_options.dart';
 
 // pub import
@@ -21,6 +22,7 @@ import 'package:farmers_journal/data/my_observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
