@@ -5,6 +5,7 @@ import 'package:farmers_journal/presentation/pages/page_profile/place_map.dart';
 import 'package:farmers_journal/presentation/pages/page_profile/place_predictedItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
@@ -64,23 +65,38 @@ class _PagePlaceSearchState extends ConsumerState<PagePlaceSearch> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            spacing: 10,
-            children: [
-              PlaceSearch(
-                onSelect: onSelect,
-                autoFocus: true,
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  alignment: Alignment.bottomRight,
+                  image: Svg('assets/svgs/layer_1.svg'),
+                ),
               ),
-              selectedPlace.isNotEmpty
-                  ? PlaceMap2(
-                      finalAddress: selectedPlace,
-                    )
-                  : const SizedBox.shrink(),
-            ],
+            ),
           ),
-        ),
+          SafeArea(
+            child: Center(
+              child: Column(
+                spacing: 10,
+                children: [
+                  PlaceSearch(
+                    onSelect: onSelect,
+                    autoFocus: true,
+                  ),
+                  selectedPlace.isNotEmpty
+                      ? PlaceMap2(
+                          finalAddress: selectedPlace,
+                        )
+                      : const SizedBox.shrink(),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
