@@ -1,9 +1,9 @@
 import 'dart:ui';
-
 import 'package:farmers_journal/presentation/components/image_tile.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// A screen that displays images in a page view with hero animations.
 ///
@@ -83,20 +83,31 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
     });
   }
 
+  /// Needs refactor, since this callback assumes that the image is a square with width and height being the same(MediaQuery.sizeOf(context).width))
+  void handleTapUp(TapUpDetails details) {
+    final double screenWidth = MediaQuery.sizeOf(context).width;
+    final double screenHeight = MediaQuery.sizeOf(context).height;
+    final double imageTop = (screenHeight - screenWidth) / 2;
+    final double imageBottom = (imageTop + screenWidth);
+
+    final tappedY = details.globalPosition.dy;
+
+    if (tappedY < imageTop || tappedY > imageBottom) {
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     /// Creates a list of widgets for the page view, each wrapped in a Hero animation.
     final heroWidgets = widget.tags.map(
       (path) {
         final tag = path.value;
-        return SizedBox(
-          width: MediaQuery.sizeOf(context).width,
-          height: MediaQuery.sizeOf(context).height,
-          child: Hero(
-            tag: tag,
-            transitionOnUserGestures: true,
-            child: Center(
-              child: URLImageTile(
+        return Hero(
+          tag: tag,
+          transitionOnUserGestures: true,
+          child: Center(
+            child: URLImageTile(
                 url: tag,
                 onDelete: () {},
                 isEditMode: false,
@@ -105,68 +116,73 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
                 maxHeight: MediaQuery.sizeOf(context).height,
                 minHeight: MediaQuery.sizeOf(context).height,
                 borderRadius: BorderRadius.circular(10),
-              ),
-            ),
+                boxFit: BoxFit.cover),
           ),
         );
       },
     ).toList();
 
-    return Scaffold(
-      appBar: AppBar(
+    return GestureDetector(
+      onTapUp: handleTapUp,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+        ),
         backgroundColor: Colors.transparent,
-      ),
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        children: [
-          Opacity(
-            opacity: backgroundOpacity,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                  sigmaX: 10 * backgroundOpacity,
-                  sigmaY: 10 * backgroundOpacity),
-              child: Container(
-                color: Colors.black.withAlpha(
-                  (125 * backgroundOpacity).toInt(),
+        extendBodyBehindAppBar: true,
+        body: Stack(
+          children: [
+            Opacity(
+              opacity: backgroundOpacity,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                    sigmaX: 10 * backgroundOpacity,
+                    sigmaY: 10 * backgroundOpacity),
+                child: Container(
+                  color: Colors.black.withAlpha(
+                    (125 * backgroundOpacity).toInt(),
+                  ),
                 ),
               ),
             ),
-          ),
-          Center(
-            child: SizedBox(
-              height: MediaQuery.sizeOf(context).width,
-              child: Stack(
-                alignment: Alignment.bottomCenter,
+            Center(
+              child: SizedBox(
+                height: MediaQuery.sizeOf(context).width,
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
 
-                /// PageView for swiping between images
-                children: [
-                  Positioned.fill(
-                    child: GestureDetector(
-                      onPanUpdate: handlePanUpdate,
-                      onPanEnd: handlePanEnd,
-                      child: Transform.translate(
-                        offset: offset,
-                        child: PageView(
-                            controller: _pageViewController,
-                            onPageChanged: _handlePageViewChanged,
-                            children: heroWidgets),
+                  /// PageView for swiping between images
+                  children: [
+                    Positioned.fill(
+                      child: GestureDetector(
+                        onPanUpdate: handlePanUpdate,
+                        onPanEnd: handlePanEnd,
+                        child: Transform.translate(
+                          offset: offset,
+                          child: PageView(
+                              controller: _pageViewController,
+                              onPageChanged: _handlePageViewChanged,
+                              children: heroWidgets),
+                        ),
                       ),
                     ),
-                  ),
 
-                  /// Page Indicator to show progress in the gallery
-                  Opacity(
-                    opacity: (backgroundOpacity),
-                    child: PageIndicator(
-                      tabController: _tabController,
-                    ),
-                  )
-                ],
+                    /// Page Indicator to show progress in the gallery
+                    Opacity(
+                      opacity: (backgroundOpacity),
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: PageIndicator(
+                          tabController: _tabController,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

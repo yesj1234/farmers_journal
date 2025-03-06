@@ -15,6 +15,7 @@ class URLImageTile extends StatelessWidget {
     required this.minWidth,
     required this.minHeight,
     this.borderRadius,
+    this.boxFit,
   });
 
   final String url;
@@ -25,6 +26,7 @@ class URLImageTile extends StatelessWidget {
   final double minWidth;
   final double minHeight;
   final BorderRadius? borderRadius;
+  final BoxFit? boxFit;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class URLImageTile extends StatelessWidget {
           imageUrl: url,
           width: maxWidth,
           height: maxHeight,
-          fit: BoxFit.cover,
+          fit: boxFit ?? BoxFit.cover,
           errorWidget: (context, url, error) => const Icon(
             Icons.broken_image,
             size: 50,
