@@ -243,42 +243,51 @@ class ShimmerLoadingStateDialog extends StatelessWidget {
       child: SizedBox(
         width: MediaQuery.sizeOf(context).width * 0.7,
         height: MediaQuery.sizeOf(context).height * 0.5,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+        child: const Padding(
+          padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                spacing: 10,
                 children: [
-                  _shimmerCircle(size: 50),
-                  const SizedBox(width: 10),
+                  ShimmerCircle(size: 50),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 8,
                     children: [
-                      _shimmerRectangle(width: 120, height: 16),
-                      const SizedBox(height: 8),
-                      _shimmerRectangle(width: 80, height: 14),
+                      ShimmerRectangle(width: 120, height: 16),
+                      ShimmerRectangle(width: 80, height: 14),
                     ],
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              _shimmerRectangle(width: 200, height: 16),
-              const SizedBox(height: 10),
-              _shimmerRectangle(width: double.infinity, height: 14),
+              SizedBox(height: 20),
+              ShimmerRectangle(width: 200, height: 16),
+              SizedBox(height: 10),
+              ShimmerRectangle(width: double.infinity, height: 14),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  /// Creates a rectangular shimmer effect widget.
-  ///
-  /// [width]: The width of the rectangle.
-  /// [height]: The height of the rectangle.
-  /// Returns a shimmering rectangle widget.
-  Widget _shimmerRectangle({required double width, required double height}) {
+/// Creates a rectangular shimmer effect widget.
+///
+/// [width]: The width of the rectangle.
+/// [height]: The height of the rectangle.
+/// Returns a shimmering rectangle widget.
+///
+class ShimmerRectangle extends StatelessWidget {
+  const ShimmerRectangle(
+      {super.key, required this.width, required this.height});
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
@@ -292,12 +301,22 @@ class ShimmerLoadingStateDialog extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// Creates a circular shimmer effect widget.
-  ///
-  /// [size]: The diameter of the circle.
-  /// Returns a shimmering circle widget.
-  Widget _shimmerCircle({required double size}) {
+/// Creates a circular shimmer effect widget.
+///
+/// [size]: The diameter of the circle.
+/// Returns a shimmering circle widget.
+class ShimmerCircle extends StatelessWidget {
+  const ShimmerCircle({
+    super.key,
+    required this.size,
+  });
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
