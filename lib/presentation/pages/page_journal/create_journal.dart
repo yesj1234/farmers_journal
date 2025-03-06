@@ -1,7 +1,7 @@
 import 'package:farmers_journal/presentation/components/journal_form_content.dart';
 import 'package:farmers_journal/presentation/components/journal_form_date.dart';
 import 'package:farmers_journal/presentation/components/journal_form_title.dart';
-import 'package:farmers_journal/presentation/components/layout_images.dart';
+import 'package:farmers_journal/presentation/components/layout_images/layout_images.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/components/styles/button.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
