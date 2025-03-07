@@ -61,9 +61,12 @@ class PageMain extends ConsumerWidget {
                 color: Theme.of(context).primaryColor,
               ),
               journalRef.hasValue && journalRef.value!.isNotEmpty
-                  ? const Align(
+                  ? Align(
                       alignment: Alignment.center,
-                      child: ButtonMainViewFilter(),
+                      child: ButtonMainViewFilter(
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                      ),
                     )
                   : const SizedBox.shrink(),
               const Expanded(child: _Content()),
