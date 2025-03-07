@@ -1,8 +1,8 @@
-import 'package:farmers_journal/domain/model/journal.dart';
 import 'package:farmers_journal/presentation/components/carousel/carousel.dart';
-import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
+
+import 'package:farmers_journal/presentation/controller/journal/week_view_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_main/community_view/scroll_to_top_button.dart';
-import 'package:farmers_journal/utils.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
@@ -21,20 +21,9 @@ class WeekView extends ConsumerStatefulWidget {
 }
 
 /// The state for [WeekView], managing journal data and scrolling.
-class _WeekViewState extends ConsumerState<ConsumerStatefulWidget> {
-  /// Future holding the sorted journal data grouped by week.
-  late Future<List<WeeklyGroup<Journal>>> _sortedJournals;
-
+class _WeekViewState extends ConsumerState<WeekView> {
   /// Controller for managing the scroll position of the list.
   final ScrollController scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    // Fetch weekly grouped journals from the controller
-    _sortedJournals =
-        ref.read(journalControllerProvider.notifier).getWeekViewJournals();
-  }
 
   @override
   void dispose() {
@@ -44,48 +33,52 @@ class _WeekViewState extends ConsumerState<ConsumerStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _sortedJournals,
-      builder: (context, snapshot) {
-        if (snapshot.data != null) {
-          return Stack(
-            children: [
-              ListView(
-                controller: scrollController,
-                children: [
-                  for (var items in snapshot.data!)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            items.weekLabel, // Display week label
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 200, // Fixed height for carousel
-                          child: MyCarousel(journals: items.items),
-                        ),
-                      ],
+    final journals = ref.watch(weekViewControllerProvider);
+    return journals.when(
+      data: (journals) {
+        final List<Widget> children = [];
+        for (var items in journals) {
+          children.add(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    items.weekLabel, // Display week label
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                ],
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: ScrollToTopButton(
-                    scrollController: scrollController), // Scroll-to-top button
-              ),
-            ],
+                  ),
+                ),
+                SizedBox(
+                  height: 200, // Fixed height for carousel
+                  child: MyCarousel(journals: items.items),
+                ),
+              ],
+            ),
           );
-        } else {
-          return const SizedBox.shrink(); // Hide if no data
         }
+
+        return Stack(
+          children: [
+            ListView(
+              controller: scrollController,
+              children: children,
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ScrollToTopButton(
+                scrollController: scrollController,
+              ),
+            ),
+          ],
+        );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, st) => const SizedBox.shrink(),
+      initial: () => const SizedBox.shrink(),
     );
   }
 }

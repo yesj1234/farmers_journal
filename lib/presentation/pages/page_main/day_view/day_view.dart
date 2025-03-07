@@ -19,7 +19,7 @@ class DayView extends ConsumerStatefulWidget {
 }
 
 /// The state class for [DayView].
-class _DayViewState extends ConsumerState<ConsumerStatefulWidget> {
+class _DayViewState extends ConsumerState<DayView> {
   /// Scroll controller for the list view.
   final ScrollController scrollController = ScrollController();
 
