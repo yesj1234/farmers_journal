@@ -70,6 +70,7 @@ class _CreateJournalFormState extends ConsumerState<CreateJournalForm> {
         spacing: 10,
         children: [
           DateForm(
+            initialDate: date,
             datePicked: widget.initialDate ?? date,
             onDatePicked: onDatePicked,
           ),

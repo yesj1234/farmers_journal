@@ -94,6 +94,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
               spacing: 10,
               children: [
                 DateForm(
+                  initialDate: date!,
                   datePicked: date,
                   onDatePicked: onDatePicked,
                 ),
