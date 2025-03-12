@@ -148,21 +148,23 @@ class DataStateDialog extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: RichText(
-                textAlign: TextAlign.start,
-                text: TextSpan(
-                  text: '${journalInfo.plant}, ',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.bold,
+            FittedBox(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: RichText(
+                  textAlign: TextAlign.start,
+                  text: TextSpan(
+                    text: '${journalInfo.plant}, ',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    children: [
+                      TextSpan(
+                          text: journalInfo.place,
+                          style: theme.textTheme.bodyMedium),
+                    ],
                   ),
-                  children: [
-                    TextSpan(
-                        text: journalInfo.place,
-                        style: theme.textTheme.bodyMedium),
-                  ],
                 ),
               ),
             ),
@@ -180,13 +182,10 @@ class DataStateDialog extends StatelessWidget {
                           color: theme.colorScheme.onSurfaceVariant),
                     ),
                   if (journalInfo.content!.isNotEmpty)
-                    SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.3,
-                      child: SingleChildScrollView(
-                        child: SizedBox(
-                          width: MediaQuery.sizeOf(context).width,
-                          child: Text(journalInfo.content!),
-                        ),
+                    SingleChildScrollView(
+                      child: SizedBox(
+                        width: MediaQuery.sizeOf(context).width,
+                        child: Text(journalInfo.content!),
                       ),
                     ),
                 ],
