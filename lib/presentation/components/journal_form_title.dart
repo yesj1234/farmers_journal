@@ -38,6 +38,7 @@ class TitleForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return SizedBox(
       width: MediaQuery.sizeOf(context).width / 1.2,
       child: TextFormField(
@@ -50,15 +51,15 @@ class TitleForm extends StatelessWidget {
           }
         },
         style: textStyle,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           hintText: '제목',
-          fillColor: Colors.white,
-          disabledBorder: UnderlineInputBorder(
+          fillColor: themeData.scaffoldBackgroundColor,
+          disabledBorder: const UnderlineInputBorder(
             borderSide: BorderSide(
               width: 0.5,
             ),
           ),
-          enabledBorder: UnderlineInputBorder(
+          enabledBorder: const UnderlineInputBorder(
             borderSide: BorderSide(
               width: 0.5,
             ),

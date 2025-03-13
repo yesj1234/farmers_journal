@@ -32,6 +32,7 @@ class ContentForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRef = ref.watch(userControllerProvider);
+    final themeData = Theme.of(context);
     AsyncValue<Widget> tag = userRef.whenData((appUser) {
       if (appUser!.plants.isNotEmpty) {
         return FittedBox(
@@ -42,14 +43,14 @@ class ContentForm extends ConsumerWidget {
             TextSpan(
               text: '${appUser.plants.first.name}, ',
               style: TextStyle(
-                color: Theme.of(context).primaryColor,
+                color: themeData.primaryColor,
                 fontWeight: FontWeight.bold,
               ),
               children: [
                 TextSpan(
                   text: appUser.plants.first.place,
-                  style: const TextStyle(
-                    color: Colors.black,
+                  style: TextStyle(
+                    color: themeData.primaryColorDark,
                     fontWeight: FontWeight.normal,
                   ),
                 ),
@@ -79,16 +80,16 @@ class ContentForm extends ConsumerWidget {
               children: [
                 TextFormField(
                   controller: controller,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: '글쓰기 시작...',
-                    fillColor: Colors.white,
-                    disabledBorder: UnderlineInputBorder(
+                    fillColor: themeData.scaffoldBackgroundColor,
+                    disabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide.none,
                     ),
-                    enabledBorder: UnderlineInputBorder(
+                    enabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide.none,
                     ),
-                    focusedBorder: UnderlineInputBorder(
+                    focusedBorder: const UnderlineInputBorder(
                       borderSide: BorderSide.none,
                     ),
                   ),

@@ -189,6 +189,7 @@ class _MyCascadingMenuState extends State<MyCascadingMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return MenuAnchor(
       menuChildren: menus,
       builder: (context, controller, child) {
@@ -201,9 +202,10 @@ class _MyCascadingMenuState extends State<MyCascadingMenu> {
               controller.open();
             }
           },
-          child: const Icon(
+          child: Icon(
             Icons.more_horiz, // Three-dot menu icon
-            color: Color.fromRGBO(0, 0, 0, 0.7), // Semi-transparent black
+            color: themeData
+                .buttonTheme.colorScheme?.onSurface, // Semi-transparent black
             size: 24,
           ),
         );
