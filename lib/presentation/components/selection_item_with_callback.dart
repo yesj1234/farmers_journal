@@ -12,7 +12,7 @@ class SettingContainer extends StatelessWidget {
   final String settingTitle;
 
   /// A list of selectable items within the settings container.
-  final List<SelectionItemWithCallback> items;
+  final List<Widget> items;
 
   /// Text style for the settings title.
   TextStyle get settingTitleStyle => const TextStyle(
@@ -110,7 +110,7 @@ class SelectionItemWithCallback extends StatelessWidget {
         children: [
           Padding(
             padding:
-                const EdgeInsets.only(left: 10, right: 5, top: 5, bottom: 5),
+                const EdgeInsets.only(left: 10, right: 16, top: 5, bottom: 5),
             child: Icon(
               icon,
               size: 50,

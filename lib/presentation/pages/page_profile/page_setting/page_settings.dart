@@ -30,12 +30,88 @@ class PageSettings extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 15,
             children: [
+              ToggleThemeButton(),
               TermsAndPolicy(),
               Account(),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class ToggleThemeButton extends StatefulWidget {
+  const ToggleThemeButton({super.key});
+
+  @override
+  State<ToggleThemeButton> createState() => _ToggleThemeButtonState();
+}
+
+class _ToggleThemeButtonState extends State<ToggleThemeButton> {
+  /// Text style for the selection name.
+  TextStyle get selectionNameTextStyle => const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.normal,
+      );
+  double? iconSize = 26;
+  int _selectedTheme = 0;
+  List<bool> get _isSelected =>
+      [0, 1, 2].map((index) => _selectedTheme == index).toList();
+
+  Icon get _currentIcon => _selectedTheme == 0
+      ? Icon(Icons.sunny, key: ValueKey<int>(_selectedTheme), size: iconSize)
+      : _selectedTheme == 1
+          ? Icon(
+              Icons.mode_night_outlined,
+              key: ValueKey<int>(_selectedTheme),
+              size: iconSize,
+            )
+          : Icon(
+              Icons.settings,
+              key: ValueKey<int>(_selectedTheme),
+              size: iconSize,
+            );
+
+  @override
+  Widget build(BuildContext context) {
+    return SettingContainer(
+      settingTitle: '앱 설정',
+      items: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 10, right: 5, top: 5, bottom: 5),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return ScaleTransition(scale: animation, child: child);
+                },
+                child: _currentIcon,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text('테마', style: selectionNameTextStyle),
+            const Spacer(),
+            ToggleButtons(
+              onPressed: (index) {
+                setState(() {
+                  _selectedTheme = index;
+                });
+              },
+              isSelected: _isSelected,
+              children: const [
+                Icon(Icons.sunny),
+                Icon(Icons.mode_night_outlined),
+                Icon(Icons.settings)
+              ],
+            ),
+          ],
+        )
+      ],
     );
   }
 }
