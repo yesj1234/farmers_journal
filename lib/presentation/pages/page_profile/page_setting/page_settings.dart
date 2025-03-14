@@ -1,5 +1,6 @@
 import 'package:farmers_journal/presentation/components/selection_item_with_callback.dart';
 import 'package:farmers_journal/presentation/controller/auth/auth_controller.dart';
+import 'package:farmers_journal/presentation/controller/theme/theme_controller.dart';
 import 'package:farmers_journal/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,17 +23,20 @@ class PageSettings extends ConsumerWidget {
           ),
         ),
       ),
-      body: const Center(
+      body: Center(
         child: Padding(
-          padding: EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(top: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 15,
             children: [
-              ToggleThemeButton(),
-              TermsAndPolicy(),
-              Account(),
+              ToggleThemeButton(
+                initialTheme: ref.read(themeControllerProvider).maybeWhen(
+                    orElse: () => ThemeMode.system, data: (mode) => mode),
+              ),
+              const TermsAndPolicy(),
+              const Account(),
             ],
           ),
         ),
@@ -41,35 +45,51 @@ class PageSettings extends ConsumerWidget {
   }
 }
 
-class ToggleThemeButton extends StatefulWidget {
-  const ToggleThemeButton({super.key});
+class ToggleThemeButton extends ConsumerStatefulWidget {
+  const ToggleThemeButton({super.key, this.initialTheme});
 
+  final ThemeMode? initialTheme;
   @override
-  State<ToggleThemeButton> createState() => _ToggleThemeButtonState();
+  ConsumerState<ToggleThemeButton> createState() => _ToggleThemeButtonState();
 }
 
-class _ToggleThemeButtonState extends State<ToggleThemeButton> {
+class _ToggleThemeButtonState extends ConsumerState<ToggleThemeButton> {
   /// Text style for the selection name.
   TextStyle get selectionNameTextStyle => const TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.normal,
       );
   double? iconSize = 26;
-  int _selectedTheme = 0;
-  List<bool> get _isSelected =>
-      [0, 1, 2].map((index) => _selectedTheme == index).toList();
+  late ThemeMode _selectedTheme;
 
-  Icon get _currentIcon => _selectedTheme == 0
-      ? Icon(Icons.sunny, key: ValueKey<int>(_selectedTheme), size: iconSize)
-      : _selectedTheme == 1
+  @override
+  void initState() {
+    super.initState();
+    _selectedTheme = widget.initialTheme ?? ThemeMode.system;
+  }
+
+  List<bool> get _isSelected {
+    if (_selectedTheme == ThemeMode.light) {
+      return [true, false, false];
+    } else if (_selectedTheme == ThemeMode.dark) {
+      return [false, true, false];
+    } else {
+      return [false, false, true];
+    }
+  }
+
+  Icon get _currentIcon => _selectedTheme == ThemeMode.light
+      ? Icon(Icons.sunny,
+          key: ValueKey<ThemeMode>(_selectedTheme), size: iconSize)
+      : _selectedTheme == ThemeMode.dark
           ? Icon(
               Icons.mode_night_outlined,
-              key: ValueKey<int>(_selectedTheme),
+              key: ValueKey<ThemeMode>(_selectedTheme),
               size: iconSize,
             )
           : Icon(
               Icons.settings,
-              key: ValueKey<int>(_selectedTheme),
+              key: ValueKey<ThemeMode>(_selectedTheme),
               size: iconSize,
             );
 
@@ -99,7 +119,24 @@ class _ToggleThemeButtonState extends State<ToggleThemeButton> {
             ToggleButtons(
               onPressed: (index) {
                 setState(() {
-                  _selectedTheme = index;
+                  if (index == 0) {
+                    _selectedTheme = ThemeMode.light;
+                    ref
+                        .read(themeControllerProvider.notifier)
+                        .setUserThemeMode(ThemeMode.light);
+                  }
+                  if (index == 1) {
+                    _selectedTheme = ThemeMode.dark;
+                    ref
+                        .read(themeControllerProvider.notifier)
+                        .setUserThemeMode(ThemeMode.dark);
+                  }
+                  if (index == 2) {
+                    _selectedTheme = ThemeMode.system;
+                    ref
+                        .read(themeControllerProvider.notifier)
+                        .setUserThemeMode(ThemeMode.system);
+                  }
                 });
               },
               isSelected: _isSelected,
