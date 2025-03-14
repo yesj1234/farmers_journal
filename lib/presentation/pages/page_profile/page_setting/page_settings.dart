@@ -59,7 +59,7 @@ class _ToggleThemeButtonState extends ConsumerState<ToggleThemeButton> {
         fontSize: 20,
         fontWeight: FontWeight.normal,
       );
-  double? iconSize = 26;
+  double? iconSize = 30;
   late ThemeMode _selectedTheme;
 
   @override
@@ -116,39 +116,74 @@ class _ToggleThemeButtonState extends ConsumerState<ToggleThemeButton> {
             const SizedBox(width: 10),
             Text('테마', style: selectionNameTextStyle),
             const Spacer(),
-            ToggleButtons(
-              onPressed: (index) {
-                setState(() {
-                  if (index == 0) {
-                    _selectedTheme = ThemeMode.light;
-                    ref
-                        .read(themeControllerProvider.notifier)
-                        .setUserThemeMode(ThemeMode.light);
-                  }
-                  if (index == 1) {
-                    _selectedTheme = ThemeMode.dark;
-                    ref
-                        .read(themeControllerProvider.notifier)
-                        .setUserThemeMode(ThemeMode.dark);
-                  }
-                  if (index == 2) {
-                    _selectedTheme = ThemeMode.system;
-                    ref
-                        .read(themeControllerProvider.notifier)
-                        .setUserThemeMode(ThemeMode.system);
-                  }
-                });
-              },
-              isSelected: _isSelected,
-              children: const [
-                Icon(Icons.sunny),
-                Icon(Icons.mode_night_outlined),
-                Icon(Icons.settings)
-              ],
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: ToggleButtons(
+                borderRadius: const BorderRadius.horizontal(
+                  left: Radius.circular(10),
+                  right: Radius.circular(10),
+                ),
+                onPressed: (index) {
+                  setState(() {
+                    if (index == 0) {
+                      _selectedTheme = ThemeMode.light;
+                      ref
+                          .read(themeControllerProvider.notifier)
+                          .setUserThemeMode(ThemeMode.light);
+                    }
+                    if (index == 1) {
+                      _selectedTheme = ThemeMode.dark;
+                      ref
+                          .read(themeControllerProvider.notifier)
+                          .setUserThemeMode(ThemeMode.dark);
+                    }
+                    if (index == 2) {
+                      _selectedTheme = ThemeMode.system;
+                      ref
+                          .read(themeControllerProvider.notifier)
+                          .setUserThemeMode(ThemeMode.system);
+                    }
+                  });
+                },
+                isSelected: _isSelected,
+                children: const [
+                  _ThemeModeIcon(icon: Icons.light_mode_outlined, name: '라이트'),
+                  _ThemeModeIcon(icon: Icons.mode_night_outlined, name: '다크'),
+                  _ThemeModeIcon(icon: Icons.settings_outlined, name: '시스템'),
+                ],
+              ),
             ),
           ],
         )
       ],
+    );
+  }
+}
+
+class _ThemeModeIcon extends StatelessWidget {
+  const _ThemeModeIcon({super.key, required this.icon, required this.name});
+  final IconData? icon;
+  final String? name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Icon(icon),
+            ),
+          ),
+          FittedBox(
+            child: Text(
+              name ?? '',
+            ),
+          )
+        ],
+      ),
     );
   }
 }
