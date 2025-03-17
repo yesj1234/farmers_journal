@@ -1,5 +1,6 @@
 import 'package:farmers_journal/presentation/components/selection_item_with_callback.dart';
 import 'package:farmers_journal/presentation/controller/auth/auth_controller.dart';
+import 'package:farmers_journal/presentation/controller/theme/theme_controller.dart';
 import 'package:farmers_journal/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,19 +23,166 @@ class PageSettings extends ConsumerWidget {
           ),
         ),
       ),
-      body: const Center(
+      body: Center(
         child: Padding(
-          padding: EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(top: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 15,
             children: [
-              TermsAndPolicy(),
-              Account(),
+              ToggleThemeButton(
+                initialTheme: ref.read(themeControllerProvider).maybeWhen(
+                    orElse: () => ThemeMode.system, data: (mode) => mode),
+              ),
+              const TermsAndPolicy(),
+              const Account(),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ToggleThemeButton extends ConsumerStatefulWidget {
+  const ToggleThemeButton({super.key, this.initialTheme});
+
+  final ThemeMode? initialTheme;
+  @override
+  ConsumerState<ToggleThemeButton> createState() => _ToggleThemeButtonState();
+}
+
+class _ToggleThemeButtonState extends ConsumerState<ToggleThemeButton> {
+  /// Text style for the selection name.
+  TextStyle get selectionNameTextStyle => const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.normal,
+      );
+  double? iconSize = 30;
+  late ThemeMode _selectedTheme;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTheme = widget.initialTheme ?? ThemeMode.system;
+  }
+
+  List<bool> get _isSelected {
+    if (_selectedTheme == ThemeMode.light) {
+      return [true, false, false];
+    } else if (_selectedTheme == ThemeMode.dark) {
+      return [false, true, false];
+    } else {
+      return [false, false, true];
+    }
+  }
+
+  Icon get _currentIcon => _selectedTheme == ThemeMode.light
+      ? Icon(Icons.sunny,
+          key: ValueKey<ThemeMode>(_selectedTheme), size: iconSize)
+      : _selectedTheme == ThemeMode.dark
+          ? Icon(
+              Icons.mode_night_outlined,
+              key: ValueKey<ThemeMode>(_selectedTheme),
+              size: iconSize,
+            )
+          : Icon(
+              Icons.settings,
+              key: ValueKey<ThemeMode>(_selectedTheme),
+              size: iconSize,
+            );
+
+  @override
+  Widget build(BuildContext context) {
+    return SettingContainer(
+      settingTitle: '앱 설정',
+      items: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 10, right: 5, top: 5, bottom: 5),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return ScaleTransition(scale: animation, child: child);
+                },
+                child: _currentIcon,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text('테마', style: selectionNameTextStyle),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: ToggleButtons(
+                borderRadius: const BorderRadius.horizontal(
+                  left: Radius.circular(10),
+                  right: Radius.circular(10),
+                ),
+                onPressed: (index) {
+                  setState(() {
+                    if (index == 0) {
+                      _selectedTheme = ThemeMode.light;
+                      ref
+                          .read(themeControllerProvider.notifier)
+                          .setUserThemeMode(ThemeMode.light);
+                    }
+                    if (index == 1) {
+                      _selectedTheme = ThemeMode.dark;
+                      ref
+                          .read(themeControllerProvider.notifier)
+                          .setUserThemeMode(ThemeMode.dark);
+                    }
+                    if (index == 2) {
+                      _selectedTheme = ThemeMode.system;
+                      ref
+                          .read(themeControllerProvider.notifier)
+                          .setUserThemeMode(ThemeMode.system);
+                    }
+                  });
+                },
+                isSelected: _isSelected,
+                children: const [
+                  _ThemeModeIcon(icon: Icons.light_mode_outlined, name: '라이트'),
+                  _ThemeModeIcon(icon: Icons.mode_night_outlined, name: '다크'),
+                  _ThemeModeIcon(icon: Icons.settings_outlined, name: '시스템'),
+                ],
+              ),
+            ),
+          ],
+        )
+      ],
+    );
+  }
+}
+
+class _ThemeModeIcon extends StatelessWidget {
+  const _ThemeModeIcon({super.key, required this.icon, required this.name});
+  final IconData? icon;
+  final String? name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Icon(icon),
+            ),
+          ),
+          FittedBox(
+            child: Text(
+              name ?? '',
+            ),
+          )
+        ],
       ),
     );
   }
