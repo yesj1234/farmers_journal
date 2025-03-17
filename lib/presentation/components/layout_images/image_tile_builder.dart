@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:farmers_journal/presentation/components/layout_images/layout_images.dart';
 import 'package:flutter/material.dart';
 
@@ -580,17 +582,23 @@ class MultipleImageBuilder extends StatelessWidget {
                         Expanded(
                           child: Stack(
                             children: [
-                              ImageTileBuilder(
-                                total: 5,
-                                index: 4,
-                                maxWidth: width,
-                                maxHeight: height,
-                                minWidth: width / 4,
-                                minHeight: height / 2,
-                                images: images,
-                                onDelete: onDelete,
-                                isEditMode: isEditMode,
-                                onTapCallback: onTapCallback,
+                              ClipRect(
+                                child: ImageFiltered(
+                                  imageFilter:
+                                      ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                  child: ImageTileBuilder(
+                                    total: 5,
+                                    index: 4,
+                                    maxWidth: width,
+                                    maxHeight: height,
+                                    minWidth: width / 4,
+                                    minHeight: height / 2,
+                                    images: images,
+                                    onDelete: onDelete,
+                                    isEditMode: isEditMode,
+                                    onTapCallback: onTapCallback,
+                                  ),
+                                ),
                               ),
                               Positioned.fill(
                                 child: Container(
