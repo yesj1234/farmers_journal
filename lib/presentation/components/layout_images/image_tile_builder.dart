@@ -81,8 +81,6 @@ class ImageTileBuilder extends StatelessWidget {
                     PageRouteBuilder(
                       maintainState: true,
                       opaque: false,
-                      transitionDuration: const Duration(seconds: 2),
-                      reverseTransitionDuration: const Duration(seconds: 2),
                       transitionsBuilder: (context, animation, _, child) =>
                           Opacity(
                               opacity: opacityCurve.transform(animation.value),
