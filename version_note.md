@@ -20,3 +20,6 @@
 - Add user's journal statistics.
 - Add on tap up gesture to image detail screen, allowing the user to pop out of the context. 
 - Add selecting the theme between dark, light, and system. 
+
+**version 1.0.5:** 
+- Add tap gesture to extend the hidden images of journal. 
