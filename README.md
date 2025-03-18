@@ -160,7 +160,7 @@ See the [pubspec.yaml](/pubspec.yaml) file for the complete list.
 
 ## Version note 
 
-![version_note](/version_note.md)
+[version_note](/version_note.md)
 
 ## Installation
 
