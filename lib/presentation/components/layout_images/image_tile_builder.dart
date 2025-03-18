@@ -81,6 +81,8 @@ class ImageTileBuilder extends StatelessWidget {
                     PageRouteBuilder(
                       maintainState: true,
                       opaque: false,
+                      transitionDuration: const Duration(seconds: 2),
+                      reverseTransitionDuration: const Duration(seconds: 2),
                       transitionsBuilder: (context, animation, _, child) =>
                           Opacity(
                               opacity: opacityCurve.transform(animation.value),
@@ -653,16 +655,17 @@ class _MultipleImageBuilderState extends State<MultipleImageBuilder> {
               child: widget.isImagesHidden
                   ? const SizedBox.shrink()
                   : Expanded(
-                      child: AnimatedSize(
-                        duration: const Duration(seconds: 3),
-                        child: RemainingImageBuilder(
-                          width: widget.width,
-                          height: widget.height / 2,
-                          images: widget.images,
-                          onDelete: widget.onDelete,
-                          isEditMode: widget.isEditMode,
-                          onTapCallback: widget.onTapCallback,
-                        ),
+                      child: RemainingImageBuilder(
+                        // Single image's hero animation works just fine.
+                        // Double and triple image's hero works a little weired. when popping out of the destination to the source,
+                        // image first shrinks to certain point and than the hero animation forwards.
+                        // What is the cause of this?
+                        width: widget.width,
+                        height: widget.height,
+                        images: widget.images,
+                        onDelete: widget.onDelete,
+                        isEditMode: widget.isEditMode,
+                        onTapCallback: widget.onTapCallback,
                       ),
                     ),
             )
@@ -695,7 +698,7 @@ class RemainingImageBuilder extends StatelessWidget {
     if (images.length == 6) {
       return SingleImageBuilder(
         width: width,
-        height: height,
+        height: height / 2,
         images: images,
         index: 5,
         onDelete: onDelete,
@@ -706,7 +709,7 @@ class RemainingImageBuilder extends StatelessWidget {
     if (images.length == 7) {
       return _DoubleRemainingImageTile(
         width: width,
-        height: height / 2,
+        height: height,
         images: images,
         onDelete: onDelete,
         isEditMode: isEditMode,
@@ -716,7 +719,7 @@ class RemainingImageBuilder extends StatelessWidget {
     if (images.length == 8) {
       return _TripleRemainingImageTile(
         width: width,
-        height: height / 2,
+        height: height,
         images: images,
         onDelete: onDelete,
         isEditMode: isEditMode,
