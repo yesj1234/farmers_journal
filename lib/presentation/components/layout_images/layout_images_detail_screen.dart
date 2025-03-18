@@ -3,7 +3,6 @@ import 'package:farmers_journal/presentation/components/image_tile.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 /// A screen that displays images in a page view with hero animations.
 ///

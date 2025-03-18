@@ -7,7 +7,15 @@ import '../../pages/page_journal/image_type.dart';
 import '../image_tile.dart';
 import 'layout_images_detail_screen.dart';
 
+/// A stateless widget that builds an image tile based on the provided image type.
+///
+/// This widget supports different image types (`UrlImage` and `XFileImage`) and provides
+/// configurable dimensions, edit mode options, and interaction callbacks.
+///
+/// When in edit mode, the widget allows deletion of images. Otherwise, it supports
+/// tap interactions that navigate to a detail view with a hero animation.
 class ImageTileBuilder extends StatelessWidget {
+  /// Creates an [ImageTileBuilder] with required properties.
   const ImageTileBuilder({
     super.key,
     required this.index,
@@ -22,25 +30,48 @@ class ImageTileBuilder extends StatelessWidget {
     this.onTapCallback,
   });
 
+  /// Index of the image in the list.
   final int index;
+
+  /// List of images to be displayed.
   final List<ImageType> images;
+
+  /// Total number of images.
   final int total;
+
+  /// Minimum width of the image tile.
   final double minWidth;
+
+  /// Maximum width of the image tile.
   final double maxWidth;
+
+  /// Minimum height of the image tile.
   final double minHeight;
+
+  /// Maximum height of the image tile.
   final double maxHeight;
+
+  /// Callback function triggered when an image is deleted.
   final void Function(int index)? onDelete;
+
+  /// Indicates whether the widget is in edit mode.
   final bool? isEditMode;
+
+  /// Callback function triggered when the image tile is tapped.
   final void Function()? onTapCallback;
 
+  /// Opacity transition curve for hero animations.
   static const opacityCurve = Interval(0.0, 0.75, curve: Curves.fastOutSlowIn);
 
   @override
   Widget build(BuildContext context) {
+    // Calculate the border radius based on the image index and total count.
     final BorderRadius borderRadius =
         CustomImageWidgetLayout.calculateBorderRadius(total, index);
 
     final image = images[index];
+
+    // Create the image tile based on the image type.
     final imageTile = switch (image) {
       UrlImage(:final value) => URLImageTile(
           url: value,
@@ -72,6 +103,7 @@ class ImageTileBuilder extends StatelessWidget {
                 transitionOnUserGestures: true,
                 child: imageTile,
               );
+
         return GestureDetector(
           onTap: isEditMode ?? false
               ? null
@@ -486,7 +518,13 @@ class QuintupleImageBuilder extends StatelessWidget {
   }
 }
 
+/// A stateful widget that manages the display of multiple images.
+///
+/// This widget allows displaying a collection of images with configurable
+/// width, height, and interaction options. It supports editing mode,
+/// deletion, tap callbacks, and the ability to hide or show images.
 class MultipleImageBuilder extends StatefulWidget {
+  /// Creates a [MultipleImageBuilder] with required dimensions and image list.
   const MultipleImageBuilder({
     super.key,
     required this.width,
@@ -499,23 +537,46 @@ class MultipleImageBuilder extends StatefulWidget {
     this.showHiddenImages,
   });
 
+  /// The width of the image display area.
   final double width;
+
+  /// The height of the image display area.
   final double height;
+
+  /// A list of images to be displayed.
   final List<ImageType> images;
+
+  /// Callback function triggered when an image is deleted.
   final void Function(int index)? onDelete;
+
+  /// Indicates whether the widget is in edit mode.
   final bool? isEditMode;
+
+  /// Callback function triggered when an image is tapped.
   final void Function()? onTapCallback;
+
+  /// Determines whether images should be initially hidden.
   final bool isImagesHidden;
+
+  /// Callback function to show hidden images.
   final void Function()? showHiddenImages;
 
   @override
   State<MultipleImageBuilder> createState() => _MultipleImageBuilderState();
 }
 
+/// The state class for [MultipleImageBuilder], responsible for rendering
+/// multiple images in a structured layout.
+///
+/// This stateful widget arranges images in a stacked column-row structure,
+/// with support for blurring hidden images, toggling visibility, and handling
+/// user interactions like tapping and deleting images.
 class _MultipleImageBuilderState extends State<MultipleImageBuilder> {
+  /// Determines whether images should be blurred based on the hidden state.
   ImageFilter get isBlurred => widget.isImagesHidden
       ? ImageFilter.blur(sigmaX: 10, sigmaY: 10)
       : ImageFilter.blur(sigmaX: 0, sigmaY: 0);
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -654,10 +715,6 @@ class _MultipleImageBuilderState extends State<MultipleImageBuilder> {
                   ? const SizedBox.shrink()
                   : Expanded(
                       child: RemainingImageBuilder(
-                        // Single image's hero animation works just fine.
-                        // Double and triple image's hero works a little weired. when popping out of the destination to the source,
-                        // image first shrinks to certain point and than the hero animation forwards.
-                        // What is the cause of this?
                         width: widget.width,
                         height: widget.height,
                         images: widget.images,
