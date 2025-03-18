@@ -12,7 +12,7 @@ import '../../pages/page_journal/image_type.dart';
 ///
 /// This widget shows a journal's images, title, content, and date, with optional
 /// edit and delete actions. It adapts its size and layout based on provided constraints.
-class DayViewCard extends ConsumerWidget {
+class DayViewCard extends ConsumerStatefulWidget {
   /// Creates a [DayViewCard] widget.
   ///
   /// The [journal] parameter provides the journal data to display.
@@ -46,15 +46,31 @@ class DayViewCard extends ConsumerWidget {
   final double dateFontSize;
   final void Function()? onTapCallback;
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DayViewCard> createState() => _DayViewCardState();
+}
+
+class _DayViewCardState extends ConsumerState<DayViewCard> {
+  bool _isImagesHidden = true;
+  void _showHiddenImages() {
+    setState(() {
+      _isImagesHidden = !_isImagesHidden;
+    });
+  }
+
+  double get cardMaxHeightOnImageCount =>
+      widget.journal.images!.length > 5 && !_isImagesHidden
+          ? widget.cardMaxHeight * 2
+          : widget.cardMaxHeight;
+  @override
+  Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return ConstrainedBox(
       constraints: BoxConstraints(
-        maxWidth: max(cardMaxWidth,
+        maxWidth: max(widget.cardMaxWidth,
             MediaQuery.sizeOf(context).width - 32), // Ensure responsiveness
-        minHeight: cardMinHeight,
-        maxHeight: cardMaxHeight,
+        minHeight: widget.cardMinHeight,
+        maxHeight: cardMaxHeightOnImageCount,
       ),
       child: Card.outlined(
         shape: ContinuousRectangleBorder(
@@ -65,11 +81,11 @@ class DayViewCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min, // Minimize vertical space
           children: [
-            journal.images != null && journal.images!.isNotEmpty
+            widget.journal.images != null && widget.journal.images!.isNotEmpty
                 ? Expanded(
                     child: Center(
                       child: CustomImageWidgetLayout(
-                        images: journal.images!.map((item) {
+                        images: widget.journal.images!.map((item) {
                           if (item is String) {
                             return UrlImage(
                                 item); // Convert string to image type
@@ -78,64 +94,66 @@ class DayViewCard extends ConsumerWidget {
                                 'Invalid type in list: ${item.runtimeType}');
                           }
                         }).toList(),
-                        onTapCallback: onTapCallback,
+                        onTapCallback: widget.onTapCallback,
+                        isImagesHidden: _isImagesHidden,
+                        showHiddenImages: _showHiddenImages,
                       ),
                     ),
                   )
                 : const SizedBox.shrink(), // Hide if no images
-            journal.title!.isEmpty
+            widget.journal.title!.isEmpty
                 ? const SizedBox.shrink()
                 : Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: horizontalPadding,
+                      horizontal: widget.horizontalPadding,
                       vertical: 5,
                     ),
                     child: Text(
-                      journal.title!,
+                      widget.journal.title!,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-            journal.content!.isEmpty
+            widget.journal.content!.isEmpty
                 ? const SizedBox.shrink()
                 : TextPortion(
-                    horizontalPadding: horizontalPadding,
-                    verticalPadding: verticalPadding,
+                    horizontalPadding: widget.horizontalPadding,
+                    verticalPadding: widget.verticalPadding,
                     child: RichText(
-                      maxLines: textMaxLine,
+                      maxLines: widget.textMaxLine,
                       overflow: TextOverflow.ellipsis, // Truncate with ellipsis
                       text: TextSpan(
                         style: TextStyle(color: colorScheme.onSurfaceVariant),
-                        text: journal.content,
+                        text: widget.journal.content,
                       ),
                     ),
                   ),
-            journal.content!.isEmpty && journal.title!.isEmpty
+            widget.journal.content!.isEmpty && widget.journal.title!.isEmpty
                 ? const SizedBox.shrink()
                 : Divider(
                     height: 0.5,
                     thickness: 1,
-                    indent: verticalPadding,
-                    endIndent: verticalPadding,
+                    indent: widget.verticalPadding,
+                    endIndent: widget.verticalPadding,
                   ), // Separator between content and date
             Flexible(
               child: DatePortion(
-                fontSize: dateFontSize,
-                horizontalPadding: horizontalPadding,
-                verticalPadding: verticalPadding,
-                date: journal.date!,
-                editable: editable,
+                fontSize: widget.dateFontSize,
+                horizontalPadding: widget.horizontalPadding,
+                verticalPadding: widget.verticalPadding,
+                date: widget.journal.date!,
+                editable: widget.editable,
                 onEdit: () {
-                  onTapCallback?.call();
-                  context.push('/update/${journal.id}');
+                  widget.onTapCallback?.call();
+                  context.push('/update/${widget.journal.id}');
                 }, // Navigate to edit page
                 onDelete: () {
-                  onTapCallback?.call();
-                  handleJournalDelete(context, ref, journal.id!);
+                  widget.onTapCallback?.call();
+                  handleJournalDelete(context, ref, widget.journal.id!);
                 },
-                onTapCallback: onTapCallback,
+                onTapCallback: widget.onTapCallback,
               ),
             ),
           ],

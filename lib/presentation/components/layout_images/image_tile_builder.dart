@@ -111,6 +111,7 @@ class SingleImageBuilder extends StatelessWidget {
     required this.width,
     required this.height,
     required this.images,
+    this.index = 0,
     this.onDelete,
     this.isEditMode,
     this.onTapCallback,
@@ -119,6 +120,7 @@ class SingleImageBuilder extends StatelessWidget {
   final double width;
   final double height;
   final List<ImageType> images;
+  final int? index;
   final void Function(int index)? onDelete;
   final bool? isEditMode;
   final void Function()? onTapCallback;
@@ -127,7 +129,7 @@ class SingleImageBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ImageTileBuilder(
       total: 1,
-      index: 0,
+      index: index ?? 0,
       minHeight: height,
       maxHeight: height,
       minWidth: width,
@@ -484,8 +486,304 @@ class QuintupleImageBuilder extends StatelessWidget {
   }
 }
 
-class MultipleImageBuilder extends StatelessWidget {
+class MultipleImageBuilder extends StatefulWidget {
   const MultipleImageBuilder({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.images,
+    this.onDelete,
+    this.isEditMode,
+    this.onTapCallback,
+    this.isImagesHidden = true,
+    this.showHiddenImages,
+  });
+
+  final double width;
+  final double height;
+  final List<ImageType> images;
+  final void Function(int index)? onDelete;
+  final bool? isEditMode;
+  final void Function()? onTapCallback;
+  final bool isImagesHidden;
+  final void Function()? showHiddenImages;
+
+  @override
+  State<MultipleImageBuilder> createState() => _MultipleImageBuilderState();
+}
+
+class _MultipleImageBuilderState extends State<MultipleImageBuilder> {
+  ImageFilter get isBlurred => widget.isImagesHidden
+      ? ImageFilter.blur(sigmaX: 10, sigmaY: 10)
+      : ImageFilter.blur(sigmaX: 0, sigmaY: 0);
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Column(
+          spacing: 2,
+          children: [
+            Expanded(
+              child: Row(
+                spacing: 2,
+                children: [
+                  Expanded(
+                      child: ImageTileBuilder(
+                    total: 5,
+                    index: 0,
+                    minWidth: widget.width / 2,
+                    maxWidth: widget.width,
+                    minHeight: widget.height,
+                    maxHeight: widget.height,
+                    images: widget.images,
+                    onDelete: widget.onDelete,
+                    isEditMode: widget.isEditMode,
+                    onTapCallback: widget.onTapCallback,
+                  )),
+                  Expanded(
+                    child: Column(
+                      spacing: 2,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            spacing: 2,
+                            children: [
+                              Expanded(
+                                child: ImageTileBuilder(
+                                  total: 5,
+                                  index: 1,
+                                  minWidth: widget.width / 2,
+                                  maxWidth: widget.width,
+                                  minHeight: widget.height / 2,
+                                  maxHeight: widget.height,
+                                  images: widget.images,
+                                  onDelete: widget.onDelete,
+                                  isEditMode: widget.isEditMode,
+                                  onTapCallback: widget.onTapCallback,
+                                ),
+                              ),
+                              Expanded(
+                                child: ImageTileBuilder(
+                                  total: 5,
+                                  index: 2,
+                                  minWidth: widget.width / 2,
+                                  maxWidth: widget.width,
+                                  minHeight: widget.height / 2,
+                                  maxHeight: widget.height,
+                                  images: widget.images,
+                                  onDelete: widget.onDelete,
+                                  isEditMode: widget.isEditMode,
+                                  onTapCallback: widget.onTapCallback,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Row(
+                            spacing: 2,
+                            children: [
+                              Expanded(
+                                child: ImageTileBuilder(
+                                  total: 5,
+                                  index: 3,
+                                  minWidth: widget.width / 4,
+                                  maxWidth: widget.width,
+                                  minHeight: widget.height / 2,
+                                  maxHeight: widget.height,
+                                  images: widget.images,
+                                  onDelete: widget.onDelete,
+                                  isEditMode: widget.isEditMode,
+                                  onTapCallback: widget.onTapCallback,
+                                ),
+                              ),
+                              Expanded(
+                                child: Stack(
+                                  children: [
+                                    ClipRect(
+                                      child: ImageFiltered(
+                                        imageFilter: isBlurred,
+                                        child: ImageTileBuilder(
+                                          total: 5,
+                                          index: 4,
+                                          maxWidth: widget.width,
+                                          maxHeight: widget.height,
+                                          minWidth: widget.width / 4,
+                                          minHeight: widget.height / 2,
+                                          images: widget.images,
+                                          onDelete: widget.onDelete,
+                                          isEditMode: widget.isEditMode,
+                                          onTapCallback: widget.onTapCallback,
+                                        ),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: widget.isImagesHidden,
+                                      child: GestureDetector(
+                                        onTap: widget.showHiddenImages,
+                                        child: Container(
+                                          color: Colors.black54,
+                                          child: Center(
+                                            child: Text(
+                                              "+${widget.images.length - 4}",
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Visibility(
+              visible: !widget.isImagesHidden,
+              child: widget.isImagesHidden
+                  ? const SizedBox.shrink()
+                  : Expanded(
+                      child: AnimatedSize(
+                        duration: const Duration(seconds: 3),
+                        child: RemainingImageBuilder(
+                          width: widget.width,
+                          height: widget.height / 2,
+                          images: widget.images,
+                          onDelete: widget.onDelete,
+                          isEditMode: widget.isEditMode,
+                          onTapCallback: widget.onTapCallback,
+                        ),
+                      ),
+                    ),
+            )
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class RemainingImageBuilder extends StatelessWidget {
+  const RemainingImageBuilder({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.images,
+    this.onDelete,
+    this.isEditMode,
+    this.onTapCallback,
+  });
+  final double width;
+  final double height;
+  final List<ImageType> images;
+  final void Function(int index)? onDelete;
+  final bool? isEditMode;
+  final void Function()? onTapCallback;
+
+  @override
+  Widget build(BuildContext context) {
+    if (images.length == 6) {
+      return SingleImageBuilder(
+        width: width,
+        height: height,
+        images: images,
+        index: 5,
+        onDelete: onDelete,
+        onTapCallback: onTapCallback,
+        isEditMode: isEditMode,
+      );
+    }
+    if (images.length == 7) {
+      return _DoubleRemainingImageTile(
+        width: width,
+        height: height / 2,
+        images: images,
+        onDelete: onDelete,
+        isEditMode: isEditMode,
+        onTapCallback: onTapCallback,
+      );
+    }
+    if (images.length == 8) {
+      return _TripleRemainingImageTile(
+        width: width,
+        height: height / 2,
+        images: images,
+        onDelete: onDelete,
+        isEditMode: isEditMode,
+        onTapCallback: onTapCallback,
+      );
+    }
+    return const SizedBox.shrink();
+  }
+}
+
+class _DoubleRemainingImageTile extends StatelessWidget {
+  const _DoubleRemainingImageTile({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.images,
+    this.onDelete,
+    this.isEditMode,
+    this.onTapCallback,
+  });
+
+  final double width;
+  final double height;
+  final List<ImageType> images;
+  final void Function(int index)? onDelete;
+  final bool? isEditMode;
+  final void Function()? onTapCallback;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      spacing: 2,
+      children: [
+        Expanded(
+          child: ImageTileBuilder(
+            total: 2,
+            index: 5,
+            maxWidth: width,
+            maxHeight: height,
+            minWidth: width / 2,
+            minHeight: height,
+            images: images,
+            onDelete: onDelete,
+            isEditMode: isEditMode,
+            onTapCallback: onTapCallback,
+          ),
+        ),
+        Expanded(
+          child: ImageTileBuilder(
+            total: 2,
+            index: 6,
+            maxWidth: width,
+            maxHeight: height,
+            minWidth: width / 2,
+            minHeight: height,
+            onDelete: onDelete,
+            isEditMode: isEditMode,
+            onTapCallback: onTapCallback,
+            images: images,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TripleRemainingImageTile extends StatelessWidget {
+  const _TripleRemainingImageTile({
     super.key,
     required this.width,
     required this.height,
@@ -504,127 +802,57 @@ class MultipleImageBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Row(
+      spacing: 2,
       children: [
-        Row(
-          spacing: 2,
-          children: [
-            Expanded(
+        Expanded(
+          child: Column(
+            spacing: 2,
+            children: [
+              Expanded(
                 child: ImageTileBuilder(
-              total: 5,
-              index: 0,
-              minWidth: width / 2,
-              maxWidth: width,
-              minHeight: height,
-              maxHeight: height,
-              images: images,
-              onDelete: onDelete,
-              isEditMode: isEditMode,
-              onTapCallback: onTapCallback,
-            )),
-            Expanded(
-              child: Column(
-                spacing: 2,
-                children: [
-                  Expanded(
-                    child: Row(
-                      spacing: 2,
-                      children: [
-                        Expanded(
-                          child: ImageTileBuilder(
-                            total: 5,
-                            index: 1,
-                            minWidth: width / 2,
-                            maxWidth: width,
-                            minHeight: height / 2,
-                            maxHeight: height,
-                            images: images,
-                            onDelete: onDelete,
-                            isEditMode: isEditMode,
-                            onTapCallback: onTapCallback,
-                          ),
-                        ),
-                        Expanded(
-                          child: ImageTileBuilder(
-                            total: 5,
-                            index: 2,
-                            minWidth: width / 2,
-                            maxWidth: width,
-                            minHeight: height / 2,
-                            maxHeight: height,
-                            images: images,
-                            onDelete: onDelete,
-                            isEditMode: isEditMode,
-                            onTapCallback: onTapCallback,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      spacing: 2,
-                      children: [
-                        Expanded(
-                          child: ImageTileBuilder(
-                            total: 5,
-                            index: 3,
-                            minWidth: width / 4,
-                            maxWidth: width,
-                            minHeight: height / 2,
-                            maxHeight: height,
-                            images: images,
-                            onDelete: onDelete,
-                            isEditMode: isEditMode,
-                            onTapCallback: onTapCallback,
-                          ),
-                        ),
-                        Expanded(
-                          child: Stack(
-                            children: [
-                              ClipRect(
-                                child: ImageFiltered(
-                                  imageFilter:
-                                      ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                  child: ImageTileBuilder(
-                                    total: 5,
-                                    index: 4,
-                                    maxWidth: width,
-                                    maxHeight: height,
-                                    minWidth: width / 4,
-                                    minHeight: height / 2,
-                                    images: images,
-                                    onDelete: onDelete,
-                                    isEditMode: isEditMode,
-                                    onTapCallback: onTapCallback,
-                                  ),
-                                ),
-                              ),
-                              Positioned.fill(
-                                child: Container(
-                                  color: Colors.black54,
-                                  child: Center(
-                                    child: Text(
-                                      "+${images.length - 4}",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  total: 3,
+                  index: 5,
+                  maxWidth: width,
+                  maxHeight: height,
+                  minWidth: width / 2,
+                  minHeight: height / 2,
+                  images: images,
+                  onDelete: onDelete,
+                  isEditMode: isEditMode,
+                  onTapCallback: onTapCallback,
+                ),
               ),
-            ),
-          ],
+              Expanded(
+                child: ImageTileBuilder(
+                  total: 3,
+                  index: 6,
+                  maxWidth: width,
+                  maxHeight: height,
+                  minWidth: width / 2,
+                  minHeight: height / 2,
+                  images: images,
+                  onDelete: onDelete,
+                  isEditMode: isEditMode,
+                  onTapCallback: onTapCallback,
+                ),
+              )
+            ],
+          ),
+        ),
+        Expanded(
+          child: ImageTileBuilder(
+            total: 3,
+            index: 7,
+            maxWidth: width,
+            maxHeight: height,
+            minWidth: width / 2,
+            minHeight: height,
+            images: images,
+            onDelete: onDelete,
+            isEditMode: isEditMode,
+            onTapCallback: onTapCallback,
+          ),
         ),
       ],
     );

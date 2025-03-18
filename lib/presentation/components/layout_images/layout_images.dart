@@ -13,6 +13,8 @@ class CustomImageWidgetLayout extends StatelessWidget {
     this.isEditMode = false,
     this.onDelete,
     this.onTapCallback,
+    this.isImagesHidden = true,
+    this.showHiddenImages,
   });
 
   /// Optional. Whether  gallery is in edit mode, which shows delete buttons. Default is false.
@@ -27,11 +29,15 @@ class CustomImageWidgetLayout extends StatelessWidget {
   /// Optional. Callback function that is triggered when an image is tapped.
   final void Function()? onTapCallback;
 
+  final bool isImagesHidden;
+  final void Function()? showHiddenImages;
+
   static const opacityCurve = Interval(0.0, 0.75, curve: Curves.fastOutSlowIn);
 
   /// Depending on the index of the image and total count of [images], URLImageTile will get different border radius.
   static BorderRadius calculateBorderRadius(int total, int index) {
     BorderRadius? borderRadius;
+
     if (index == 0) {
       if (total == 1) {
         borderRadius = const BorderRadius.only(
@@ -151,6 +157,8 @@ class CustomImageWidgetLayout extends StatelessWidget {
             onDelete: onDelete,
             isEditMode: isEditMode,
             onTapCallback: onTapCallback,
+            isImagesHidden: isImagesHidden,
+            showHiddenImages: showHiddenImages,
           );
       }
     } else {
