@@ -119,14 +119,27 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                     controller: contentController,
                     onImagePick: () async {
                       _formKey.currentState?.save();
-                      List<XFile> _images = await _imagePicker.pickMultiImage(
-                          limit: 8 - images.length);
-                      setState(() {
-                        images = [
-                          ...images,
-                          ..._images.map((file) => XFileImage(file))
-                        ];
-                      });
+                      try {
+                        print(images.length);
+                        if (images.length >= 7) {
+                          XFile? _image = await _imagePicker.pickImage(
+                              source: ImageSource.gallery);
+                          setState(() {
+                            images = [...images, XFileImage(_image!)];
+                          });
+                        } else {
+                          List<XFile> _images = await _imagePicker
+                              .pickMultiImage(limit: 8 - images.length);
+                          setState(() {
+                            images = [
+                              ...images,
+                              ..._images.map((file) => XFileImage(file))
+                            ];
+                          });
+                        }
+                      } catch (e) {
+                        showSnackBar(context, e.toString());
+                      }
                     },
                   ),
                 ),
