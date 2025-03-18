@@ -107,6 +107,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                           images: images,
                           onDelete: deleteImage,
                           isEditMode: true,
+                          isImagesHidden: false,
                         ),
                       ),
                 TitleForm(
@@ -120,7 +121,9 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                     onImagePick: () async {
                       _formKey.currentState?.save();
                       try {
-                        print(images.length);
+                        if (images.length >= 8) {
+                          throw (Exception('사진은 최대 8장 까지 선택할 수 있습니다.'));
+                        }
                         if (images.length >= 7) {
                           XFile? _image = await _imagePicker.pickImage(
                               source: ImageSource.gallery);

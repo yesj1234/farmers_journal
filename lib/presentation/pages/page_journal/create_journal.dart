@@ -82,6 +82,7 @@ class _CreateJournalFormState extends ConsumerState<CreateJournalForm> {
                     images: images.map((item) => XFileImage(item)).toList(),
                     isEditMode: true,
                     onDelete: deleteImage,
+                    isImagesHidden: false,
                   ),
                 )
               : const SizedBox.shrink(),
@@ -94,11 +95,27 @@ class _CreateJournalFormState extends ConsumerState<CreateJournalForm> {
             child: ContentForm(
               controller: contentController,
               onImagePick: () async {
-                List<XFile> _images =
-                    await _imagePicker.pickMultiImage(limit: 8 - images.length);
-                setState(() {
-                  images = [...images, ..._images];
-                });
+                _formKey.currentState?.save();
+                try {
+                  if (images.length >= 8) {
+                    throw (Exception('사진은 최대 8장 까지 선택할 수 있습니다.'));
+                  }
+                  if (images.length >= 7) {
+                    XFile? _image = await _imagePicker.pickImage(
+                        source: ImageSource.gallery);
+                    setState(() {
+                      images = [...images, _image!];
+                    });
+                  } else {
+                    List<XFile> _images = await _imagePicker.pickMultiImage(
+                        limit: 8 - images.length);
+                    setState(() {
+                      images = [...images, ..._images];
+                    });
+                  }
+                } catch (e) {
+                  showSnackBar(context, e.toString());
+                }
               },
             ),
           ),
