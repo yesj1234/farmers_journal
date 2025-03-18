@@ -434,7 +434,6 @@ class _LoginFormTextField extends StatelessWidget {
         ),
       );
   TextStyle get labelTextStyle => const TextStyle(
-        color: Colors.black54,
         shadows: <Shadow>[
           Shadow(
             offset: Offset(3, 3),
@@ -445,7 +444,6 @@ class _LoginFormTextField extends StatelessWidget {
       );
   TextStyle get helpTextStyle => const TextStyle(
         fontSize: 15,
-        color: Colors.black54,
         shadows: <Shadow>[
           Shadow(
             offset: Offset(3, 3),
@@ -470,7 +468,9 @@ class _LoginFormTextField extends StatelessWidget {
               decoration: inputDecoration.copyWith(
                 label: Text(
                   text,
-                  style: labelTextStyle,
+                  style: labelTextStyle.copyWith(
+                    color: Theme.of(context).hintColor,
+                  ),
                 ),
               ),
             ),
