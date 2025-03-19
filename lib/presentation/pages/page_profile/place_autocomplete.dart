@@ -1,5 +1,5 @@
 import 'package:farmers_journal/presentation/pages/page_profile/place_map.dart';
-import 'package:farmers_journal/presentation/pages/page_profile/place_predictedItem.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/place_predicted_item.dart';
 import 'package:flutter/material.dart';
 import 'package:farmers_journal/domain/model/places_autocomplete_response.dart';
 import 'package:farmers_journal/data/providers.dart';

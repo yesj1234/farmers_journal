@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../domain/model/journal.dart';
 import '../../../utils.dart';

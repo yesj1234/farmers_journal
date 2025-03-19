@@ -17,7 +17,7 @@ class PageTermsAndPolicy extends StatelessWidget {
 }
 
 class _TermsAndPolicy extends StatelessWidget {
-  const _TermsAndPolicy({super.key});
+  const _TermsAndPolicy();
 
   @override
   Widget build(BuildContext context) {

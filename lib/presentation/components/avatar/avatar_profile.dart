@@ -4,6 +4,7 @@ import 'package:farmers_journal/presentation/controller/user/user_controller.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// {@category Presentation}
 class AvatarProfile extends ConsumerWidget {
   final double width;
   final double height;

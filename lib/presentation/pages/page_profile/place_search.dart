@@ -2,7 +2,7 @@ import 'package:farmers_journal/data/providers.dart';
 import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/presentation/pages/page_profile/place_map.dart';
-import 'package:farmers_journal/presentation/pages/page_profile/place_predictedItem.dart';
+import 'package:farmers_journal/presentation/pages/page_profile/place_predicted_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -46,8 +46,10 @@ class _PagePlaceSearchState extends ConsumerState<PagePlaceSearch> {
                   .read(userControllerProvider.notifier)
                   .setPlace(id: plantId, newPlantPlace: selectedPlace)
                   .then((_) {
-                showSnackBar(context, '위치가 $selectedPlace(으)로 변경되었습니다.');
-                context.pop();
+                if (context.mounted) {
+                  showSnackBar(context, '위치가 $selectedPlace(으)로 변경되었습니다.');
+                  context.pop();
+                }
               });
             },
             icon: Icon(

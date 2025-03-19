@@ -14,6 +14,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 
 // TODO: Refactoring needed. Merge create journal and update journal page.
+
+/// {@category Presentation}
 class CreateJournalForm extends ConsumerStatefulWidget {
   const CreateJournalForm({super.key, this.initialDate});
   final DateTime? initialDate;
@@ -114,7 +116,9 @@ class _CreateJournalFormState extends ConsumerState<CreateJournalForm> {
                     });
                   }
                 } catch (e) {
-                  showSnackBar(context, e.toString());
+                  if (context.mounted) {
+                    showSnackBar(context, e.toString());
+                  }
                 }
               },
             ),
@@ -155,13 +159,19 @@ class _CreateJournalFormState extends ConsumerState<CreateJournalForm> {
                             context.pop();
                           }
                         },
-                        onError: (e, st) => showSnackBar(
-                          context,
-                          e.toString(),
-                        ),
+                        onError: (e, st) {
+                          if (context.mounted) {
+                            showSnackBar(
+                              context,
+                              e.toString(),
+                            );
+                          }
+                        },
                       );
                     } catch (error) {
-                      showSnackBar(context, error.toString());
+                      if (context.mounted) {
+                        showSnackBar(context, error.toString());
+                      }
                     }
                   }
                 };

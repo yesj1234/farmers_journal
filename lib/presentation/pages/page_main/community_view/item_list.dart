@@ -138,7 +138,7 @@ class ItemsListBuilder extends ConsumerWidget {
 /// individual journal cards.
 class _DayViewCard extends StatelessWidget {
   /// Creates a [_DayViewCard] with a required journal.
-  const _DayViewCard({super.key, required this.journal});
+  const _DayViewCard({required this.journal});
 
   /// The journal entry to display in the card.
   final Journal journal;

@@ -58,7 +58,6 @@ class ProfileBanner extends StatelessWidget {
 
 class _UserDisplayName extends ConsumerStatefulWidget {
   const _UserDisplayName({
-    super.key,
     this.userName,
   });
 

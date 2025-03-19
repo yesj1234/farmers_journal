@@ -1,4 +1,5 @@
 import 'package:farmers_journal/presentation/components/selection_item_with_callback.dart';
+import 'package:farmers_journal/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/presentation/controller/auth/auth_controller.dart';
 import 'package:farmers_journal/presentation/controller/theme/theme_controller.dart';
 import 'package:farmers_journal/utils.dart';
@@ -161,7 +162,7 @@ class _ToggleThemeButtonState extends ConsumerState<ToggleThemeButton> {
 }
 
 class _ThemeModeIcon extends StatelessWidget {
-  const _ThemeModeIcon({super.key, required this.icon, required this.name});
+  const _ThemeModeIcon({required this.icon, required this.name});
   final IconData? icon;
   final String? name;
 
@@ -209,7 +210,9 @@ class Account extends ConsumerWidget {
                 ));
             if (confirm) {
               ref.read(authControllerProvider.notifier).signOut();
-              context.go('/');
+              if (context.mounted) {
+                context.go('/');
+              }
             }
           },
           icon: Icons.logout,
@@ -228,7 +231,9 @@ class Account extends ConsumerWidget {
                 ));
             if (confirm) {
               ref.read(authControllerProvider.notifier).deleteAccount();
-              context.go('/');
+              if (context.mounted) {
+                context.go('/');
+              }
             }
           },
           icon: Icons.person_remove_alt_1_outlined,
@@ -252,8 +257,9 @@ class TermsAndPolicy extends StatelessWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("URL을 열 수 없습니다.")));
+      if (context.mounted) {
+        showSnackBar(context, "URL을 열 수 없습니다.");
+      }
     }
   }
 

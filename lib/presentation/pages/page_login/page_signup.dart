@@ -55,7 +55,6 @@ class _PageSignUpState extends ConsumerState<PageSignup> {
     if (value == null || value.isEmpty) {
       return '비밀번호를 다시한번 입력하세요';
     } else if (value != _passwordController.text) {
-      print(_passwordController.text);
       return '비밀번호가 일치하지 않습니다.';
     }
     return null;
@@ -80,10 +79,14 @@ class _PageSignUpState extends ConsumerState<PageSignup> {
           .read(authControllerProvider.notifier)
           .signUpWithEmail(email: email!, password: password!, name: name!)
           .then((_) {
-        showSnackBar(context, '회원가입이 완료되었습니다.');
-        context.go('/initial_setting');
+        if (context.mounted) {
+          showSnackBar(context, '회원가입이 완료되었습니다.');
+          context.go('/initial_setting');
+        }
       }).catchError((e) {
-        showSnackBar(context, e.toString());
+        if (context.mounted) {
+          showSnackBar(context, e.toString());
+        }
       });
     }
   }
@@ -198,7 +201,6 @@ class _PageSignUpState extends ConsumerState<PageSignup> {
 
 class _RegistrationFormTextField extends StatelessWidget {
   const _RegistrationFormTextField({
-    super.key,
     required this.text,
     required this.onValidate,
     this.onSaved,

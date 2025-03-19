@@ -787,7 +787,6 @@ class RemainingImageBuilder extends StatelessWidget {
 
 class _DoubleRemainingImageTile extends StatelessWidget {
   const _DoubleRemainingImageTile({
-    super.key,
     required this.width,
     required this.height,
     required this.images,
@@ -842,7 +841,6 @@ class _DoubleRemainingImageTile extends StatelessWidget {
 
 class _TripleRemainingImageTile extends StatelessWidget {
   const _TripleRemainingImageTile({
-    super.key,
     required this.width,
     required this.height,
     required this.images,

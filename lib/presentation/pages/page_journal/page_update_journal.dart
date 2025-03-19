@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/update_journal.dart';
 
+/// {@category Presentation}
 class PageUpdateJournal extends StatelessWidget {
   const PageUpdateJournal({super.key, required this.id});
   final String? id;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+/// {@category Presentation}
 class PlaceAutoCompletePredictionItem extends StatelessWidget {
   const PlaceAutoCompletePredictionItem(
       {super.key, required this.onTap, required this.description});

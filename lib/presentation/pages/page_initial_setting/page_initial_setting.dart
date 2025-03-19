@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:go_router/go_router.dart';
 
+/// {@category Presentation}
 class PageInitialSetting extends ConsumerStatefulWidget {
   const PageInitialSetting({super.key});
 

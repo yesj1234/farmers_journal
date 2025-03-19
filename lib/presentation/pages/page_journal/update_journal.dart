@@ -14,6 +14,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/presentation/controller/journal/journal_controller.dart';
 
+/// {@category Presentation}
 class UpdateJournalForm extends StatefulHookConsumerWidget {
   const UpdateJournalForm({super.key, required this.id});
   final String? id;
@@ -141,7 +142,9 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                           });
                         }
                       } catch (e) {
-                        showSnackBar(context, e.toString());
+                        if (context.mounted) {
+                          showSnackBar(context, e.toString());
+                        }
                       }
                     },
                   ),
@@ -177,15 +180,23 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                                   .then(
                                 (_) {
                                   ref.invalidate(journalControllerProvider);
-                                  context.go('/main');
+                                  if (context.mounted) {
+                                    context.go('/main');
+                                  }
                                 },
-                                onError: (e, st) => showSnackBar(
-                                  context,
-                                  e.toString(),
-                                ),
+                                onError: (e, st) {
+                                  if (context.mounted) {
+                                    showSnackBar(
+                                      context,
+                                      e.toString(),
+                                    );
+                                  }
+                                },
                               );
                             } catch (error) {
-                              showSnackBar(context, error.toString());
+                              if (context.mounted) {
+                                showSnackBar(context, error.toString());
+                              }
                             }
                           }
                         };

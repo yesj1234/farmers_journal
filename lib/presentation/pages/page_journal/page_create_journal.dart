@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/create_journal.dart';
 
+/// {@category Presentation}
 class PageCreateJournal extends StatelessWidget {
   const PageCreateJournal({super.key, this.initialDate});
   final DateTime? initialDate;

@@ -54,7 +54,7 @@ class _PageProfileState extends ConsumerState<PageProfile> {
 }
 
 class _PlantSettings extends ConsumerWidget {
-  const _PlantSettings({super.key});
+  const _PlantSettings();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

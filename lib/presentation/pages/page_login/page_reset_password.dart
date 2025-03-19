@@ -83,7 +83,7 @@ class _ResetPasswordPageState extends ConsumerState<PageResetPassword> {
                       _formKey.currentState!.save();
                       bool success = await _resetPassword(context, email!);
                       if (success) {
-                        context.go('/');
+                        context.mounted ? context.go('/') : null;
                       }
                     }
                   },

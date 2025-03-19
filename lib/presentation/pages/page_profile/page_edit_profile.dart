@@ -59,13 +59,17 @@ class _PageProfileState extends ConsumerState<PageEditProfile> {
         setState(() {
           isLoading = false;
         });
-        context.go('/main/profile');
+        if (context.mounted) {
+          context.go('/main/profile');
+        }
       });
     } catch (error) {
       setState(() {
         isLoading = false;
       });
-      showSnackBar(context, error.toString());
+      if (context.mounted) {
+        showSnackBar(context, error.toString());
+      }
     }
   }
 
@@ -166,7 +170,7 @@ class _PageProfileState extends ConsumerState<PageEditProfile> {
 }
 
 class _UserName extends ConsumerWidget {
-  const _UserName({super.key});
+  const _UserName();
   TextStyle get displayNameTextStyle => const TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
@@ -194,7 +198,7 @@ class _UserName extends ConsumerWidget {
 
 class _ProfileForm extends ConsumerWidget {
   const _ProfileForm(
-      {super.key, required this.onNameChange, required this.onNickNameChange});
+      {required this.onNameChange, required this.onNickNameChange});
   final void Function(String) onNameChange;
   final void Function(String) onNickNameChange;
 

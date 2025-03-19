@@ -99,7 +99,7 @@ class _JournalRecordState extends ConsumerState<JournalRecord> {
 }
 
 class _JournalYearlyRecordBarChart extends ConsumerStatefulWidget {
-  const _JournalYearlyRecordBarChart({super.key, required this.year});
+  const _JournalYearlyRecordBarChart({required this.year});
   final int year;
 
   @override
@@ -162,7 +162,7 @@ class _JournalYearlyRecordBarChartState
 }
 
 class _FireIcon extends StatelessWidget {
-  const _FireIcon({super.key, required this.journalCount});
+  const _FireIcon({required this.journalCount});
   final LinkedHashMap<int, int> journalCount;
   TextStyle get daysTextStyle => const TextStyle(
         fontSize: 22,

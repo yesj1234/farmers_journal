@@ -56,7 +56,9 @@ class PageLogin extends ConsumerWidget {
                             .read(authControllerProvider.notifier)
                             .signInWithKakaoTalk()
                             .then((_) {}, onError: (error) {
-                          showSnackBar(context, error);
+                          if (context.mounted) {
+                            showSnackBar(context, error);
+                          }
                         });
                         if (context.mounted) {
                           context.go('/');
@@ -74,7 +76,9 @@ class PageLogin extends ConsumerWidget {
                             .read(authControllerProvider.notifier)
                             .signInWithApple()
                             .then((_) {}, onError: (error) {
-                          showSnackBar(context, error);
+                          if (context.mounted) {
+                            showSnackBar(context, error);
+                          }
                         });
                         if (context.mounted) {
                           context.go('/');
@@ -96,7 +100,7 @@ class PageLogin extends ConsumerWidget {
 /// Apple provides [system-provided buttons and built-in button styles](https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple#Displaying-buttons).
 /// [sign_in_with_apple package](https://pub.dev/packages/sign_in_with_apple) works well as the bridge between flutter and the Apple provided login buttons APIs.
 class _AppleLoginButton extends StatelessWidget {
-  const _AppleLoginButton({super.key, required this.onPressed});
+  const _AppleLoginButton({required this.onPressed});
   final void Function() onPressed;
   @override
   Widget build(BuildContext context) {
@@ -146,7 +150,6 @@ class KakaoLogoPainter extends CustomPainter {
 
 class _KakaoLoginButton extends StatelessWidget {
   const _KakaoLoginButton({
-    super.key,
     required this.onPressed,
     this.text = '카카오 로그인',
     this.height = 44,
@@ -222,7 +225,7 @@ class _KakaoLoginButton extends StatelessWidget {
 }
 
 class _DividerWithText extends StatelessWidget {
-  const _DividerWithText({super.key, required this.text});
+  const _DividerWithText({required this.text});
   final String text;
   final double indent = 20;
   final double thickness = 2;
@@ -256,7 +259,7 @@ class _DividerWithText extends StatelessWidget {
 }
 
 class _AppIcon extends StatelessWidget {
-  const _AppIcon({super.key});
+  const _AppIcon();
   TextStyle get textStyle => const TextStyle(
         fontSize: 30,
         fontWeight: FontWeight.bold,
@@ -283,7 +286,7 @@ class _AppIcon extends StatelessWidget {
 }
 
 class _LoginForm extends ConsumerStatefulWidget {
-  const _LoginForm({super.key});
+  const _LoginForm();
 
   @override
   ConsumerState<_LoginForm> createState() => _LoginFormState();
@@ -371,9 +374,13 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
                             .read(authControllerProvider.notifier)
                             .signInWithEmail(email: email!, password: password!)
                             .then((_) {
-                          context.go('/');
+                          if (context.mounted) {
+                            context.go('/');
+                          }
                         }, onError: (error) {
-                          showSnackBar(context, error.toString());
+                          if (context.mounted) {
+                            showSnackBar(context, error.toString());
+                          }
                         });
                       }
                     },
@@ -389,7 +396,7 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
 }
 
 class _CustomText extends StatelessWidget {
-  const _CustomText({super.key, required this.status});
+  const _CustomText({required this.status});
   final bool status;
   @override
   Widget build(BuildContext context) {
@@ -409,7 +416,6 @@ class _CustomText extends StatelessWidget {
 
 class _LoginFormTextField extends StatelessWidget {
   const _LoginFormTextField({
-    super.key,
     required this.text,
     required this.subText,
     required this.onValidate,

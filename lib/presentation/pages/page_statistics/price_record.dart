@@ -81,7 +81,7 @@ class PriceRecord extends StatelessWidget {
 }
 
 class _PriceLineChart extends StatelessWidget {
-  const _PriceLineChart({super.key});
+  const _PriceLineChart();
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +98,7 @@ class _PriceLineChart extends StatelessWidget {
 }
 
 class _PriceBarChart extends StatelessWidget {
-  const _PriceBarChart({super.key});
+  const _PriceBarChart();
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +107,7 @@ class _PriceBarChart extends StatelessWidget {
 }
 
 class _PriceBarChartDescription extends StatelessWidget {
-  const _PriceBarChartDescription({super.key});
+  const _PriceBarChartDescription();
 
   TextStyle get textStyle => const TextStyle(
         fontSize: 12,
