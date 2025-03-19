@@ -8,6 +8,7 @@ import 'package:farmers_journal/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'providers.g.dart';
@@ -80,3 +81,16 @@ class AuthNotifier extends _$AuthNotifier {
     return false;
   }
 }
+
+final loggerProvider = Provider<Logger>((ref) {
+  return Logger(
+    printer: PrettyPrinter(
+      methodCount: 2, // Show method calls in logs
+      errorMethodCount: 8, // More stack trace lines for errors
+      lineLength: 120, // Max log line length
+      colors: true, // Enable colorful logs
+      printEmojis: true, // Include emojis
+      dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
+    ),
+  );
+});

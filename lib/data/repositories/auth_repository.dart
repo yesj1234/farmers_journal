@@ -1,6 +1,8 @@
 import 'dart:math' hide log;
 import 'dart:typed_data';
+import 'package:logger/logger.dart';
 
+import '../../../main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/domain/interface/auth_interface.dart';
 import 'package:farmers_journal/domain/model/user.dart';
@@ -16,10 +18,11 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 /// Implementation of [AuthRepository] using Firebase auth backend service.
 ///
 class FirebaseAuthRepository implements AuthRepository {
-  FirebaseAuthRepository.setLanguage({required this.instance}) {
+  FirebaseAuthRepository.setLanguage(
+      {required this.instance, required this.logger}) {
     instance.setLanguageCode('kr');
   }
-
+  final Logger logger;
   final firebase_auth.FirebaseAuth instance;
   final _fireStore = FirebaseFirestore.instance;
   @override
@@ -38,7 +41,7 @@ class FirebaseAuthRepository implements AuthRepository {
         throw Exception('탈퇴과정에 문제가 있습니다. ${e.toString()}');
       }
     } catch (e) {
-      print(e);
+      logger.e(e);
       throw Exception('탈퇴과정에 문제가 있습니다. ${e.toString()}');
     }
   }
@@ -48,7 +51,7 @@ class FirebaseAuthRepository implements AuthRepository {
     String? errorMessage;
     try {
       await instance.sendPasswordResetEmail(email: email);
-      print('비밀번호 재설정 이메일이 전송되었습니다.');
+      logger.i('비밀번호 재설정 이메일이 전송되었습니다.');
     } on firebase_auth.FirebaseAuthException catch (error) {
       String? errorMessage;
 
