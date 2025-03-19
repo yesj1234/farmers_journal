@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// {@category Domain}
 class Journal {
   final String? id;
   final String? title;

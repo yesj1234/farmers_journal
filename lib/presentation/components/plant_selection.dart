@@ -2,6 +2,7 @@ import 'package:farmers_journal/data/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// {@category Presentation}
 /// A widget that allows users to search and select plant varieties and subcategories.
 ///
 /// Uses [SearchAnchor] and [SearchController] to provide a dynamic search experience.

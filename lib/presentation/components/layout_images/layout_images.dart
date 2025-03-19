@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart';
 import 'image_tile_builder.dart';
 
+/// {@category Presentation}
 /// A stateless widget that creates beautiful grid-like layouts for displaying images.
 ///
 /// The layout adapts automatically based on the number of images, creating visually appealing arrangements.

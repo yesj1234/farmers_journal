@@ -4,6 +4,7 @@ import 'package:farmers_journal/presentation/pages/page_main/page_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// {@category Presentation}
 class AuthBridge extends ConsumerWidget {
   const AuthBridge({super.key});
   @override

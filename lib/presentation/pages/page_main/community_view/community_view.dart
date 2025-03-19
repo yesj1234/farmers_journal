@@ -7,6 +7,7 @@ import 'package:farmers_journal/presentation/pages/page_main/community_view/scro
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// {@category Presentation}
 /// A stateful widget that displays a paginated list of journal entries in a community view.
 ///
 /// This view supports infinite scrolling and refresh functionality to load more journal entries dynamically.

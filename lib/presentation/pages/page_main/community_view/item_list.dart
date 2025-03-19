@@ -8,6 +8,7 @@ import 'package:farmers_journal/presentation/pages/page_main/day_view_shimmer.da
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// {@category Presentation}
 /// A widget that displays a list of journal items based on pagination state.
 ///
 /// This widget uses Riverpod to listen to the [paginationControllerProvider] and

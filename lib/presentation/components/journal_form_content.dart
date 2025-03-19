@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:farmers_journal/presentation/controller/user/user_controller.dart';
 
+/// {@category Presentation}
 /// A form widget for creating content, including text input and image picking.
 ///
 /// Displays the user's first plant's name and place if available.

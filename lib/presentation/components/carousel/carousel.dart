@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:farmers_journal/domain/model/journal.dart';
 
+/// {@category Presentation}
 /// A carousel widget displaying a list of journal entries.
 ///
 /// This widget uses a `ConsumerStatefulWidget` to listen for changes in the user state

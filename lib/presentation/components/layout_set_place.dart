@@ -2,6 +2,7 @@ import 'package:farmers_journal/presentation/pages/page_profile/place_autocomple
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+/// {@category Presentation}
 /// A layout widget that provides a form for selecting and setting a plant's location.
 ///
 /// The [LayoutSetPlace] widget contains a form with an auto-complete input field
@@ -16,7 +17,6 @@ import 'package:uuid/uuid.dart';
 ///   plantPlace: 'Garden',
 /// )
 /// ```
-
 class LayoutSetPlace extends StatelessWidget {
   const LayoutSetPlace(
       {super.key,

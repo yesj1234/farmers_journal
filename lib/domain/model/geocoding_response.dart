@@ -1,5 +1,6 @@
 import 'package:farmers_journal/enums.dart';
 
+/// {@category Domain}
 class GeocodingResponse {
   final List<dynamic> results;
   final ResponseStatus status;

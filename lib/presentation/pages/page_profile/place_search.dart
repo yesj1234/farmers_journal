@@ -9,6 +9,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
+/// {@category Presentation}
 class PagePlaceSearch extends ConsumerStatefulWidget {
   const PagePlaceSearch(
       {super.key, required this.actionText, required this.actionIcon});

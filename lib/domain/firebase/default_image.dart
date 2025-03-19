@@ -1,3 +1,4 @@
+/// {@category Domain}
 class DefaultImage {
   String? downloadURL;
   DefaultImage({required this.downloadURL});

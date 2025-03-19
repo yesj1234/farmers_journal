@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
+/// {@category Presentation}
 class TopNav extends ConsumerWidget {
   const TopNav({super.key});
 

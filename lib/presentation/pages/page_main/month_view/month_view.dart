@@ -8,6 +8,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import 'month_view_details.dart';
 
+/// {@category Presentation}
 class MonthView extends ConsumerWidget {
   const MonthView({super.key});
 

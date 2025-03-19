@@ -19,6 +19,7 @@ import 'package:farmers_journal/enums.dart';
 // models
 import 'package:farmers_journal/domain/model/journal.dart';
 
+/// {@category Presentation}
 /// The main page widget that consumes Riverpod providers.
 ///
 /// Displays the navigation, content sections, and a floating action button for creating posts.

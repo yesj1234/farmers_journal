@@ -4,6 +4,7 @@ import 'package:farmers_journal/enums.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/data/providers.dart';
 
+/// {@category Presentation}
 /// A segmented button widget that allows users to filter the main view
 /// by day, week, month, or community.
 ///

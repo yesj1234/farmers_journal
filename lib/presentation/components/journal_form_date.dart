@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// {@category Presentation}
 /// A form widget that displays a selectable date.
 ///
 /// The [DateForm] widget allows users to select a date, displaying the chosen date in the center

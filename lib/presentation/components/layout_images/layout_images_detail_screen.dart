@@ -4,6 +4,7 @@ import 'package:farmers_journal/presentation/pages/page_journal/image_type.dart'
 
 import 'package:flutter/material.dart';
 
+/// {@category Presentation}
 /// A screen that displays images in a page view with hero animations.
 ///
 /// It supports swipe gestures to navigate between images and to dismiss the screen.

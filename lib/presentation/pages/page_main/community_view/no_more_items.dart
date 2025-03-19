@@ -2,6 +2,7 @@ import 'package:farmers_journal/presentation/controller/journal/pagination_contr
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// {@category Presentation}
 /// A widget that displays a message when there are no more items to load in a paginated list.
 ///
 /// This widget uses Riverpod to monitor the pagination state and shows a centered

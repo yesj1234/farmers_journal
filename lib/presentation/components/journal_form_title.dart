@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// {@category Presentation}
 /// A form widget that allows users to input a title.
 ///
 /// The [TitleForm] widget provides a text input field with validation.

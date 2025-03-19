@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'animated_day_view.dart';
 
+/// {@category Presentation}
 /// Displays a daily view of journal entries, organized by date.
 ///
 /// This page retrieves and displays journal entries grouped by day, allowing users to view and interact with each entry.

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// {@category Presentation}
 /// A container widget for organizing settings options.
 ///
 /// Displays a section title and a list of selectable items, separated by dividers.

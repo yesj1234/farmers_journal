@@ -3,7 +3,7 @@ import 'package:farmers_journal/data/firestore_providers.dart';
 import 'package:farmers_journal/data/repositories/excel_repository.dart';
 import 'package:farmers_journal/data/repositories/googleAPI.dart';
 import 'package:farmers_journal/domain/model/user.dart';
-import 'package:farmers_journal/domain/firebase/DefaultImage.dart';
+import 'package:farmers_journal/domain/firebase/default_image.dart';
 import 'package:farmers_journal/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';

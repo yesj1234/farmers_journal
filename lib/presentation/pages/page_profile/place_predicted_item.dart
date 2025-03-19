@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// {@category Presentation}
 class PlaceAutoCompletePredictionItem extends StatelessWidget {
   const PlaceAutoCompletePredictionItem(
       {super.key, required this.onTap, required this.description});

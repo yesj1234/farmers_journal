@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../day_view/animated_day_view.dart';
 
+/// {@category Presentation}
 class MonthViewDetails extends StatefulWidget {
   const MonthViewDetails({super.key, required this.initialDate});
   final DateTime initialDate;

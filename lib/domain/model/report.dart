@@ -1,3 +1,4 @@
+/// {@category Domain}
 class Report {
   Report(
       {required this.id,

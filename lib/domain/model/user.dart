@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmers_journal/domain/model/plant.dart';
 
+/// {@category Domain}
 class AppUser {
   final String id;
   final String email;

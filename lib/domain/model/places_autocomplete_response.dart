@@ -1,5 +1,6 @@
 import 'package:farmers_journal/enums.dart';
 
+/// {@category Domain}
 /// PlaceAutocompleteMatchedSubString from [here](https://developers.google.com/maps/documentation/places/web-service/autocomplete?_gl=1*j7omyq*_up*MQ..*_ga*ODQ3MzE0MDQuMTczMjA4MjE0MA..*_ga_NRWSTWS78N*MTczMjA4MjEzOS4xLjEuMTczMjA4MjU1OS4wLjAuMA..#PlaceAutocompleteMatchedSubstring)
 class PlaceAutocompleteMatchedSubString {
   PlaceAutocompleteMatchedSubString(

@@ -3,6 +3,7 @@ import 'package:farmers_journal/presentation/pages/page_main/day_view_shimmer.da
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// {@category Presentation}
 /// A widget that displays loading or error states at the bottom of a paginated list.
 ///
 /// This widget monitors the pagination state using Riverpod and shows either a

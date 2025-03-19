@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/interface/theme_preferences_interface.dart';
 
+/// {@category Data}
 class ThemePreferencesRepository implements ThemePreferencesInterface {
   ThemePreferencesRepository({required this.instance});
   final SharedPreferencesAsync instance;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// {@category Presentation}
 class ButtonCreatePost extends StatelessWidget {
   final VoidCallback onClick;
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+/// {@category Presentation}
 class PlaceMap2 extends ConsumerWidget {
   const PlaceMap2({super.key, required this.finalAddress, this.initialValue});
   final String finalAddress;

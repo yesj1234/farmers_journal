@@ -1,5 +1,6 @@
 import 'package:farmers_journal/domain/model/journal.dart';
 
+/// {@category Domain}
 /// Abstract class for journal repository
 ///
 abstract class JournalRepository {

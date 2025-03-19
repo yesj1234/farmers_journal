@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:excel/excel.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+/// {@category Data}
 /// Base class for Excel repository.
 ///
 class ExcelRepository {

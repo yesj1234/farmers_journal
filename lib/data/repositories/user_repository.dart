@@ -13,6 +13,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+/// {@category Data}
 /// Implementation of [AuthRepository] using Firebase auth backend service.
 class FireStoreUserRepository implements UserRepository {
   final FirebaseFirestore instance;

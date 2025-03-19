@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// {@category Presentation}
 /// A floating button that appears when scrolling down and returns to the top when pressed.
 ///
 /// This widget monitors the scroll position using a [ScrollController] and displays

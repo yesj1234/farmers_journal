@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// {@category Presentation}
 /// Enum representing the type of alert dialog.
 ///
 /// - [delete]: Used for deletion confirmations.

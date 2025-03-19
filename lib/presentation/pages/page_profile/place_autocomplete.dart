@@ -5,6 +5,7 @@ import 'package:farmers_journal/domain/model/places_autocomplete_response.dart';
 import 'package:farmers_journal/data/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// {@category Presentation}
 /// A widget for place autocomplete functionality with map preview.
 ///
 /// This widget provides a text field for location input, shows autocomplete

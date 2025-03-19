@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// {@category Presentation}
 class PageTermsAndPolicy extends StatelessWidget {
   const PageTermsAndPolicy({super.key});
 

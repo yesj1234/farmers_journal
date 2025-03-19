@@ -6,6 +6,7 @@ import 'package:farmers_journal/presentation/pages/page_main/community_view/scro
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
+/// {@category Presentation}
 /// A widget displaying journals grouped by week in a scrollable list with carousels.
 ///
 /// This widget fetches journals from the journal controller, groups them by week,

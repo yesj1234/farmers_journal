@@ -8,11 +8,11 @@ import 'package:farmers_journal/presentation/components/card/card_single.dart';
 
 import '../handle_journal_delete.dart';
 
+/// {@category Presentation}
 /// A widget that displays a journal entry as a card with images, text, and action buttons.
 ///
 /// This widget is used in the week view to present journal entries with optional images,
 /// title, content preview, and date, along with edit and delete actions.
-
 class WeekViewCard extends ConsumerWidget {
   /// Constructs a [WeekViewCard] widget.
   const WeekViewCard({

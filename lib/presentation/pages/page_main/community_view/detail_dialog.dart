@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
+/// {@category Presentation}
 /// A dialog widget displaying detailed journal information for a user.
 ///
 /// This widget shows a user's profile, journal details like plant and place,

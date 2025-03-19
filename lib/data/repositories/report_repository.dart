@@ -3,6 +3,7 @@ import 'package:farmers_journal/domain/interface/report_interface.dart';
 import 'package:farmers_journal/domain/model/report.dart';
 import 'package:uuid/uuid.dart';
 
+/// {@category Data}
 /// Implementation of [ReportRepository] using Firebase firestore backend service.
 class FireStoreReportRepository implements ReportRepository {
   FireStoreReportRepository({required this.instance});

@@ -6,6 +6,7 @@ import '../../../../domain/model/journal.dart';
 import '../../../components/card/day_view_card.dart';
 import '../../../components/handle_journal_delete.dart';
 
+/// {@category Presentation}
 /// A wrapper widget that displays a [DayViewCard] for a given journal entry.
 class AnimatedDayViewCard extends ConsumerStatefulWidget {
   /// Creates a [AnimatedDayViewCard] widget.

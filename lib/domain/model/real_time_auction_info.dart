@@ -7,7 +7,7 @@
 //| 대분류코드  | largeCd    | 2   | 옵션  | 06       | 코드검색 > 표준품목코드 검색 > 코드 (1,2자리)    |
 //| 중분류코드  | midCd      | 2   | 옵션  | 01       | 코드검색 > 표준품목코드 검색 > 코드 (3,4자리)    |
 //| 소분류코드  | smallCd    | 2   | 옵션  | 01       | 코드검색 > 표준품목코드 검색 > 코드 (5,6자리)    |
-
+/// {@category Domain}
 /// TODO: Define fromJson and toJson factory constructor.
 class RealTimeAuctionInfoItem {
   RealTimeAuctionInfoItem({

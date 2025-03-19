@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:farmers_journal/presentation/pages/page_profile/profile_banner.dart';
 
+/// {@category Presentation}
 class PageProfile extends ConsumerStatefulWidget {
   const PageProfile({super.key});
   @override

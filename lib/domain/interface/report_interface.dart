@@ -1,3 +1,4 @@
+/// {@category Domain}
 /// Abstract class for report repository
 ///
 abstract class ReportRepository {

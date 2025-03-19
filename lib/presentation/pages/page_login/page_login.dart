@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart' as apple_login;
 
+/// {@category Presentation}
 class PageLogin extends ConsumerWidget {
   const PageLogin({super.key});
   get registrationButtonStyle => ButtonStyle(

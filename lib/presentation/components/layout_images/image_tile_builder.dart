@@ -7,6 +7,7 @@ import '../../pages/page_journal/image_type.dart';
 import '../image_tile.dart';
 import 'layout_images_detail_screen.dart';
 
+/// {@category Presentation}
 /// A stateless widget that builds an image tile based on the provided image type.
 ///
 /// This widget supports different image types (`UrlImage` and `XFileImage`) and provides

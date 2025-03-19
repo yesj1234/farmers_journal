@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+/// {@category Presentation}
 class PageEditProfile extends ConsumerStatefulWidget {
   const PageEditProfile({super.key});
 
