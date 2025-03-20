@@ -1,5 +1,5 @@
 // Flutter imports
-import 'package:farmers_journal/presentation/controller/theme/theme_controller.dart';
+import 'package:farmers_journal/src/presentation/controller/theme/theme_controller.dart';
 import 'package:flutter/material.dart';
 
 //Firebase imports
@@ -19,8 +19,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:farmers_journal/gorouter_config.dart';
 
 // provider observer
-import 'package:farmers_journal/data/my_observer.dart';
+import 'package:farmers_journal/src/data/my_observer.dart';
 
+/// {@category Architecture}
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
