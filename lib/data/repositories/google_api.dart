@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:farmers_journal/domain/model/geocoding_response.dart';
-import 'package:farmers_journal/domain/model/places_autocomplete_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import '../../domain/model/geocoding_response.dart';
+import '../../domain/model/places_autocomplete_response.dart';
 
 /// {@category Data}
 /// Dart class for Google APIs.

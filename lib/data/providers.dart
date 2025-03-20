@@ -1,15 +1,15 @@
 import 'dart:math';
-import 'package:farmers_journal/data/firestore_providers.dart';
-import 'package:farmers_journal/data/repositories/excel_repository.dart';
-import 'package:farmers_journal/data/repositories/googleAPI.dart';
-import 'package:farmers_journal/domain/model/user.dart';
-import 'package:farmers_journal/domain/firebase/default_image.dart';
-import 'package:farmers_journal/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'firestore_providers.dart';
+import 'repositories/excel_repository.dart';
+import 'repositories/google_api.dart';
+import '../domain/model/user.dart';
+import '../domain/firebase/default_image.dart';
+import '../enums.dart';
 
 part 'providers.g.dart';
 

@@ -1,10 +1,7 @@
 import 'dart:math' hide log;
 import 'dart:typed_data';
 import 'package:logger/logger.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmers_journal/domain/interface/auth_interface.dart';
-import 'package:farmers_journal/domain/model/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
@@ -13,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart'
     as kakao_auth;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import '../../domain/interface/auth_interface.dart';
+import '../../domain/model/user.dart';
 
 /// {@category Data}
 /// Implementation of [AuthRepository] using Firebase auth backend service.

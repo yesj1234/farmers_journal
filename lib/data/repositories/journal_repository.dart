@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmers_journal/domain/interface/journal_interface.dart';
-import 'package:farmers_journal/domain/model/journal.dart';
+import '../../domain/interface/journal_interface.dart';
+import '../../domain/model/journal.dart';
 
 /// {@category Data}
 /// Implementation of [JournalRepository] using Firebase fire store backend service.
