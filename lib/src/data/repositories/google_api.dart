@@ -5,6 +5,7 @@ import '../../domain/model/geocoding_response.dart';
 import '../../domain/model/places_autocomplete_response.dart';
 
 /// {@category Data}
+/// {@category Repository}
 /// Dart class for Google APIs.
 class GoogleAPI {
   Future<GooglePlaceResponse> googlePlaceAPI(String place, String token) async {

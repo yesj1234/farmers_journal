@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 
 part 'user_controller.g.dart';
 
+/// {@category Controller}
 @riverpod
 class UserController extends _$UserController {
   @override

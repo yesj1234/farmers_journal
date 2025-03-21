@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// {@category Presentation}
+/// {@subCategory Component}
 /// A reusable button widget displaying a status label, icon, and value.
 ///
 /// This button is designed to be tappable, triggering a navigation or action

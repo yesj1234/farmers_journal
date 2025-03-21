@@ -6,6 +6,7 @@ import 'theme_controller_state.dart';
 
 part 'theme_controller.g.dart';
 
+/// {@category Controller}
 @Riverpod(keepAlive: true)
 class ThemeController extends _$ThemeController {
   ThemeMode _mode = ThemeMode.system;

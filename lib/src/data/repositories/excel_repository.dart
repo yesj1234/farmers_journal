@@ -3,7 +3,8 @@ import 'package:excel/excel.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 /// {@category Data}
-/// Base class for Excel repository.
+/// {@category Repository}
+/// Base class for Excel repository.md.
 ///
 class ExcelRepository {
   final String? filePath;
@@ -36,7 +37,7 @@ class ExcelRepository {
   }
 }
 
-/// [HScode](https://ko.wikipedia.org/wiki/HS%EC%BD%94%EB%93%9C)(Harmonized System code) excel repository provided by [AT Center](https://at.agromarket.kr/codeInfo/introduce.do).
+/// [HScode](https://ko.wikipedia.org/wiki/HS%EC%BD%94%EB%93%9C)(Harmonized System code) excel repository.md provided by [AT Center](https://at.agromarket.kr/codeInfo/introduce.do).
 ///
 /// * 부류 (Category / Section) : he highest-level classification concept in the HS Code, representing broad groups of agricultural products
 /// * 품목 (Item / Subcategory / Heading) : A classification concept that distinguishes specific types of agricultural products, such as grains, fruits, and vegetables.

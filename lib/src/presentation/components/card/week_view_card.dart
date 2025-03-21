@@ -9,6 +9,7 @@ import 'package:farmers_journal/src/presentation/components/card/card_single.dar
 import '../handle_journal_delete.dart';
 
 /// {@category Presentation}
+/// {@subCategory Component}
 /// A widget that displays a journal entry as a card with images, text, and action buttons.
 ///
 /// This widget is used in the week view to present journal entries with optional images,

@@ -4,7 +4,6 @@ import '../../domain/interface/report_interface.dart';
 import '../../domain/model/report.dart';
 
 /// {@category Data}
-/// Implementation of [ReportRepository] using Firebase firestore backend service.
 class FireStoreReportRepository implements ReportRepository {
   FireStoreReportRepository({required this.instance});
   final FirebaseFirestore instance;

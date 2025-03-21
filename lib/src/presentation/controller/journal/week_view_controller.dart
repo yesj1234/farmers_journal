@@ -7,6 +7,7 @@ import 'week_view_state.dart';
 
 part 'week_view_controller.g.dart';
 
+/// {@category Controller}
 @Riverpod(keepAlive: true)
 class WeekViewController extends _$WeekViewController {
   List<Journal?> _journals = [];

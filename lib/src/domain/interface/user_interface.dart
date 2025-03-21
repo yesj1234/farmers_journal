@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
 /// {@category Domain}
-/// Abstract class for user repository
+/// Abstract class for user repository.md
 ///
 abstract class UserRepository {
   Future<AppUser?> getUser();

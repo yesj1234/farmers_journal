@@ -6,6 +6,7 @@ import 'package:farmers_journal/src/data/firestore_providers.dart';
 
 part 'day_view_controller.g.dart';
 
+/// {@category Controller}
 @Riverpod(keepAlive: true)
 class DayViewController extends _$DayViewController {
   List<Journal?> _journals = [];

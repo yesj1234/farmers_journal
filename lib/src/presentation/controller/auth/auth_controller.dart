@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 part 'auth_controller.g.dart';
 
 // TODO: handle the error state when login fails. Currently, the loading status does not change.
+/// {@category Controller}
 @riverpod
 class AuthController extends _$AuthController {
   @override

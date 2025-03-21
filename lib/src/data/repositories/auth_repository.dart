@@ -14,15 +14,29 @@ import '../../domain/interface/auth_interface.dart';
 import '../../domain/model/user.dart';
 
 /// {@category Data}
-/// Implementation of [AuthRepository] using Firebase auth backend service.
+/// {@category Repository}
+/// Implementation of [AuthRepository] using Firebase Authentication as the backend service.
 ///
+/// This class provides authentication functionalities, such as signing in, signing up,
+/// resetting passwords, and handling third-party authentication (Apple, Kakao).
+///
+/// It also interacts with Firebase Firestore to store and manage user data.
 class FirebaseAuthRepository implements AuthRepository {
+  /// Constructor that sets the language code for Firebase Authentication.
+  ///
+  /// Accepts an instance of [firebase_auth.FirebaseAuth] and a [Logger] instance.
   FirebaseAuthRepository.setLanguage(
       {required this.instance, required this.logger}) {
     instance.setLanguageCode('kr');
   }
+
+  /// Logger instance for logging errors and info messages.
   final Logger logger;
+
+  /// Firebase Authentication instance used for authentication operations.
   final firebase_auth.FirebaseAuth instance;
+
+  /// Firestore instance to interact with the database.
   final _fireStore = FirebaseFirestore.instance;
   @override
   firebase_auth.User? getCurrentUser() {

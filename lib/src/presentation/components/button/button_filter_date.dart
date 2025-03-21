@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/src/data/providers.dart';
 
 /// {@category Presentation}
+/// {@subCategory Component}
 /// A segmented button widget that allows users to filter the main view
 /// by day, week, month, or community.
 ///

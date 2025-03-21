@@ -9,8 +9,24 @@ import 'package:farmers_journal/src/data/firestore_providers.dart';
 
 part 'journal_controller.g.dart';
 
+/// {@category Controller}
+///
+/// The `JournalController` is responsible for managing and fetching journal-related data.
+/// It interacts with the user repository to retrieve, manipulate, and organize journal entries.
+///
+/// This controller supports:
+/// - Fetching all journal entries
+/// - Grouping journals by week
+/// - Counting journal entries per month in a given year
+/// - Fetching distinct years containing journal entries
+/// - Retrieving a specific journal entry by ID
+/// - Deleting a journal entry
+/// - Reporting a journal entry
 @Riverpod(keepAlive: true)
 class JournalController extends _$JournalController {
+  /// Fetches all journal entries and sorts them by creation date in descending order.
+  ///
+  /// Returns a list of [Journal] objects wrapped in a [Future].
   @override
   Future<List<Journal?>> build() async {
     final repository = ref.read(userRepositoryProvider);
@@ -25,19 +41,23 @@ class JournalController extends _$JournalController {
     }
   }
 
+  /// Groups journal entries by week and returns them as a list of [WeeklyGroup<Journal>].
   Future<List<WeeklyGroup<Journal>>> getWeekViewJournals() async {
     final repository = ref.read(userRepositoryProvider);
     List<Journal?> journals = await repository.getJournals();
     return CustomDateUtils.groupItemsByWeek(journals);
   }
 
+  /// Retrieves the number of journal entries for each month in a given year.
+  ///
+  /// - [year]: The target year.
+  /// - Returns a [LinkedHashMap] where keys are month numbers (1-12) and values are entry counts.
   Future<LinkedHashMap<int, int>> getJournalCountByYear(
       {required int year}) async {
     final repository = ref.read(userRepositoryProvider);
     List<Journal?> journals = await repository.getJournalsByYear(year: year);
 
-    final monthlyJournals = CustomDateUtils.getMonthlyJournal(
-        journals); // Actually its monthly view journal.
+    final monthlyJournals = CustomDateUtils.getMonthlyJournal(journals);
     LinkedHashMap<int, int> res = LinkedHashMap.fromIterable(
       List.generate(12, (index) => index + 1),
       key: (i) => i,
@@ -49,6 +69,9 @@ class JournalController extends _$JournalController {
     return res;
   }
 
+  /// Retrieves the distinct years that have journal entries.
+  ///
+  /// Returns a set of years containing journal entries.
   Future<Set<int>> getYearsOfJournals() async {
     final repository = ref.read(userRepositoryProvider);
     List<Journal?> journals = await repository.getJournals();
@@ -62,11 +85,19 @@ class JournalController extends _$JournalController {
     return res;
   }
 
+  /// Retrieves a specific journal entry by its ID.
+  ///
+  /// - [id]: The unique identifier of the journal entry.
+  /// - Returns a [Journal] object wrapped in a [Future].
   Future<Journal> getJournal(String id) async {
     final repository = ref.read(journalRepositoryProvider);
     return await repository.getJournal(id);
   }
 
+  /// Deletes a journal entry by its ID.
+  ///
+  /// - [id]: The ID of the journal entry to delete.
+  /// - Updates the state and invalidates related controllers.
   Future<void> deleteJournal({required String id}) async {
     state = const AsyncLoading();
 
@@ -76,6 +107,12 @@ class JournalController extends _$JournalController {
     ref.invalidate(monthViewControllerProvider);
   }
 
+  /// Reports a journal entry for review.
+  ///
+  /// - [id]: The ID of the journal entry being reported.
+  /// - [userId]: The ID of the user reporting the entry.
+  /// - [reason]: The reason for reporting the journal entry.
+  /// - Updates the pagination controller to reflect changes.
   Future<void> reportJournal(
       {required String id,
       required String userId,

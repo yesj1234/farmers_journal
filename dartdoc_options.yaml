@@ -1,0 +1,30 @@
+dartdoc:
+  categories:
+    "Architecture":
+      markdown: lib/topics/architecture.md
+    "Data":
+      markdown: lib/topics/data.md
+    "Repository":
+      markdown: lib/topics/repository.md
+    "Domain":
+      markdown: lib/topics/domain.md
+    "Interface":
+      markdown: lib/topics/interface.md
+    "Firebase":
+      markdown: lib/topics/firebase.md
+    "Model":
+      markdown: lib/topics/model.md
+    "Presentation":
+      markdown: lib/topics/presentation.md
+    "Component":
+      markdown: lib/topics/component.md
+    "Controller":
+      markdown: lib/topics/controller.md
+    "Page":
+      markdown: lib/topics/page.md
+
+
+
+
+
+

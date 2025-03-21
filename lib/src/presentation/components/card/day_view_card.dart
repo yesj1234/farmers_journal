@@ -9,6 +9,7 @@ import 'package:farmers_journal/src/presentation/components/card/card_single.dar
 import '../../pages/page_journal/image_type.dart';
 
 /// {@category Presentation}
+/// {@subCategory Component}
 /// A card widget displaying a journal entry for a single day.
 ///
 /// This widget shows a journal's images, title, content, and date, with optional

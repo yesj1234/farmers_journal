@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// {@category Presentation}
+/// {@subCategory Component}
 /// A simple wrapper widget that applies padding to its child.
 ///
 /// This widget provides customizable horizontal and vertical padding around

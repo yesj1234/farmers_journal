@@ -1,6 +1,6 @@
 /// Repository inside the data layer.
 
-library repositories;
+library;
 
 export 'src/data/repositories/auth_repository.dart';
 export 'src/data/repositories/default_image_repository.dart';

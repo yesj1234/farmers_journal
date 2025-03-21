@@ -7,6 +7,7 @@ import 'month_view_state.dart';
 
 part 'month_view_controller.g.dart';
 
+/// {@category Controller}
 @Riverpod(keepAlive: true)
 class MonthViewController extends _$MonthViewController {
   List<Journal?> _journals = [];

@@ -3,6 +3,7 @@ import '../../domain/firebase/default_image.dart';
 import '../../domain/interface/default_image_interface.dart';
 
 /// {@category Data}
+/// {@category Repository}
 class FireStoreDefaultImageRepository implements DefaultImageRepository {
   final FirebaseFirestore instance;
   FireStoreDefaultImageRepository({required this.instance});

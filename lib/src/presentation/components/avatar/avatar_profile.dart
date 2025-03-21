@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// {@category Presentation}
+/// {@subCategory Component}
 class AvatarProfile extends ConsumerWidget {
   final double width;
   final double height;

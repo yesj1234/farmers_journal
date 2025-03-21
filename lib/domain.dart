@@ -1,6 +1,6 @@
 /// Defines application-specific model classes representing the data from the data layer.
 
-library domain;
+library;
 
 export 'src/domain/interface/auth_interface.dart';
 export 'src/domain/interface/default_image_interface.dart';

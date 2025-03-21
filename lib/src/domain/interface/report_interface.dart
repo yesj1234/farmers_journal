@@ -1,5 +1,5 @@
 /// {@category Domain}
-/// Abstract class for report repository
+/// Abstract class for report repository.md
 ///
 abstract class ReportRepository {
   Future<void> reportJournal(

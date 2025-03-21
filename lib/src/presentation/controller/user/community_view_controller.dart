@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'dart:async';
 part 'community_view_controller.g.dart';
 
+/// {@category Controller}
 @riverpod
 class CommunityViewController extends _$CommunityViewController {
   @override

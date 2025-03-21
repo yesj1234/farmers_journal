@@ -8,6 +8,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'journal_form_controller.g.dart';
 
+/// {@category Controller}
 @riverpod
 class JournalFormController extends _$JournalFormController {
   @override

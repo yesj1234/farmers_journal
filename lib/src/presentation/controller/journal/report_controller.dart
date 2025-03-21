@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'report_controller.g.dart';
 
+/// {@category Controller}
 @riverpod
 class ReportController extends _$ReportController {
   @override

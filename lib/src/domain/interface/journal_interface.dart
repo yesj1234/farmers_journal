@@ -1,7 +1,7 @@
 import 'package:farmers_journal/src/domain/model/journal.dart';
 
 /// {@category Domain}
-/// Abstract class for journal repository
+/// Abstract class for journal repository.md
 ///
 abstract class JournalRepository {
   Future<Journal> getJournal(String id);
