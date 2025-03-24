@@ -279,6 +279,15 @@ class TermsAndPolicy extends StatelessWidget {
           icon: Icons.privacy_tip,
           selectionName: '개인정보 처리방침',
         ),
+        SelectionItemWithCallback(
+          callback: () => showLicensePage(
+            context: context,
+            applicationName: 'Farmers Journal',
+            applicationVersion: '1.0.4',
+          ),
+          icon: Icons.description_outlined,
+          selectionName: '오픈소스 라이선스',
+        )
       ],
     );
   }
