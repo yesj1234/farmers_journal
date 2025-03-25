@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,7 +32,11 @@ class FireStoreUserRepository implements UserRepository {
     }
   }
 
-  Future<String> _uploadBytes({required Uint8List bytes, String? path}) async {
+  Future<String> _uploadBytes(
+      {required Uint8List bytes,
+      String? path,
+      void Function({int transferred, int totalBytes})?
+          progressCallback}) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Reference storageRef =
         FirebaseStorage.instance.ref().child("${path ?? ''}/$fileName");
@@ -39,6 +44,12 @@ class FireStoreUserRepository implements UserRepository {
     final compressedBytes = await FlutterImageCompress.compressWithList(bytes);
 
     UploadTask uploadTask = storageRef.putData(compressedBytes);
+
+    uploadTask.snapshotEvents.listen((snapshot) {
+      progressCallback?.call(
+          transferred: snapshot.bytesTransferred,
+          totalBytes: snapshot.totalBytes);
+    });
 
     TaskSnapshot snapshot = await uploadTask;
 
@@ -219,7 +230,11 @@ class FireStoreUserRepository implements UserRepository {
       {required String title,
       required String content,
       required DateTime date,
-      required List<XFile>? images}) async {
+      required List<XFile>? images,
+      void Function({
+        int transferred,
+        int totalBytes,
+      })? progressCallback}) async {
     try {
       final userRef = await _fetchUserRef();
       final userInfo = await userRef?.get().then((doc) {
@@ -248,13 +263,30 @@ class FireStoreUserRepository implements UserRepository {
       );
 
       if (images != null) {
-        List<String>? imageURLs = [];
-        for (final image in images) {
-          final bytes = await image.readAsBytes();
-          final downloadURL = await _uploadBytes(bytes: bytes, path: 'images');
-          imageURLs.add(downloadURL);
-        }
+        final imageUploadTasks = images.map((image) async {
+          try {
+            final bytes = await image.readAsBytes();
+            return _uploadBytes(
+                bytes: bytes,
+                path: 'images',
+                progressCallback: progressCallback);
+          } catch (e) {
+            return null; // allow partial image upload.
+          }
+        }).toList();
+        final imageURLs = await Future.wait(imageUploadTasks);
         newJournal = newJournal.copyWith(images: imageURLs);
+        // List<String> imageURLs = [];
+        // for (final image in images) {
+        //   final bytes = await image.readAsBytes();
+        //   final downloadURL = await _uploadBytes(
+        //     bytes: bytes,
+        //     path: 'images',
+        //     progressCallback: progressCallback,
+        //   );
+        //   imageURLs.add(downloadURL);
+        // }
+        // newJournal = newJournal.copyWith(images: imageURLs);
       }
       userRef?.update({
         "journals": FieldValue.arrayUnion([id])
@@ -275,31 +307,30 @@ class FireStoreUserRepository implements UserRepository {
       required DateTime date,
       required List<ImageType?>? images}) async {
     final journalRef = instance.collection("journals").doc(id);
-    log(images.toString());
-    List<String>? imageURLs = [];
+
     if (images != null && images.isNotEmpty) {
-      for (final image in images) {
+      final imageUploadTasks = images.map((image) async {
         switch (image) {
-          case null:
-            throw UnimplementedError();
           case UrlImage():
-            imageURLs.add(image.value);
+            return image.value;
           case XFileImage():
             final bytes = await image.value.readAsBytes();
             String downloadURL =
                 await _uploadBytes(path: 'images', bytes: bytes);
-            imageURLs.add(downloadURL);
+            return downloadURL;
+          case null:
+            throw UnimplementedError();
         }
-      }
+      }).toList();
+      final imageURLs = await Future.wait(imageUploadTasks);
+      await journalRef.update({
+        'id': id,
+        'title': title,
+        'content': content,
+        'date': date,
+        'images': imageURLs,
+      });
     }
-    await journalRef.update({
-      'id': id,
-      'title': title,
-      'content': content,
-      'date': date,
-      'images': imageURLs,
-    });
-
     return await getJournals();
   }
 
