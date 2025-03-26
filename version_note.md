@@ -22,4 +22,6 @@
 - Add selecting the theme between dark, light, and system. 
 
 **version 1.0.5:** 
-- Add tap gesture to extend the hidden images of journal. 
+- Add tap gesture to extend the hidden images of journal.
+- Add open source license page. 
+- Improve journal saving time.
