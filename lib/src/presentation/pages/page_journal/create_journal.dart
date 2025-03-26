@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:farmers_journal/src/presentation/components/journal_form_content.dart';
 import 'package:farmers_journal/src/presentation/components/journal_form_date.dart';
 import 'package:farmers_journal/src/presentation/components/journal_form_title.dart';
@@ -32,11 +34,8 @@ class _CreateJournalFormState extends ConsumerState<CreateJournalForm> {
   }
 
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController titleController = TextEditingController();
-
   final TextEditingController contentController = TextEditingController();
-
   final ImagePicker _imagePicker = ImagePicker();
 
   late final DateTime date;
@@ -62,6 +61,15 @@ class _CreateJournalFormState extends ConsumerState<CreateJournalForm> {
     date = widget.initialDate ?? DateTime.now();
   }
 
+  double? progress = 0;
+  double totalTransferred = 0;
+  Future<double> get totalBytesToUpload async {
+    final futureBytes = images.map((img) => img.readAsBytes()).toList();
+    List<Uint8List> bytesList = await Future.wait(futureBytes);
+    final bytes = bytesList.map((byte) => byte.length).toList();
+    return bytes.fold<double>(0.0, (sum, byte) => sum + byte);
+  }
+
   @override
   Widget build(BuildContext context) {
     final journalFormController = ref.watch(journalFormControllerProvider);
@@ -82,8 +90,8 @@ class _CreateJournalFormState extends ConsumerState<CreateJournalForm> {
                   height: MediaQuery.sizeOf(context).height / 5,
                   child: CustomImageWidgetLayout(
                     images: images.map((item) => XFileImage(item)).toList(),
-                    isEditMode: true,
                     onDelete: deleteImage,
+                    isEditMode: true,
                     isImagesHidden: false,
                   ),
                 )
@@ -132,15 +140,21 @@ class _CreateJournalFormState extends ConsumerState<CreateJournalForm> {
                   if (!isFormEmpty) {
                     _formKey.currentState?.save();
                     try {
+                      void Function(VoidCallback)? dialogSetState;
                       showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (BuildContext context) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          );
+                          return StatefulBuilder(builder: (context, setState) {
+                            dialogSetState =
+                                setState; // store the reference to dialogSetState.
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).primaryColor,
+                                value: progress,
+                              ),
+                            );
+                          });
                         },
                       );
 
@@ -150,7 +164,19 @@ class _CreateJournalFormState extends ConsumerState<CreateJournalForm> {
                               title: titleController.text,
                               content: contentController.text,
                               date: date,
-                              images: images)
+                              images: images,
+                              progressCallback: (
+                                  {int? transferred, int? totalBytes}) async {
+                                final total = await totalBytesToUpload;
+                                if (transferred != null && totalBytes != null) {
+                                  totalTransferred += transferred;
+                                  double newProgress = totalTransferred / total;
+                                  dialogSetState!(() {
+                                    progress = newProgress.clamp(
+                                        0, 1); // Ensure it stays within 0-1
+                                  });
+                                }
+                              })
                           .then(
                         (_) {
                           ref.invalidate(journalControllerProvider);

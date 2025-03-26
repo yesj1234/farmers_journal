@@ -44,11 +44,15 @@ class FireStoreUserRepository implements UserRepository {
     final compressedBytes = await FlutterImageCompress.compressWithList(bytes);
 
     UploadTask uploadTask = storageRef.putData(compressedBytes);
-
+    int lastTransferred = -1;
     uploadTask.snapshotEvents.listen((snapshot) {
-      progressCallback?.call(
-          transferred: snapshot.bytesTransferred,
-          totalBytes: snapshot.totalBytes);
+      if (lastTransferred != snapshot.bytesTransferred) {
+        lastTransferred = snapshot.bytesTransferred;
+
+        progressCallback?.call(
+            transferred: snapshot.bytesTransferred,
+            totalBytes: snapshot.totalBytes);
+      }
     });
 
     TaskSnapshot snapshot = await uploadTask;
@@ -300,12 +304,14 @@ class FireStoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<List<Journal?>> updateJournal(
-      {required String id,
-      required String title,
-      required String content,
-      required DateTime date,
-      required List<ImageType?>? images}) async {
+  Future<List<Journal?>> updateJournal({
+    required String id,
+    required String title,
+    required String content,
+    required DateTime date,
+    required List<ImageType?>? images,
+    void Function({int transferred, int totalBytes})? progressCallback,
+  }) async {
     final journalRef = instance.collection("journals").doc(id);
 
     if (images != null && images.isNotEmpty) {
@@ -315,8 +321,10 @@ class FireStoreUserRepository implements UserRepository {
             return image.value;
           case XFileImage():
             final bytes = await image.value.readAsBytes();
-            String downloadURL =
-                await _uploadBytes(path: 'images', bytes: bytes);
+            String downloadURL = await _uploadBytes(
+                path: 'images',
+                bytes: bytes,
+                progressCallback: progressCallback);
             return downloadURL;
           case null:
             throw UnimplementedError();

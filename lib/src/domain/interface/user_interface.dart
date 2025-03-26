@@ -27,6 +27,7 @@ abstract class UserRepository {
     required String content,
     required DateTime date,
     required List<XFile>? images,
+    void Function({int transferred, int totalBytes})? progressCallback,
   });
   Future<List<Journal?>> updateJournal({
     required String id,
@@ -34,6 +35,7 @@ abstract class UserRepository {
     required String content,
     required DateTime date,
     required List<ImageType?>? images,
+    void Function({int transferred, int totalBytes})? progressCallback,
   });
   Future<List<Journal?>> deleteJournal({required String id});
   Future<List<Journal?>> getJournalsByYear({required int year});

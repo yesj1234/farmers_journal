@@ -16,11 +16,16 @@ class JournalFormController extends _$JournalFormController {
     return const JournalFormControllerState.initial();
   }
 
-  Future<void> createJournal(
-      {required String title,
-      required String content,
-      required DateTime date,
-      required List<XFile>? images}) async {
+  Future<void> createJournal({
+    required String title,
+    required String content,
+    required DateTime date,
+    required List<XFile>? images,
+    void Function({
+      int transferred,
+      int totalBytes,
+    })? progressCallback,
+  }) async {
     state = const JournalFormControllerState.loading();
     if (title.isEmpty && content.isEmpty && images != null && images.isEmpty) {
       state = const JournalFormControllerState.initial();
@@ -29,19 +34,28 @@ class JournalFormController extends _$JournalFormController {
       );
     } else {
       await ref.read(userRepositoryProvider).createJournal(
-          title: title, content: content, date: date, images: images);
+          title: title,
+          content: content,
+          date: date,
+          images: images,
+          progressCallback: progressCallback);
       state = const JournalFormControllerState.done();
     }
     ref.invalidate(dayViewControllerProvider);
     ref.invalidate(monthViewControllerProvider);
   }
 
-  Future<void> updateJournal(
-      {required String id,
-      required String title,
-      required String content,
-      required DateTime date,
-      required List<ImageType?>? images}) async {
+  Future<void> updateJournal({
+    required String id,
+    required String title,
+    required String content,
+    required DateTime date,
+    required List<ImageType?>? images,
+    void Function({
+      int transferred,
+      int totalBytes,
+    })? progressCallback,
+  }) async {
     state = const JournalFormControllerState.loading();
     if (title.isEmpty && content.isEmpty && images != null && images.isEmpty) {
       state = const JournalFormControllerState.initial();
@@ -50,7 +64,12 @@ class JournalFormController extends _$JournalFormController {
       );
     } else {
       await ref.read(userRepositoryProvider).updateJournal(
-          id: id, title: title, content: content, date: date, images: images);
+          id: id,
+          title: title,
+          content: content,
+          date: date,
+          images: images,
+          progressCallback: progressCallback);
     }
     ref.invalidate(dayViewControllerProvider);
     ref.invalidate(monthViewControllerProvider);

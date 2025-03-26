@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:farmers_journal/src/domain/model/journal.dart';
 import 'package:farmers_journal/src/presentation/components/journal_form_content.dart';
 import 'package:farmers_journal/src/presentation/components/journal_form_date.dart';
@@ -9,13 +11,12 @@ import 'package:farmers_journal/src/presentation/controller/journal/journal_form
 import 'package:farmers_journal/src/presentation/pages/page_journal/image_type.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/src/presentation/controller/journal/journal_controller.dart';
 
 /// {@category Presentation}
-class UpdateJournalForm extends StatefulHookConsumerWidget {
+class UpdateJournalForm extends ConsumerStatefulWidget {
   const UpdateJournalForm({super.key, required this.id});
   final String? id;
   @override
@@ -24,8 +25,6 @@ class UpdateJournalForm extends StatefulHookConsumerWidget {
 }
 
 class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
-  final ImagePicker _imagePicker = ImagePicker();
-
   late final Future<Journal> _journal;
   String? title;
   String? content;
@@ -41,6 +40,7 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
+  final ImagePicker _imagePicker = ImagePicker();
 
   @override
   void initState() {
@@ -77,6 +77,25 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
         images = [];
       }
     });
+  }
+
+  double? progress = 0;
+  double totalTransferred = 0;
+  Future<double> get totalBytesToUpload async {
+    if (images.isEmpty) {
+      return 0.0;
+    }
+    final futureBytes = images.map((img) {
+      switch (img) {
+        case UrlImage():
+          return Future.value(Uint8List.fromList([0]));
+        case XFileImage():
+          return img.value.readAsBytes();
+      }
+    }).toList();
+    final bytesList = await Future.wait(futureBytes);
+    final bytes = bytesList.map((byte) => byte.length).toList();
+    return bytes.fold<double>(0.0, (sum, byte) => sum + byte);
   }
 
   @override
@@ -159,15 +178,21 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                           if (validated) {
                             _formKey.currentState?.save();
                             try {
+                              void Function(VoidCallback)? dialogSetState;
                               showDialog(
                                   context: context,
                                   barrierDismissible: false,
                                   builder: (BuildContext context) {
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                    );
+                                    return StatefulBuilder(
+                                        builder: (context, setState) {
+                                      dialogSetState = setState;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).primaryColor,
+                                          value: progress,
+                                        ),
+                                      );
+                                    });
                                   });
                               await ref
                                   .read(journalFormControllerProvider.notifier)
@@ -176,7 +201,21 @@ class _UpdateJournalFormState extends ConsumerState<UpdateJournalForm> {
                                       title: titleController.text,
                                       content: contentController.text,
                                       date: date ?? snapshot.data!.date!,
-                                      images: images)
+                                      images: images,
+                                      progressCallback: (
+                                          {int? transferred,
+                                          int? totalBytes}) async {
+                                        final total = await totalBytesToUpload;
+                                        if (transferred != null &&
+                                            totalBytes != null) {
+                                          totalTransferred += transferred;
+                                          double newProgress =
+                                              totalTransferred / total;
+                                          dialogSetState!(() {
+                                            progress = newProgress.clamp(0, 1);
+                                          });
+                                        }
+                                      })
                                   .then(
                                 (_) {
                                   ref.invalidate(journalControllerProvider);
