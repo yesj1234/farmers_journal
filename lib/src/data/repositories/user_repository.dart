@@ -279,17 +279,6 @@ class FireStoreUserRepository implements UserRepository {
         }).toList();
         final imageURLs = await Future.wait(imageUploadTasks);
         newJournal = newJournal.copyWith(images: imageURLs);
-        // List<String> imageURLs = [];
-        // for (final image in images) {
-        //   final bytes = await image.readAsBytes();
-        //   final downloadURL = await _uploadBytes(
-        //     bytes: bytes,
-        //     path: 'images',
-        //     progressCallback: progressCallback,
-        //   );
-        //   imageURLs.add(downloadURL);
-        // }
-        // newJournal = newJournal.copyWith(images: imageURLs);
       }
       userRef?.update({
         "journals": FieldValue.arrayUnion([id])
