@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
 
 class MyObserver extends ProviderObserver {
   @override
@@ -8,7 +8,9 @@ class MyObserver extends ProviderObserver {
     Object? value,
     ProviderContainer container,
   ) {
-    debugPrint('Provider $provider was initialized with $value');
+    if (kDebugMode) {
+      debugPrint('Provider $provider was initialized with $value');
+    }
   }
 
   @override
@@ -16,7 +18,9 @@ class MyObserver extends ProviderObserver {
     ProviderBase<Object?> provider,
     ProviderContainer container,
   ) {
-    debugPrint('Provider $provider was disposed');
+    if (kDebugMode) {
+      debugPrint('Provider $provider was disposed');
+    }
   }
 
   @override
@@ -26,7 +30,9 @@ class MyObserver extends ProviderObserver {
     Object? newValue,
     ProviderContainer container,
   ) {
-    debugPrint('Provider $provider updated from $previousValue to $newValue');
+    if (kDebugMode) {
+      debugPrint('Provider $provider updated from $previousValue to $newValue');
+    }
   }
 
   @override
@@ -36,6 +42,8 @@ class MyObserver extends ProviderObserver {
     StackTrace stackTrace,
     ProviderContainer container,
   ) {
-    debugPrint('Provider $provider threw $error at $stackTrace');
+    if (kDebugMode) {
+      debugPrint('Provider $provider threw $error at $stackTrace');
+    }
   }
 }
