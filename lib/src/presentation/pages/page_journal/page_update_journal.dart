@@ -123,83 +123,85 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
               ),
               actions: [
                 TextButton(
-                    onPressed: journalFormController.maybeWhen(
-                        orElse: () {
-                          return () async {
-                            bool validated =
-                                _formKey.currentState?.validate() ?? false;
+                  onPressed: journalFormController.maybeWhen(
+                      orElse: () {
+                        return () async {
+                          bool validated =
+                              _formKey.currentState?.validate() ?? false;
 
-                            if (validated) {
-                              _formKey.currentState?.save();
-                              try {
-                                void Function(VoidCallback)? dialogSetState;
-                                showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) {
-                                      return StatefulBuilder(
-                                          builder: (context, setState) {
-                                        dialogSetState = setState;
-                                        return Center(
-                                          child: CircularProgressIndicator(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            value: progress,
-                                          ),
-                                        );
-                                      });
-                                    });
-                                await ref
-                                    .read(
-                                        journalFormControllerProvider.notifier)
-                                    .updateJournal(
-                                        id: widget.id!,
-                                        title: titleController.text,
-                                        content: contentController.text,
-                                        date: date ?? snapshot.data!.date!,
-                                        images: images,
-                                        progressCallback: (
-                                            {int? transferred,
-                                            int? totalBytes}) async {
-                                          final total =
-                                              await totalBytesToUpload;
-                                          if (transferred != null &&
-                                              totalBytes != null) {
-                                            totalTransferred += transferred;
-                                            double newProgress =
-                                                totalTransferred / total;
-                                            dialogSetState!(() {
-                                              progress =
-                                                  newProgress.clamp(0, 1);
-                                            });
-                                          }
-                                        })
-                                    .then(
-                                  (_) {
-                                    ref.invalidate(journalControllerProvider);
-                                    if (context.mounted) {
-                                      context.go('/main');
-                                    }
-                                  },
-                                  onError: (e, st) {
-                                    if (context.mounted) {
-                                      showSnackBar(
-                                        context,
-                                        e.toString(),
+                          if (validated) {
+                            _formKey.currentState?.save();
+                            try {
+                              void Function(VoidCallback)? dialogSetState;
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return StatefulBuilder(
+                                        builder: (context, setState) {
+                                      dialogSetState = setState;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).primaryColor,
+                                          value: progress,
+                                        ),
                                       );
-                                    }
-                                  },
-                                );
-                              } catch (error) {
-                                if (context.mounted) {
-                                  showSnackBar(context, error.toString());
-                                }
+                                    });
+                                  });
+                              await ref
+                                  .read(journalFormControllerProvider.notifier)
+                                  .updateJournal(
+                                      id: widget.id!,
+                                      title: titleController.text,
+                                      content: contentController.text,
+                                      date: date ?? snapshot.data!.date!,
+                                      images: images,
+                                      progressCallback: (
+                                          {int? transferred,
+                                          int? totalBytes}) async {
+                                        final total = await totalBytesToUpload;
+                                        if (transferred != null &&
+                                            totalBytes != null) {
+                                          totalTransferred += transferred;
+                                          double newProgress =
+                                              totalTransferred / total;
+                                          dialogSetState!(() {
+                                            progress = newProgress.clamp(0, 1);
+                                          });
+                                        }
+                                      })
+                                  .then(
+                                (_) {
+                                  ref.invalidate(journalControllerProvider);
+                                  if (context.mounted) {
+                                    context.go('/main');
+                                  }
+                                },
+                                onError: (e, st) {
+                                  if (context.mounted) {
+                                    showSnackBar(
+                                      context,
+                                      e.toString(),
+                                    );
+                                  }
+                                },
+                              );
+                            } catch (error) {
+                              if (context.mounted) {
+                                showSnackBar(context, error.toString());
                               }
                             }
-                          };
-                        },
-                        loading: null),
-                    child: Text("완료"))
+                          }
+                        };
+                      },
+                      loading: null),
+                  child: const Text(
+                    "완료",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ],
               title: Text(
                 "일지 쓰기",
