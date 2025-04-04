@@ -27,9 +27,35 @@ class PageCreateJournal extends ConsumerStatefulWidget {
 
 class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
   bool get isFormEmpty {
-    return images.isEmpty &&
+    return imageNotifier.value.isEmpty &&
         titleController.text.trim().isEmpty &&
         contentController.text.trim().isEmpty;
+  }
+
+  // Refactoring with ValueNotifier when loading images.
+  final ValueNotifier<List<XFile>> imageNotifier =
+      ValueNotifier([]); // Defining the value notifier
+
+  Future<void> pickImage() async {
+    XFile? _image = await _imagePicker.pickImage(source: ImageSource.gallery);
+    // instead of invoking setState, which rebuilds the entire widget tree,
+    // this will only rebuild the widget that is necessary.
+    if (_image != null) {
+      imageNotifier.value = [...imageNotifier.value, _image];
+    }
+  }
+
+  Future<void> pickMultipleImages({required int limit}) async {
+    List<XFile> _images = await _imagePicker.pickMultiImage(limit: limit);
+    if (_images.isNotEmpty) {
+      imageNotifier.value = [...imageNotifier.value, ..._images];
+    }
+  }
+
+  void deleteImage(int id) {
+    final updateImages = List<XFile>.from(imageNotifier.value)..removeAt(id);
+    imageNotifier.value = updateImages;
+    _formKey.currentState?.validate();
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -39,19 +65,10 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
 
   late final DateTime date;
 
-  List<XFile> images = [];
-
   void onDatePicked(DateTime value) {
     setState(() {
       date = value;
     });
-  }
-
-  void deleteImage(int id) {
-    setState(() {
-      images.removeAt(id);
-    });
-    _formKey.currentState?.validate();
   }
 
   @override
@@ -60,10 +77,17 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
     date = widget.initialDate ?? DateTime.now();
   }
 
+  @override
+  void dispose() {
+    imageNotifier.dispose();
+    super.dispose();
+  }
+
   double? progress = 0;
   double totalTransferred = 0;
   Future<double> get totalBytesToUpload async {
-    final futureBytes = images.map((img) => img.readAsBytes()).toList();
+    final futureBytes =
+        imageNotifier.value.map((img) => img.readAsBytes()).toList();
     List<Uint8List> bytesList = await Future.wait(futureBytes);
     final bytes = bytesList.map((byte) => byte.length).toList();
     return bytes.fold<double>(0.0, (sum, byte) => sum + byte);
@@ -109,7 +133,7 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                               title: titleController.text,
                               content: contentController.text,
                               date: date,
-                              images: images,
+                              images: imageNotifier.value,
                               progressCallback: (
                                   {int? transferred, int? totalBytes}) async {
                                 final total = await totalBytesToUpload;
@@ -182,22 +206,27 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                           datePicked: widget.initialDate ?? date,
                           onDatePicked: onDatePicked,
                         ),
-                        images.isNotEmpty
-                            ? SizedBox(
-                                width: MediaQuery.sizeOf(context).width - 42,
-                                height: images.length <= 5
-                                    ? MediaQuery.sizeOf(context).height / 5
-                                    : MediaQuery.sizeOf(context).height / 2.5,
-                                child: CustomImageWidgetLayout(
-                                  images: images
-                                      .map((item) => XFileImage(item))
-                                      .toList(),
-                                  onDelete: deleteImage,
-                                  isEditMode: true,
-                                  isImagesHidden: false,
-                                ),
-                              )
-                            : const SizedBox.shrink(),
+                        ValueListenableBuilder(
+                            valueListenable: imageNotifier,
+                            builder: (context, images, child) => images
+                                    .isNotEmpty
+                                ? SizedBox(
+                                    width:
+                                        MediaQuery.sizeOf(context).width - 42,
+                                    height: images.length <= 5
+                                        ? MediaQuery.sizeOf(context).height / 5
+                                        : MediaQuery.sizeOf(context).height /
+                                            2.5,
+                                    child: CustomImageWidgetLayout(
+                                      images: images
+                                          .map((item) => XFileImage(item))
+                                          .toList(),
+                                      onDelete: deleteImage,
+                                      isEditMode: true,
+                                      isImagesHidden: false,
+                                    ),
+                                  )
+                                : const SizedBox.shrink()),
                         TitleForm(
                           controller: titleController,
                           notValid: isFormEmpty,
@@ -209,21 +238,15 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                             onImagePick: () async {
                               _formKey.currentState?.save();
                               try {
-                                if (images.length >= 8) {
+                                if (imageNotifier.value.length >= 8) {
                                   throw (Exception('사진은 최대 8장 까지 선택할 수 있습니다.'));
                                 }
-                                if (images.length >= 7) {
-                                  XFile? _image = await _imagePicker.pickImage(
-                                      source: ImageSource.gallery);
-                                  setState(() {
-                                    images = [...images, _image!];
-                                  });
+                                if (imageNotifier.value.length >= 7) {
+                                  pickImage();
                                 } else {
-                                  List<XFile> _images = await _imagePicker
-                                      .pickMultiImage(limit: 8 - images.length);
-                                  setState(() {
-                                    images = [...images, ..._images];
-                                  });
+                                  pickMultipleImages(
+                                    limit: 8 - imageNotifier.value.length,
+                                  );
                                 }
                               } catch (e) {
                                 if (context.mounted) {

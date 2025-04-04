@@ -7,11 +7,12 @@ import 'package:farmers_journal/src/presentation/components/layout_images/layout
 import 'package:farmers_journal/src/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/src/presentation/controller/journal/journal_form_controller.dart';
 import 'package:farmers_journal/src/presentation/pages/page_journal/image_type.dart';
+import 'package:farmers_journal/src/presentation/controller/journal/journal_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:farmers_journal/src/presentation/controller/journal/journal_controller.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 /// {@category Presentation}
 /// A page that allows users to update an existing journal entry.
@@ -37,10 +38,9 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
   String? title;
   String? content;
   DateTime? date;
-  List<ImageType> images = [];
 
   bool get isFormEmpty {
-    return images.isEmpty &&
+    return imageNotifier.value.isEmpty &&
         titleController.text.trim().isEmpty &&
         contentController.text.trim().isEmpty;
   }
@@ -49,6 +49,31 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
+  final ValueNotifier<List<ImageType>> imageNotifier = ValueNotifier([]);
+
+  Future<void> pickImage() async {
+    XFile? _image = await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (_image != null) {
+      imageNotifier.value = [...imageNotifier.value, XFileImage(_image)];
+    }
+  }
+
+  Future<void> pickMultipleImages({required int limit}) async {
+    List<XFile> _images = await _imagePicker.pickMultiImage(limit: limit);
+    if (_images.isNotEmpty) {
+      imageNotifier.value = [
+        ...imageNotifier.value,
+        ..._images.map((image) => XFileImage(image))
+      ];
+    }
+  }
+
+  void deleteImage(int id) {
+    final updatedImages = List<ImageType>.from(imageNotifier.value)
+      ..removeAt(id);
+    imageNotifier.value = updatedImages;
+    _formKey.currentState?.validate();
+  }
 
   @override
   void initState() {
@@ -60,7 +85,9 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
         titleController.text = journal.title ?? '';
         contentController.text = journal.content ?? '';
         date = journal.date;
-        images = journal.images?.map((path) => UrlImage(path!)).toList() ?? [];
+
+        imageNotifier.value =
+            journal.images?.map((path) => UrlImage(path!)).toList() ?? [];
       });
     });
   }
@@ -69,6 +96,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
   void dispose() {
     titleController.dispose();
     contentController.dispose();
+    imageNotifier.dispose();
     super.dispose();
   }
 
@@ -78,22 +106,13 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
     });
   }
 
-  void deleteImage(int id) {
-    setState(() {
-      images.removeAt(id);
-      if (images.isEmpty) {
-        images = [];
-      }
-    });
-  }
-
   double? progress = 0;
   double totalTransferred = 0;
   Future<double> get totalBytesToUpload async {
-    if (images.isEmpty) {
+    if (imageNotifier.value.isEmpty) {
       return 0.0;
     }
-    final futureBytes = images.map((img) {
+    final futureBytes = imageNotifier.value.map((img) {
       switch (img) {
         case UrlImage():
           return Future.value(Uint8List.fromList([0]));
@@ -155,7 +174,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                                       title: titleController.text,
                                       content: contentController.text,
                                       date: date ?? snapshot.data!.date!,
-                                      images: images,
+                                      images: imageNotifier.value,
                                       progressCallback: (
                                           {int? transferred,
                                           int? totalBytes}) async {
@@ -211,79 +230,70 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                 ),
               ),
             ),
-            body: Form(
-              key: _formKey,
-              child: LayoutBuilder(
-                builder: (context, viewport) {
-                  return SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints(minHeight: viewport.maxHeight),
-                      child: IntrinsicHeight(
-                        child: Center(
-                          child: Column(
-                            spacing: 10,
-                            children: [
-                              DateForm(
-                                initialDate: date!,
-                                datePicked: date,
-                                onDatePicked: onDatePicked,
-                              ),
-                              images.isEmpty
-                                  ? const SizedBox.shrink()
-                                  : SizedBox(
-                                      width:
-                                          MediaQuery.sizeOf(context).width - 42,
-                                      height: images.length <= 5
-                                          ? MediaQuery.sizeOf(context).height /
-                                              5
-                                          : MediaQuery.sizeOf(context).height /
-                                              2.5,
-                                      child: CustomImageWidgetLayout(
-                                        images: images,
-                                        onDelete: deleteImage,
-                                        isEditMode: true,
-                                        isImagesHidden: false,
-                                      ),
-                                    ),
-                              TitleForm(
-                                notValid: isFormEmpty,
-                                controller: titleController,
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: SizedBox(
-                                  height: MediaQuery.sizeOf(context).height / 2,
+            body: SafeArea(
+              child: Form(
+                key: _formKey,
+                child: LayoutBuilder(
+                  builder: (context, viewport) {
+                    return SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints:
+                            BoxConstraints(minHeight: viewport.maxHeight),
+                        child: IntrinsicHeight(
+                          child: Center(
+                            child: Column(
+                              spacing: 10,
+                              children: [
+                                DateForm(
+                                  initialDate: date!,
+                                  datePicked: date,
+                                  onDatePicked: onDatePicked,
+                                ),
+                                ValueListenableBuilder(
+                                    valueListenable: imageNotifier,
+                                    builder: (context, images, child) {
+                                      return images.isEmpty
+                                          ? const SizedBox.shrink()
+                                          : SizedBox(
+                                              width: MediaQuery.sizeOf(context)
+                                                      .width -
+                                                  42,
+                                              height: images.length <= 5
+                                                  ? MediaQuery.sizeOf(context)
+                                                          .height /
+                                                      5
+                                                  : MediaQuery.sizeOf(context)
+                                                          .height /
+                                                      2.5,
+                                              child: CustomImageWidgetLayout(
+                                                images: images,
+                                                onDelete: deleteImage,
+                                                isEditMode: true,
+                                                isImagesHidden: false,
+                                              ),
+                                            );
+                                    }),
+                                TitleForm(
+                                  notValid: isFormEmpty,
+                                  controller: titleController,
+                                ),
+                                Expanded(
+                                  flex: 3,
                                   child: ContentForm(
                                     controller: contentController,
                                     onImagePick: () async {
                                       _formKey.currentState?.save();
                                       try {
-                                        if (images.length >= 8) {
+                                        if (imageNotifier.value.length >= 8) {
                                           throw (Exception(
                                               '사진은 최대 8장 까지 선택할 수 있습니다.'));
                                         }
-                                        if (images.length >= 7) {
-                                          XFile? _image =
-                                              await _imagePicker.pickImage(
-                                                  source: ImageSource.gallery);
-                                          setState(() {
-                                            images = [
-                                              ...images,
-                                              XFileImage(_image!)
-                                            ];
-                                          });
+                                        if (imageNotifier.value.length >= 7) {
+                                          pickImage();
                                         } else {
-                                          List<XFile> _images =
-                                              await _imagePicker.pickMultiImage(
-                                                  limit: 8 - images.length);
-                                          setState(() {
-                                            images = [
-                                              ...images,
-                                              ..._images.map(
-                                                  (file) => XFileImage(file))
-                                            ];
-                                          });
+                                          pickMultipleImages(
+                                              limit: 8 -
+                                                  imageNotifier.value.length);
                                         }
                                       } catch (e) {
                                         if (context.mounted) {
@@ -293,14 +303,14 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                                     },
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           );
