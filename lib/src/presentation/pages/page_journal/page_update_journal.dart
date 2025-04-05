@@ -12,7 +12,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 /// {@category Presentation}
 /// A page that allows users to update an existing journal entry.
@@ -39,12 +38,6 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
   String? content;
   DateTime? date;
 
-  bool get isFormEmpty {
-    return imageNotifier.value.isEmpty &&
-        titleController.text.trim().isEmpty &&
-        contentController.text.trim().isEmpty;
-  }
-
   final _formKey = GlobalKey<FormState>();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
@@ -56,6 +49,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
     if (_image != null) {
       imageNotifier.value = [...imageNotifier.value, XFileImage(_image)];
     }
+    _formKey.currentState?.validate();
   }
 
   Future<void> pickMultipleImages({required int limit}) async {
@@ -66,6 +60,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
         ..._images.map((image) => XFileImage(image))
       ];
     }
+    _formKey.currentState?.validate();
   }
 
   void deleteImage(int id) {
@@ -274,8 +269,9 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                                             );
                                     }),
                                 TitleForm(
-                                  notValid: isFormEmpty,
-                                  controller: titleController,
+                                  titleController: titleController,
+                                  contentController: contentController,
+                                  notifier: imageNotifier,
                                 ),
                                 Expanded(
                                   flex: 3,

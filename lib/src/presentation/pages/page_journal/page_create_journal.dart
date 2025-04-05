@@ -1,17 +1,14 @@
 import 'dart:typed_data';
-
 import 'package:farmers_journal/src/presentation/components/journal_form_content.dart';
 import 'package:farmers_journal/src/presentation/components/journal_form_date.dart';
 import 'package:farmers_journal/src/presentation/components/journal_form_title.dart';
 import 'package:farmers_journal/src/presentation/components/layout_images/layout_images.dart';
 import 'package:farmers_journal/src/presentation/components/show_snackbar.dart';
-
 import 'package:farmers_journal/src/presentation/controller/journal/journal_controller.dart';
 import 'package:farmers_journal/src/presentation/controller/journal/journal_form_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-
 import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/src/presentation/pages/page_journal/image_type.dart';
 
@@ -26,15 +23,7 @@ class PageCreateJournal extends ConsumerStatefulWidget {
 }
 
 class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
-  bool get isFormEmpty {
-    return imageNotifier.value.isEmpty &&
-        titleController.text.trim().isEmpty &&
-        contentController.text.trim().isEmpty;
-  }
-
-  // Refactoring with ValueNotifier when loading images.
-  final ValueNotifier<List<XFile>> imageNotifier =
-      ValueNotifier([]); // Defining the value notifier
+  final ValueNotifier<List<XFile>> imageNotifier = ValueNotifier([]);
 
   Future<void> pickImage() async {
     XFile? _image = await _imagePicker.pickImage(source: ImageSource.gallery);
@@ -55,7 +44,6 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
   void deleteImage(int id) {
     final updateImages = List<XFile>.from(imageNotifier.value)..removeAt(id);
     imageNotifier.value = updateImages;
-    _formKey.currentState?.validate();
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -75,6 +63,7 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
   void initState() {
     super.initState();
     date = widget.initialDate ?? DateTime.now();
+    imageNotifier.addListener(() => _formKey.currentState?.validate());
   }
 
   @override
@@ -106,7 +95,9 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                 loading: null,
                 orElse: () async {
                   _formKey.currentState?.validate();
-                  if (!isFormEmpty) {
+                  if (imageNotifier.value.isNotEmpty ||
+                      titleController.text.trim().isNotEmpty ||
+                      contentController.text.trim().isNotEmpty) {
                     _formKey.currentState?.save();
                     try {
                       void Function(VoidCallback)? dialogSetState;
@@ -228,8 +219,9 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                                   )
                                 : const SizedBox.shrink()),
                         TitleForm(
-                          controller: titleController,
-                          notValid: isFormEmpty,
+                          titleController: titleController,
+                          contentController: contentController,
+                          notifier: imageNotifier,
                         ),
                         Expanded(
                           flex: 3,

@@ -18,18 +18,16 @@ class TitleForm extends StatelessWidget {
   /// Creates a [TitleForm] widget.
   ///
   /// Requires a [controller] for managing text input and a [notValid] flag to indicate whether validation should be enforced
-  const TitleForm({
-    super.key,
-    required this.controller,
-    required this.notValid,
-  });
+  const TitleForm(
+      {super.key,
+      required this.titleController,
+      required this.contentController,
+      required this.notifier});
 
   ///  Controls the text being edited.
-  final TextEditingController controller;
-
-  /// Whether the input is required.
-  /// If true, an error message is shown when the input is empty.
-  final bool notValid;
+  final TextEditingController titleController;
+  final TextEditingController contentController;
+  final ValueNotifier notifier;
 
   /// The text style applied to the input field.
   TextStyle get textStyle => const TextStyle(
@@ -43,9 +41,11 @@ class TitleForm extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.sizeOf(context).width / 1.2,
       child: TextFormField(
-        controller: controller,
+        controller: titleController,
         validator: (value) {
-          if (notValid && controller.text.isEmpty) {
+          if (titleController.text.trim().isEmpty &&
+              contentController.text.trim().isEmpty &&
+              notifier.value.isEmpty) {
             return '비어 있는 일지를 만들 수 없습니다.';
           } else {
             return null;
