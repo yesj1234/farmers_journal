@@ -25,3 +25,6 @@
 - Add tap gesture to extend the hidden images of journal.
 - Add open source license page. 
 - Improve journal saving time.
+
+**version 1.0.6:** 
+- Fix validation logic when creating or updating journal. 

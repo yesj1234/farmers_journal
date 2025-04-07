@@ -49,7 +49,6 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
     if (_image != null) {
       imageNotifier.value = [...imageNotifier.value, XFileImage(_image)];
     }
-    _formKey.currentState?.validate();
   }
 
   Future<void> pickMultipleImages({required int limit}) async {
@@ -60,14 +59,12 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
         ..._images.map((image) => XFileImage(image))
       ];
     }
-    _formKey.currentState?.validate();
   }
 
   void deleteImage(int id) {
     final updatedImages = List<ImageType>.from(imageNotifier.value)
       ..removeAt(id);
     imageNotifier.value = updatedImages;
-    _formKey.currentState?.validate();
   }
 
   @override
@@ -84,6 +81,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
         imageNotifier.value =
             journal.images?.map((path) => UrlImage(path!)).toList() ?? [];
       });
+      imageNotifier.addListener(() => _formKey.currentState?.validate());
     });
   }
 
@@ -228,6 +226,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
             body: SafeArea(
               child: Form(
                 key: _formKey,
+                autovalidateMode: AutovalidateMode.always,
                 child: LayoutBuilder(
                   builder: (context, viewport) {
                     return SingleChildScrollView(

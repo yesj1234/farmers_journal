@@ -46,7 +46,7 @@ class TitleForm extends StatelessWidget {
           if (titleController.text.trim().isEmpty &&
               contentController.text.trim().isEmpty &&
               notifier.value.isEmpty) {
-            return '비어 있는 일지를 만들 수 없습니다.';
+            return '모든 내용이 비어 있는 일지를 만들 수 없습니다.';
           } else {
             return null;
           }
