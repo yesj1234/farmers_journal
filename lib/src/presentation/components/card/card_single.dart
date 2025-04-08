@@ -205,9 +205,9 @@ class _MyCascadingMenuState extends State<MyCascadingMenu> {
             }
           },
           child: Icon(
-            Icons.more_horiz, // Three-dot menu icon
+            Icons.more_vert_outlined, // Three-dot menu icon
             color: themeData
-                .buttonTheme.colorScheme?.onSurface, // Semi-transparent black
+                .buttonTheme.colorScheme?.onPrimary, // Semi-transparent black
             size: 24,
           ),
         );

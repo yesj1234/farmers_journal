@@ -13,8 +13,11 @@ class DetailScreenPageView extends StatefulWidget {
   ///
   /// [tags] is a list of `UrlImage` objects representing images to be displayed.
   /// [initialIndex] determines which image should be shown first.
-  const DetailScreenPageView(
-      {super.key, required this.tags, required this.initialIndex});
+  const DetailScreenPageView({
+    super.key,
+    required this.tags,
+    required this.initialIndex,
+  });
 
   final List<UrlImage> tags;
   final int initialIndex;
@@ -70,11 +73,11 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
 
   void handlePanEnd(DragEndDetails details) {
     if (offset.dy.abs() > 20) {
-      Navigator.pop(context);
+      Navigator.of(context).pop(_tabController.index);
       return;
     }
     if (details.primaryVelocity!.abs() > dragThreshold) {
-      Navigator.pop(context);
+      Navigator.of(context).pop(_tabController.index);
       return;
     }
     setState(() {
@@ -93,7 +96,7 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
     final tappedY = details.globalPosition.dy;
 
     if (tappedY < imageTop || tappedY > imageBottom) {
-      Navigator.pop(context);
+      Navigator.of(context).pop(_tabController.index);
     }
   }
 

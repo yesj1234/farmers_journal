@@ -228,7 +228,6 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                           child: ContentForm(
                             controller: contentController,
                             onImagePick: () async {
-                              _formKey.currentState?.save();
                               try {
                                 if (imageNotifier.value.length >= 8) {
                                   throw (Exception('사진은 최대 8장 까지 선택할 수 있습니다.'));
