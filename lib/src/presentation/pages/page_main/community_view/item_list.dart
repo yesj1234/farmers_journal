@@ -8,6 +8,8 @@ import 'package:farmers_journal/src/presentation/pages/page_main/day_view_shimme
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../journal_detail/journal_detail.dart';
+
 /// {@category Presentation}
 /// A widget that displays a list of journal items based on pagination state.
 ///
@@ -101,26 +103,10 @@ class ItemsListBuilder extends ConsumerWidget {
         (context, index) {
           final journalInfo = journals[index];
           return GestureDetector(
-            onTap: () {
-              ref
-                  .read(communityViewControllerProvider.notifier)
-                  .getUserById(id: journalInfo!.writer!);
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return Consumer(builder: (context, ref, child) {
-                    final userInfo = ref.watch(communityViewControllerProvider);
-                    return userInfo.when(
-                      data: (info) => DataStateDialog(
-                          info: info, journalInfo: journals[index]!),
-                      loading: () => const ShimmerLoadingStateDialog(),
-                      error: (e, st) => const ErrorStateDialog(),
-                      initial: () => const ShimmerLoadingStateDialog(),
-                    );
-                  });
-                },
-              );
-            },
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (BuildContext context) {
+              return JournalDetail(journal: journalInfo);
+            })),
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 4),
               child: _DayViewCard(journal: journals[index]!),

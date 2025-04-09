@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:farmers_journal/src/domain/model/journal.dart';
 
+import '../../pages/page_main/journal_detail/journal_detail.dart';
+
 /// {@category Presentation}
 /// A carousel widget displaying a list of journal entries.
 ///
@@ -44,23 +46,10 @@ class _MyCarouselState extends ConsumerState<MyCarousel> {
           // Iterate over journal entries and create a carousel item for each.
           for (var journal in widget.journals)
             GestureDetector(
-              onTap: () {
-                // Opens a dialog when a journal card is tapped.
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Consumer(builder: (context, ref, child) {
-                        // Watches the user info state from the Riverpod provider.
-                        final userInfo = ref.watch(userControllerProvider);
-                        return userInfo.when(
-                          data: (info) => DataStateDialog(
-                              info: info!, journalInfo: journal),
-                          loading: () => const ShimmerLoadingStateDialog(),
-                          error: (e, st) => const ErrorStateDialog(),
-                        );
-                      });
-                    });
-              },
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (BuildContext context) {
+                return JournalDetail(journal: journal);
+              })),
               child: WeekViewCard(
                   dateFontSize: 10,
                   textMaxLine: 1,

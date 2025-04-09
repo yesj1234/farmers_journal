@@ -135,12 +135,14 @@ class MyCascadingMenu extends StatefulWidget {
     required this.onCallBack2,
     required this.menuType,
     this.onTapCallback,
+    this.color,
   });
 
   final CascadingMenuType menuType;
   final VoidCallback onCallBack1;
   final VoidCallback onCallBack2;
   final void Function()? onTapCallback;
+  final Color? color;
   @override
   State<StatefulWidget> createState() => _MyCascadingMenuState();
 }
@@ -206,8 +208,9 @@ class _MyCascadingMenuState extends State<MyCascadingMenu> {
           },
           child: Icon(
             Icons.more_vert_outlined, // Three-dot menu icon
-            color: themeData
-                .buttonTheme.colorScheme?.onPrimary, // Semi-transparent black
+            color: widget.color ??
+                themeData.buttonTheme.colorScheme
+                    ?.onPrimary, // Semi-transparent black
             size: 24,
           ),
         );

@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmers_journal/src/data/repositories/comment_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../domain/interface/comment_interface.dart';
 import 'providers.dart';
 import 'repositories/auth_repository.dart';
 import 'repositories/default_image_repository.dart';
@@ -32,6 +35,10 @@ final reportRepositoryProvider = Provider<ReportRepository>((ref) {
 
 final journalRepositoryProvider = Provider<JournalRepository>((ref) {
   return FireStoreJournalRepository(instance: FirebaseFirestore.instance);
+});
+
+final commentRepositoryProvider = Provider<CommentRepository>((ref) {
+  return FireStoreCommentRepository(instance: FirebaseFirestore.instance);
 });
 
 final defaultImageRepositoryProvider = Provider<DefaultImageRepository>((ref) {
