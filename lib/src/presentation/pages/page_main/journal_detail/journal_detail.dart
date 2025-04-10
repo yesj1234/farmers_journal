@@ -7,13 +7,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../domain/model/journal.dart';
 import '../../../components/show_alert_dialog.dart';
+import '../../../components/show_report_dialog.dart';
 import '../../../components/show_snackbar.dart';
 import '../../../controller/journal/journal_controller.dart';
 import '../../../controller/journal/pagination_controller.dart';
 import '../../../controller/journal/report_controller.dart';
 import '../../../controller/user/community_view_controller.dart';
 import '../../../controller/user/user_controller.dart';
-import '../community_view/detail_dialog.dart';
 import 'comments.dart';
 import 'image_pageview.dart';
 
@@ -23,6 +23,7 @@ class JournalDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
@@ -47,10 +48,12 @@ class JournalDetail extends StatelessWidget {
                               height: MediaQuery.sizeOf(context).height / 2.4,
                               child: ImagePageView(journal: journal!),
                             ),
+                      const SizedBox(height: 5),
                       SizedBox(
                         height: 55,
                         child: UserProfile(journal: journal!),
                       ),
+                      const SizedBox(height: 1),
                       journal!.title!.isEmpty
                           ? const SizedBox.shrink()
                           : Padding(
@@ -67,7 +70,8 @@ class JournalDetail extends StatelessWidget {
                       const Divider(),
                       Padding(
                           padding: const EdgeInsets.only(left: 12),
-                          child: Comments(journalId: journal!.id!))
+                          child: Comments(journalId: journal!.id!)),
+                      const SizedBox(height: 50),
                     ],
                   ),
                 ),
@@ -112,8 +116,8 @@ class _BuildAppBar extends StatelessWidget {
                         ? Theme.of(context).primaryColor
                         : Colors.white,
                     menuType: CascadingMenuType.personal,
-                    onCallBack1: () => context.push('/update/${journal.id}'),
-                    onCallBack2: () {
+                    onCallback1: () => context.push('/update/${journal.id}'),
+                    onCallback2: () {
                       showMyAlertDialog(
                         context: context,
                         type: AlertDialogType.delete,
@@ -131,8 +135,8 @@ class _BuildAppBar extends StatelessWidget {
                         ? Theme.of(context).primaryColor
                         : Colors.white,
                     menuType: CascadingMenuType.community,
-                    onCallBack1: () {
-                      showReportDialog(
+                    onCallback1: () {
+                      showCupertinoReportDialog(
                           context: context,
                           journalId: journal.id!,
                           onConfirm: (String? value) {
@@ -146,7 +150,7 @@ class _BuildAppBar extends StatelessWidget {
                                   );
                               ref
                                   .read(reportControllerProvider.notifier)
-                                  .createReport(
+                                  .reportJournal(
                                     journalId: journal.id!,
                                     writerId: userInfo.value!.id,
                                     reason: value ?? '',
@@ -160,13 +164,13 @@ class _BuildAppBar extends StatelessWidget {
                             Navigator.pop(context);
                           });
                     },
-                    onCallBack2: () => showMyAlertDialog(
+                    onCallback2: () => showMyCupertinoAlertDialog(
                         context: context,
                         type: AlertDialogType.block,
                         cb: () {
                           ref
                               .read(userControllerProvider.notifier)
-                              .blockUser(id: journal!.writer!);
+                              .blockUser(id: journal.writer!);
                           ref.invalidate(communityViewControllerProvider);
                           Navigator.pop(context);
                           ref.invalidate(paginationControllerProvider);
@@ -177,15 +181,6 @@ class _BuildAppBar extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class Comment extends StatelessWidget {
-  const Comment({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
   }
 }
 

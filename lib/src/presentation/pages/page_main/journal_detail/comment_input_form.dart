@@ -15,6 +15,7 @@ class CommentInputField extends ConsumerStatefulWidget {
 
 class _CommentInputFieldState extends ConsumerState<CommentInputField> {
   final TextEditingController _controller = TextEditingController();
+
   bool isSending = false;
 
   void _submit() async {
@@ -51,11 +52,15 @@ class _CommentInputFieldState extends ConsumerState<CommentInputField> {
             Expanded(
               child: TextField(
                 controller: _controller,
-                decoration: const InputDecoration(
-                  hintText: "댓글을 입력하세요...",
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  hintText: "댓글을 입력하세요.",
+                  border: const OutlineInputBorder(),
                   isDense: true,
+                  filled: true,
+                  fillColor: Theme.of(context).scaffoldBackgroundColor,
                 ),
+                minLines: 1,
+                maxLines: 4,
               ),
             ),
             const SizedBox(width: 8),

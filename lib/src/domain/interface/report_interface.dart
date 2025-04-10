@@ -6,4 +6,8 @@ abstract class ReportRepository {
       {required String journalId,
       required String writerId,
       required String reason});
+  Future<void> reportComment(
+      {required String journalId,
+      required String writerId,
+      required String reason});
 }

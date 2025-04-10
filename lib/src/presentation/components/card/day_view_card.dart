@@ -35,6 +35,7 @@ class DayViewCard extends ConsumerStatefulWidget {
     this.textMaxLine = 3,
     this.dateFontSize = 12,
     this.onTapCallback,
+    this.doEnlarge,
   });
 
   final Journal journal;
@@ -47,6 +48,7 @@ class DayViewCard extends ConsumerStatefulWidget {
   final int textMaxLine;
   final double dateFontSize;
   final void Function()? onTapCallback;
+  final bool? doEnlarge;
   @override
   ConsumerState<DayViewCard> createState() => _DayViewCardState();
 }
@@ -99,6 +101,7 @@ class _DayViewCardState extends ConsumerState<DayViewCard> {
                         onTapCallback: widget.onTapCallback,
                         isImagesHidden: _isImagesHidden,
                         showHiddenImages: _showHiddenImages,
+                        doEnlarge: widget.doEnlarge,
                       ),
                     ),
                   )

@@ -10,10 +10,11 @@ import '../../../components/handle_journal_delete.dart';
 /// A wrapper widget that displays a [DayViewCard] for a given journal entry.
 class AnimatedDayViewCard extends ConsumerStatefulWidget {
   /// Creates a [AnimatedDayViewCard] widget.
-  const AnimatedDayViewCard({super.key, required this.journal});
+  const AnimatedDayViewCard({super.key, required this.journal, this.doEnlarge});
 
   /// The journal entry to display.
   final Journal journal;
+  final bool? doEnlarge;
 
   @override
   ConsumerState<AnimatedDayViewCard> createState() =>
@@ -112,6 +113,7 @@ class _AnimatedDayViewCardState extends ConsumerState<AnimatedDayViewCard>
         editIconStartFrom: editIconStartFrom,
         deleteOnDragThreshold: deleteOnDragThreshold,
         ref: ref,
+        doEnlarge: widget.doEnlarge,
       ),
     );
   }
@@ -199,6 +201,7 @@ class AnimatedDayViewBuilder extends AnimatedWidget {
     this.onTapCallback,
     this.isOverThreshold,
     this.ref,
+    this.doEnlarge,
   }) : super(listenable: animation);
 
   final Animation<double> animation;
@@ -215,6 +218,7 @@ class AnimatedDayViewBuilder extends AnimatedWidget {
   final void Function()? onTapCallback;
   final bool? isOverThreshold;
   final WidgetRef? ref;
+  final bool? doEnlarge;
   @override
   Widget build(BuildContext context) {
     final Widget deleteIconButton = IconButton(
@@ -287,6 +291,7 @@ class AnimatedDayViewBuilder extends AnimatedWidget {
                 verticalPadding: 0,
                 journal: journal,
                 onTapCallback: onTapCallback,
+                doEnlarge: doEnlarge,
               ),
             ),
           ),

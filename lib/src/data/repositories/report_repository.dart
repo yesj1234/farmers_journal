@@ -26,4 +26,23 @@ class FireStoreReportRepository implements ReportRepository {
       throw Exception(error);
     }
   }
+
+  @override
+  Future<void> reportComment(
+      {required String journalId,
+      required String writerId,
+      required String reason}) async {
+    final String uuid = const Uuid().v4();
+    final newReport = Report(
+      id: uuid,
+      writerId: writerId,
+      journalId: journalId,
+      reason: reason,
+    ).toJson();
+    try {
+      instance.collection('reports').doc(uuid).set(newReport);
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
 }

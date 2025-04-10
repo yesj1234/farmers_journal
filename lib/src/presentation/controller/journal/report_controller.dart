@@ -12,7 +12,7 @@ class ReportController extends _$ReportController {
     return const ReportState.initial();
   }
 
-  void createReport({
+  void reportJournal({
     required String journalId,
     required String writerId,
     required String reason,
@@ -20,6 +20,19 @@ class ReportController extends _$ReportController {
     state = const ReportState.loading();
     try {
       ref.read(reportRepositoryProvider).reportJournal(
+          journalId: journalId, writerId: writerId, reason: reason);
+      state = const ReportState.done();
+    } catch (error, st) {
+      state = ReportState.error(error, st);
+    }
+  }
+
+  void reportComment(
+      {required String journalId,
+      required String writerId,
+      required String reason}) {
+    try {
+      ref.read(reportRepositoryProvider).reportComment(
           journalId: journalId, writerId: writerId, reason: reason);
       state = const ReportState.done();
     } catch (error, st) {

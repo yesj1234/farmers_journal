@@ -92,22 +92,20 @@ class _DataState extends StatelessWidget {
               ),
               SizedBox(
                 width: MediaQuery.sizeOf(context).width - 90,
-                child: FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: RichText(
-                    textAlign: TextAlign.start,
-                    text: TextSpan(
-                      text: '$plant, ',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                      children: [
-                        TextSpan(
-                            text: place,
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ],
-                    ),
+                child: RichText(
+                  textAlign: TextAlign.start,
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                    text: '$plant, ',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                    children: [
+                      TextSpan(
+                          text: '${place?.replaceAll(RegExp(r'대한민국'), '')}',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                    ],
                   ),
                 ),
               )

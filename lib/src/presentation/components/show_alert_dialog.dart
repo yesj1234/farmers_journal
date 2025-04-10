@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// {@category Presentation}
@@ -75,4 +76,51 @@ Future<void> showMyAlertDialog(
           ],
         );
       });
+}
+
+Future<void> showMyCupertinoAlertDialog({
+  required BuildContext context,
+  required AlertDialogType type,
+  required VoidCallback cb,
+}) async {
+  final alertTitle = switch (type) {
+    AlertDialogType.delete => const Text('삭제'),
+    AlertDialogType.block => const Text('차단'),
+  };
+
+  final alertContent = switch (type) {
+    AlertDialogType.delete => const Text('정말 삭제 하시겠습니까?\n이 동작은 되돌릴 수 없습니다.'),
+    AlertDialogType.block =>
+      const Text('정말 차단 하시겠습니까?\n이 동작은 이 유저의 모든 글을 차단합니다.'),
+  };
+
+  final confirmText = switch (type) {
+    AlertDialogType.delete => '삭제',
+    AlertDialogType.block => '차단',
+  };
+
+  return showCupertinoDialog(
+    barrierDismissible: true,
+    context: context,
+    builder: (BuildContext context) {
+      return CupertinoAlertDialog(
+        title: alertTitle,
+        content: alertContent,
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('취소'),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              cb();
+              Navigator.of(context).pop();
+            },
+            child: Text(confirmText),
+          ),
+        ],
+      );
+    },
+  );
 }

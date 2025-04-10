@@ -10,7 +10,13 @@ class CommentController extends _$CommentController {
   @override
   FutureOr<List<Comment>> build(String journalId) async {
     final repo = ref.read(commentRepositoryProvider);
-    return await repo.getComments(journalId);
+    final user = ref.read(userRepositoryProvider);
+    final userInfo = await user.getUser();
+    final comments = await repo.getComments(journalId);
+    for (String blockedUser in userInfo!.blockedUsers!) {
+      comments.removeWhere((comment) => comment.writerId == blockedUser);
+    }
+    return comments;
   }
 
   Future<void> addComment(

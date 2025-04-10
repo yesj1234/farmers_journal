@@ -16,6 +16,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
     this.onTapCallback,
     this.isImagesHidden = true,
     this.showHiddenImages,
+    this.doEnlarge,
   });
 
   /// Optional. Whether  gallery is in edit mode, which shows delete buttons. Default is false.
@@ -32,6 +33,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
 
   final bool isImagesHidden;
   final void Function()? showHiddenImages;
+  final bool? doEnlarge;
 
   static const opacityCurve = Interval(0.0, 0.75, curve: Curves.fastOutSlowIn);
 
@@ -113,6 +115,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
             onDelete: onDelete,
             onTapCallback: onTapCallback,
             isEditMode: isEditMode,
+            doEnlarge: doEnlarge,
           );
         case 2:
           return DoubleImageBuilder(
@@ -122,6 +125,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
             onDelete: onDelete,
             isEditMode: isEditMode,
             onTapCallback: onTapCallback,
+            doEnlarge: doEnlarge,
           );
         case 3:
           return TripleImageBuilder(
@@ -131,6 +135,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
             onDelete: onDelete,
             isEditMode: isEditMode,
             onTapCallback: onTapCallback,
+            doEnlarge: doEnlarge,
           );
         case 4:
           return QuadrupleImageBuilder(
@@ -140,6 +145,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
             onDelete: onDelete,
             isEditMode: isEditMode,
             onTapCallback: onTapCallback,
+            doEnlarge: doEnlarge,
           );
         case 5:
           return QuintupleImageBuilder(
@@ -149,6 +155,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
             onDelete: onDelete,
             isEditMode: isEditMode,
             onTapCallback: onTapCallback,
+            doEnlarge: doEnlarge,
           );
         default:
           return MultipleImageBuilder(
@@ -160,6 +167,7 @@ class CustomImageWidgetLayout extends StatelessWidget {
             onTapCallback: onTapCallback,
             isImagesHidden: isImagesHidden,
             showHiddenImages: showHiddenImages,
+            doEnlarge: doEnlarge,
           );
       }
     } else {

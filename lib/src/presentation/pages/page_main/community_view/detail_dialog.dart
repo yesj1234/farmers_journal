@@ -9,10 +9,13 @@ import 'package:farmers_journal/src/presentation/controller/journal/report_contr
 import 'package:farmers_journal/src/presentation/controller/user/community_view_controller.dart';
 import 'package:farmers_journal/src/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/src/presentation/components/show_alert_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../components/show_report_dialog.dart';
 
 /// {@category Presentation}
 /// A dialog widget displaying detailed journal information for a user.
@@ -77,14 +80,14 @@ class DataStateDialog extends StatelessWidget {
                     return userInfo.value!.id == journalInfo.writer
                         ? MyCascadingMenu(
                             menuType: CascadingMenuType.personal,
-                            onCallBack1: () => context
+                            onCallback1: () => context
                                 .push('/update/${journalInfo.id}')
                                 .then((value) {
                               if (value == true && context.mounted) {
                                 context.pop();
                               }
                             }),
-                            onCallBack2: () {
+                            onCallback2: () {
                               showMyAlertDialog(
                                 context: context,
                                 type: AlertDialogType.delete,
@@ -100,8 +103,8 @@ class DataStateDialog extends StatelessWidget {
                           )
                         : MyCascadingMenu(
                             menuType: CascadingMenuType.community,
-                            onCallBack1: () {
-                              showReportDialog(
+                            onCallback1: () {
+                              showCupertinoReportDialog(
                                   context: context,
                                   journalId: journalInfo.id!,
                                   onConfirm: (String? value) {
@@ -117,7 +120,7 @@ class DataStateDialog extends StatelessWidget {
                                       ref
                                           .read(
                                               reportControllerProvider.notifier)
-                                          .createReport(
+                                          .reportJournal(
                                             journalId: journalInfo.id!,
                                             writerId: userInfo.value!.id,
                                             reason: value ?? '',
@@ -131,7 +134,7 @@ class DataStateDialog extends StatelessWidget {
                                     Navigator.pop(context);
                                   });
                             },
-                            onCallBack2: () => showMyAlertDialog(
+                            onCallback2: () => showMyAlertDialog(
                                 context: context,
                                 type: AlertDialogType.block,
                                 cb: () {
@@ -357,112 +360,4 @@ class ErrorStateDialog extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Displays a dialog for reporting a journal with selectable reasons.
-///
-/// [context]: The build context to show the dialog in.
-/// [journalId]: The ID of the journal being reported.
-/// [onConfirm]: Callback function invoked with the selected reason when confirmed.
-void showReportDialog({
-  required BuildContext context,
-  required String journalId,
-  required void Function(String? value) onConfirm,
-}) {
-  String? selectedReason;
-  final TextEditingController customReasonController = TextEditingController();
-
-  showDialog(
-    context: context,
-    builder: (ctx) => StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        return AlertDialog(
-          title: const Text('게시물 신고'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DropdownButtonFormField<String>(
-                hint: const FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Text('신고 사유 선택'),
-                ),
-                isExpanded: true,
-                items: const [
-                  DropdownMenuItem(
-                    value: 'Spam',
-                    child: FittedBox(
-                        fit: BoxFit.fitWidth, child: Text('스팸 또는 사기')),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Hate Speech or Discrimination',
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text('혐오 발언 또는 차별'),
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Inappropriate Content',
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text('부적절한 콘텐츠'),
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Misinformation or Fake News',
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text('허위 정보 또는 가짜 뉴스'),
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Violence or Harm',
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text('폭력 또는 유채 콘텐츠'),
-                    ),
-                  ),
-                  DropdownMenuItem(value: 'Other', child: Text('기타')),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    selectedReason = value;
-                  });
-                },
-              ),
-              if (selectedReason == 'Other')
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: TextField(
-                    controller: customReasonController,
-                    decoration: const InputDecoration(
-                      labelText: '신고 사유를 입력해주세요.',
-                      border: OutlineInputBorder(),
-                    ),
-                    maxLines: 3,
-                  ),
-                ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('취소'),
-            ),
-            TextButton(
-              onPressed: () {
-                final reason = selectedReason == 'Other'
-                    ? customReasonController.text
-                    : selectedReason;
-                if (reason != null) {
-                  onConfirm(reason);
-                  Navigator.pop(ctx);
-                }
-              },
-              child: const Text('제출'),
-            ),
-          ],
-        );
-      },
-    ),
-  );
 }

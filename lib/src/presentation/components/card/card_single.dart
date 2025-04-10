@@ -102,8 +102,8 @@ class DatePortion extends StatelessWidget {
               ? Flexible(
                   child: MyCascadingMenu(
                     menuType: CascadingMenuType.personal,
-                    onCallBack1: onEdit,
-                    onCallBack2: onDelete,
+                    onCallback1: onEdit,
+                    onCallback2: onDelete,
                     onTapCallback: onTapCallback,
                   ),
                 ) // Show menu if editable
@@ -128,21 +128,26 @@ class MyCascadingMenu extends StatefulWidget {
   /// Creates a [MyCascadingMenu] widget.
   ///
   /// The [menuType] determines the menu options.
-  /// The [onCallBack1] and [onCallBack2] handle the two menu actions.
+  /// The [onCallback1] and [onCallback2] handle the two menu actions.
   const MyCascadingMenu({
     super.key,
-    required this.onCallBack1,
-    required this.onCallBack2,
+    required this.onCallback1,
+    required this.onCallback2,
     required this.menuType,
     this.onTapCallback,
     this.color,
+    this.onCallback1Name,
+    this.onCallback2Name,
   });
 
   final CascadingMenuType menuType;
-  final VoidCallback onCallBack1;
-  final VoidCallback onCallBack2;
+  final VoidCallback onCallback1;
+  final VoidCallback onCallback2;
   final void Function()? onTapCallback;
   final Color? color;
+  final String? onCallback1Name;
+  final String? onCallback2Name;
+
   @override
   State<StatefulWidget> createState() => _MyCascadingMenuState();
 }
@@ -153,38 +158,38 @@ class _MyCascadingMenuState extends State<MyCascadingMenu> {
   List<Widget> get menus => switch (widget.menuType) {
         CascadingMenuType.personal => [
             MenuItemButton(
-              onPressed: () => widget.onCallBack1(),
-              child: const Row(children: [
-                Icon(Icons.edit),
-                Text("수정하기"), // "Edit" in Korean
+              onPressed: () => widget.onCallback1(),
+              child: Row(children: [
+                const Icon(Icons.edit),
+                Text(widget.onCallback1Name ?? "수정하기"),
               ]),
             ),
             MenuItemButton(
-              onPressed: () => widget.onCallBack2(),
-              child: const Row(children: [
-                Icon(Icons.delete_forever),
-                Text("삭제하기"), // "Delete" in Korean
+              onPressed: () => widget.onCallback2(),
+              child: Row(children: [
+                const Icon(Icons.delete_forever),
+                Text(widget.onCallback2Name ?? "삭제하기"),
               ]),
             ),
           ],
         CascadingMenuType.community => [
             MenuItemButton(
-              onPressed: () => widget.onCallBack1(),
-              child: const Row(
+              onPressed: () => widget.onCallback1(),
+              child: Row(
                 spacing: 5,
                 children: [
-                  Icon(Icons.report_outlined),
-                  Text("글 신고"), // "Report Post" in Korean
+                  const Icon(Icons.report_outlined),
+                  Text(widget.onCallback1Name ?? "글 신고"),
                 ],
               ),
             ),
             MenuItemButton(
-              onPressed: () => widget.onCallBack2(),
-              child: const Row(
+              onPressed: () => widget.onCallback2(),
+              child: Row(
                 spacing: 5,
                 children: [
-                  Icon(Icons.block_sharp),
-                  Text("유저 차단"), // "Block User" in Korean
+                  const Icon(Icons.block_sharp),
+                  Text(widget.onCallback2Name ?? "유저 차단"),
                 ],
               ),
             ),
@@ -210,7 +215,7 @@ class _MyCascadingMenuState extends State<MyCascadingMenu> {
             Icons.more_vert_outlined, // Three-dot menu icon
             color: widget.color ??
                 themeData.buttonTheme.colorScheme
-                    ?.onPrimary, // Semi-transparent black
+                    ?.onSurface, // Semi-transparent black
             size: 24,
           ),
         );

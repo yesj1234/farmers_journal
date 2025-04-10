@@ -58,7 +58,10 @@ class _DayViewState extends ConsumerState<DayView> {
                     })),
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 4),
-                      child: AnimatedDayViewCard(journal: journal),
+                      child: AnimatedDayViewCard(
+                        journal: journal,
+                        doEnlarge: false,
+                      ),
                     ),
                   ),
                 );

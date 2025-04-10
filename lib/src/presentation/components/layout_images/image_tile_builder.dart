@@ -29,6 +29,7 @@ class ImageTileBuilder extends StatelessWidget {
     this.onDelete,
     this.isEditMode,
     this.onTapCallback,
+    this.doEnlarge,
   });
 
   /// Index of the image in the list.
@@ -60,6 +61,9 @@ class ImageTileBuilder extends StatelessWidget {
 
   /// Callback function triggered when the image tile is tapped.
   final void Function()? onTapCallback;
+
+  /// Whether to use the widget as the original use case, to expand to a detail page view of the images.
+  final bool? doEnlarge;
 
   /// Opacity transition curve for hero animations.
   static const opacityCurve = Interval(0.0, 0.75, curve: Curves.fastOutSlowIn);
@@ -105,33 +109,39 @@ class ImageTileBuilder extends StatelessWidget {
                 child: imageTile,
               );
 
-        return GestureDetector(
-          onTap: isEditMode ?? false
-              ? null
-              : () {
-                  onTapCallback?.call();
-                  Navigator.of(context).push(
-                    PageRouteBuilder(
-                      maintainState: true,
-                      opaque: false,
-                      transitionsBuilder: (context, animation, _, child) =>
-                          Opacity(
-                              opacity: opacityCurve.transform(animation.value),
-                              child: child),
-                      pageBuilder: (
-                        context,
-                        _,
-                        __,
-                      ) =>
-                          DetailScreenPageView(
-                        tags: images as List<UrlImage>,
-                        initialIndex: index,
+        if (doEnlarge == null || doEnlarge == true) {
+          return GestureDetector(
+            onTap: isEditMode ?? false
+                ? null
+                : () {
+                    onTapCallback?.call();
+                    Navigator.of(context).push(
+                      PageRouteBuilder(
+                        maintainState: true,
+                        opaque: false,
+                        transitionsBuilder: (context, animation, _, child) =>
+                            Opacity(
+                                opacity:
+                                    opacityCurve.transform(animation.value),
+                                child: child),
+                        pageBuilder: (
+                          context,
+                          _,
+                          __,
+                        ) =>
+                            DetailScreenPageView(
+                          tags: images as List<UrlImage>,
+                          initialIndex: index,
+                        ),
                       ),
-                    ),
-                  );
-                },
-          child: child,
-        );
+                    );
+                  },
+            child: child,
+          );
+        } else {
+          return child;
+        }
+
       case XFileImage():
         return imageTile;
     }
@@ -148,6 +158,7 @@ class SingleImageBuilder extends StatelessWidget {
     this.onDelete,
     this.isEditMode,
     this.onTapCallback,
+    this.doEnlarge,
   });
 
   final double width;
@@ -157,7 +168,7 @@ class SingleImageBuilder extends StatelessWidget {
   final void Function(int index)? onDelete;
   final bool? isEditMode;
   final void Function()? onTapCallback;
-
+  final bool? doEnlarge;
   @override
   Widget build(BuildContext context) {
     return ImageTileBuilder(
@@ -171,6 +182,7 @@ class SingleImageBuilder extends StatelessWidget {
       onDelete: onDelete,
       isEditMode: isEditMode,
       onTapCallback: onTapCallback,
+      doEnlarge: doEnlarge,
     );
   }
 }
@@ -184,6 +196,7 @@ class DoubleImageBuilder extends StatelessWidget {
     this.onDelete,
     this.isEditMode,
     this.onTapCallback,
+    this.doEnlarge,
   });
 
   final double width;
@@ -192,6 +205,7 @@ class DoubleImageBuilder extends StatelessWidget {
   final void Function(int index)? onDelete;
   final bool? isEditMode;
   final void Function()? onTapCallback;
+  final bool? doEnlarge;
 
   @override
   Widget build(BuildContext context) {
@@ -210,6 +224,7 @@ class DoubleImageBuilder extends StatelessWidget {
             onDelete: onDelete,
             isEditMode: isEditMode,
             onTapCallback: onTapCallback,
+            doEnlarge: doEnlarge,
           ),
         ),
         Expanded(
@@ -224,6 +239,7 @@ class DoubleImageBuilder extends StatelessWidget {
             isEditMode: isEditMode,
             onTapCallback: onTapCallback,
             images: images,
+            doEnlarge: doEnlarge,
           ),
         ),
       ],
@@ -240,6 +256,7 @@ class TripleImageBuilder extends StatelessWidget {
     this.onDelete,
     this.isEditMode,
     this.onTapCallback,
+    this.doEnlarge,
   });
 
   final double width;
@@ -248,7 +265,7 @@ class TripleImageBuilder extends StatelessWidget {
   final void Function(int index)? onDelete;
   final bool? isEditMode;
   final void Function()? onTapCallback;
-
+  final bool? doEnlarge;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -266,6 +283,7 @@ class TripleImageBuilder extends StatelessWidget {
             onDelete: onDelete,
             isEditMode: isEditMode,
             onTapCallback: onTapCallback,
+            doEnlarge: doEnlarge,
           ),
         ),
         Expanded(
@@ -284,6 +302,7 @@ class TripleImageBuilder extends StatelessWidget {
                   onDelete: onDelete,
                   isEditMode: isEditMode,
                   onTapCallback: onTapCallback,
+                  doEnlarge: doEnlarge,
                 ),
               ),
               Expanded(
@@ -298,6 +317,7 @@ class TripleImageBuilder extends StatelessWidget {
                   onDelete: onDelete,
                   isEditMode: isEditMode,
                   onTapCallback: onTapCallback,
+                  doEnlarge: doEnlarge,
                 ),
               )
             ],
@@ -317,6 +337,7 @@ class QuadrupleImageBuilder extends StatelessWidget {
     this.onDelete,
     this.isEditMode,
     this.onTapCallback,
+    this.doEnlarge,
   });
 
   final double width;
@@ -325,6 +346,7 @@ class QuadrupleImageBuilder extends StatelessWidget {
   final void Function(int index)? onDelete;
   final bool? isEditMode;
   final void Function()? onTapCallback;
+  final bool? doEnlarge;
 
   @override
   Widget build(BuildContext context) {
@@ -341,6 +363,7 @@ class QuadrupleImageBuilder extends StatelessWidget {
           onDelete: onDelete,
           isEditMode: isEditMode,
           onTapCallback: onTapCallback,
+          doEnlarge: doEnlarge,
         ),
       ),
       Expanded(
@@ -359,6 +382,7 @@ class QuadrupleImageBuilder extends StatelessWidget {
                 onDelete: onDelete,
                 isEditMode: isEditMode,
                 onTapCallback: onTapCallback,
+                doEnlarge: doEnlarge,
               ),
             ),
             Expanded(
@@ -377,6 +401,7 @@ class QuadrupleImageBuilder extends StatelessWidget {
                       onDelete: onDelete,
                       isEditMode: isEditMode,
                       onTapCallback: onTapCallback,
+                      doEnlarge: doEnlarge,
                     ),
                   ),
                   Expanded(
@@ -391,6 +416,7 @@ class QuadrupleImageBuilder extends StatelessWidget {
                       onDelete: onDelete,
                       isEditMode: isEditMode,
                       onTapCallback: onTapCallback,
+                      doEnlarge: doEnlarge,
                     ),
                   ),
                 ],
@@ -412,6 +438,7 @@ class QuintupleImageBuilder extends StatelessWidget {
     this.onDelete,
     this.isEditMode,
     this.onTapCallback,
+    this.doEnlarge,
   });
 
   final double width;
@@ -420,6 +447,7 @@ class QuintupleImageBuilder extends StatelessWidget {
   final void Function(int index)? onDelete;
   final bool? isEditMode;
   final void Function()? onTapCallback;
+  final bool? doEnlarge;
 
   @override
   Widget build(BuildContext context) {
@@ -436,6 +464,7 @@ class QuintupleImageBuilder extends StatelessWidget {
           onDelete: onDelete,
           isEditMode: isEditMode,
           onTapCallback: onTapCallback,
+          doEnlarge: doEnlarge,
         ),
       ),
       Expanded(
@@ -458,6 +487,7 @@ class QuintupleImageBuilder extends StatelessWidget {
                       onDelete: onDelete,
                       isEditMode: isEditMode,
                       onTapCallback: onTapCallback,
+                      doEnlarge: doEnlarge,
                     ),
                   ),
                   Expanded(
@@ -472,6 +502,7 @@ class QuintupleImageBuilder extends StatelessWidget {
                       onDelete: onDelete,
                       isEditMode: isEditMode,
                       onTapCallback: onTapCallback,
+                      doEnlarge: doEnlarge,
                     ),
                   ),
                 ],
@@ -493,6 +524,7 @@ class QuintupleImageBuilder extends StatelessWidget {
                       onDelete: onDelete,
                       isEditMode: isEditMode,
                       onTapCallback: onTapCallback,
+                      doEnlarge: doEnlarge,
                     ),
                   ),
                   Expanded(
@@ -507,6 +539,7 @@ class QuintupleImageBuilder extends StatelessWidget {
                       onDelete: onDelete,
                       isEditMode: isEditMode,
                       onTapCallback: onTapCallback,
+                      doEnlarge: doEnlarge,
                     ),
                   ),
                 ],
@@ -536,6 +569,7 @@ class MultipleImageBuilder extends StatefulWidget {
     this.onTapCallback,
     this.isImagesHidden = true,
     this.showHiddenImages,
+    this.doEnlarge,
   });
 
   /// The width of the image display area.
@@ -561,6 +595,7 @@ class MultipleImageBuilder extends StatefulWidget {
 
   /// Callback function to show hidden images.
   final void Function()? showHiddenImages;
+  final bool? doEnlarge;
 
   @override
   State<MultipleImageBuilder> createState() => _MultipleImageBuilderState();
@@ -601,6 +636,7 @@ class _MultipleImageBuilderState extends State<MultipleImageBuilder> {
                     onDelete: widget.onDelete,
                     isEditMode: widget.isEditMode,
                     onTapCallback: widget.onTapCallback,
+                    doEnlarge: widget.doEnlarge,
                   )),
                   Expanded(
                     child: Column(
@@ -622,6 +658,7 @@ class _MultipleImageBuilderState extends State<MultipleImageBuilder> {
                                   onDelete: widget.onDelete,
                                   isEditMode: widget.isEditMode,
                                   onTapCallback: widget.onTapCallback,
+                                  doEnlarge: widget.doEnlarge,
                                 ),
                               ),
                               Expanded(
@@ -636,6 +673,7 @@ class _MultipleImageBuilderState extends State<MultipleImageBuilder> {
                                   onDelete: widget.onDelete,
                                   isEditMode: widget.isEditMode,
                                   onTapCallback: widget.onTapCallback,
+                                  doEnlarge: widget.doEnlarge,
                                 ),
                               ),
                             ],
@@ -657,6 +695,7 @@ class _MultipleImageBuilderState extends State<MultipleImageBuilder> {
                                   onDelete: widget.onDelete,
                                   isEditMode: widget.isEditMode,
                                   onTapCallback: widget.onTapCallback,
+                                  doEnlarge: widget.doEnlarge,
                                 ),
                               ),
                               Expanded(
@@ -676,6 +715,7 @@ class _MultipleImageBuilderState extends State<MultipleImageBuilder> {
                                           onDelete: widget.onDelete,
                                           isEditMode: widget.isEditMode,
                                           onTapCallback: widget.onTapCallback,
+                                          doEnlarge: widget.doEnlarge,
                                         ),
                                       ),
                                     ),
@@ -722,6 +762,7 @@ class _MultipleImageBuilderState extends State<MultipleImageBuilder> {
                         onDelete: widget.onDelete,
                         isEditMode: widget.isEditMode,
                         onTapCallback: widget.onTapCallback,
+                        doEnlarge: widget.doEnlarge,
                       ),
                     ),
             )
@@ -741,6 +782,7 @@ class RemainingImageBuilder extends StatelessWidget {
     this.onDelete,
     this.isEditMode,
     this.onTapCallback,
+    this.doEnlarge,
   });
   final double width;
   final double height;
@@ -748,7 +790,7 @@ class RemainingImageBuilder extends StatelessWidget {
   final void Function(int index)? onDelete;
   final bool? isEditMode;
   final void Function()? onTapCallback;
-
+  final bool? doEnlarge;
   @override
   Widget build(BuildContext context) {
     if (images.length == 6) {
@@ -760,6 +802,7 @@ class RemainingImageBuilder extends StatelessWidget {
         onDelete: onDelete,
         onTapCallback: onTapCallback,
         isEditMode: isEditMode,
+        doEnlarge: doEnlarge,
       );
     }
     if (images.length == 7) {
@@ -770,6 +813,7 @@ class RemainingImageBuilder extends StatelessWidget {
         onDelete: onDelete,
         isEditMode: isEditMode,
         onTapCallback: onTapCallback,
+        doEnlarge: doEnlarge,
       );
     }
     if (images.length == 8) {
@@ -780,6 +824,7 @@ class RemainingImageBuilder extends StatelessWidget {
         onDelete: onDelete,
         isEditMode: isEditMode,
         onTapCallback: onTapCallback,
+        doEnlarge: doEnlarge,
       );
     }
     return const SizedBox.shrink();
@@ -794,6 +839,7 @@ class _DoubleRemainingImageTile extends StatelessWidget {
     this.onDelete,
     this.isEditMode,
     this.onTapCallback,
+    this.doEnlarge,
   });
 
   final double width;
@@ -802,6 +848,7 @@ class _DoubleRemainingImageTile extends StatelessWidget {
   final void Function(int index)? onDelete;
   final bool? isEditMode;
   final void Function()? onTapCallback;
+  final bool? doEnlarge;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -819,6 +866,7 @@ class _DoubleRemainingImageTile extends StatelessWidget {
             onDelete: onDelete,
             isEditMode: isEditMode,
             onTapCallback: onTapCallback,
+            doEnlarge: doEnlarge,
           ),
         ),
         Expanded(
@@ -833,6 +881,7 @@ class _DoubleRemainingImageTile extends StatelessWidget {
             isEditMode: isEditMode,
             onTapCallback: onTapCallback,
             images: images,
+            doEnlarge: doEnlarge,
           ),
         ),
       ],
@@ -848,6 +897,7 @@ class _TripleRemainingImageTile extends StatelessWidget {
     this.onDelete,
     this.isEditMode,
     this.onTapCallback,
+    this.doEnlarge,
   });
 
   final double width;
@@ -856,6 +906,7 @@ class _TripleRemainingImageTile extends StatelessWidget {
   final void Function(int index)? onDelete;
   final bool? isEditMode;
   final void Function()? onTapCallback;
+  final bool? doEnlarge;
 
   @override
   Widget build(BuildContext context) {
@@ -878,6 +929,7 @@ class _TripleRemainingImageTile extends StatelessWidget {
                   onDelete: onDelete,
                   isEditMode: isEditMode,
                   onTapCallback: onTapCallback,
+                  doEnlarge: doEnlarge,
                 ),
               ),
               Expanded(
@@ -892,6 +944,7 @@ class _TripleRemainingImageTile extends StatelessWidget {
                   onDelete: onDelete,
                   isEditMode: isEditMode,
                   onTapCallback: onTapCallback,
+                  doEnlarge: doEnlarge,
                 ),
               )
             ],
@@ -909,6 +962,7 @@ class _TripleRemainingImageTile extends StatelessWidget {
             onDelete: onDelete,
             isEditMode: isEditMode,
             onTapCallback: onTapCallback,
+            doEnlarge: doEnlarge,
           ),
         ),
       ],
