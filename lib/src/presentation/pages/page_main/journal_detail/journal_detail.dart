@@ -68,10 +68,8 @@ class JournalDetail extends StatelessWidget {
                                   _JournalContent(content: journal!.content!),
                             ),
                       const Divider(),
-                      Padding(
-                          padding: const EdgeInsets.only(left: 12),
-                          child: Comments(journalId: journal!.id!)),
-                      const SizedBox(height: 50),
+                      Comments(journalId: journal!.id!),
+                      const SizedBox(height: 90),
                     ],
                   ),
                 ),

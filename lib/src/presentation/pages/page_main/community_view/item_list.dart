@@ -3,7 +3,6 @@ import 'package:farmers_journal/src/presentation/components/card/day_view_card.d
 import 'package:farmers_journal/src/presentation/controller/journal/pagination_controller.dart';
 import 'package:farmers_journal/src/presentation/controller/journal/pagination_state.dart';
 import 'package:farmers_journal/src/presentation/controller/user/community_view_controller.dart';
-import 'package:farmers_journal/src/presentation/pages/page_main/community_view/detail_dialog.dart';
 import 'package:farmers_journal/src/presentation/pages/page_main/day_view_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -139,6 +138,7 @@ class _DayViewCard extends StatelessWidget {
           verticalPadding: 0,
           journal: journal,
           editable: false,
+          doEnlarge: false,
         ),
       ),
     );

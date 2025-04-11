@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../day_view/animated_day_view.dart';
+import '../journal_detail/journal_detail.dart';
 
 /// {@category Presentation}
 class MonthViewDetails extends StatefulWidget {
@@ -138,7 +139,16 @@ class MonthViewDetailPageBuilder extends ConsumerWidget {
                   journal.date!.day == date.day)
               .map((journal) => Container(
                     margin: const EdgeInsets.symmetric(vertical: 4),
-                    child: AnimatedDayViewCard(journal: journal!),
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return JournalDetail(journal: journal);
+                      })),
+                      child: AnimatedDayViewCard(
+                        journal: journal!,
+                        doEnlarge: false,
+                      ),
+                    ),
                   ))
               .toList();
           return items.isEmpty ? emptyJournals : ListView(children: items);

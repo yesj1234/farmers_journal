@@ -1,6 +1,4 @@
 import 'package:farmers_journal/src/presentation/components/card/week_view_card.dart';
-import 'package:farmers_journal/src/presentation/controller/user/user_controller.dart';
-import 'package:farmers_journal/src/presentation/pages/page_main/community_view/detail_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
