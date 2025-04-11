@@ -27,4 +27,6 @@
 - Improve journal saving time.
 
 **version 1.0.6:** 
-- Fix validation logic when creating or updating journal. 
+- Fix validation logic when creating or updating journal.
+- Add journal detail view. 
+- Add comments for journal.
