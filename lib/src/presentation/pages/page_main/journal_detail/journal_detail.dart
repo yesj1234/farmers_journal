@@ -109,7 +109,7 @@ class _BuildAppBar extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
           ),
           Consumer(builder: (context, ref, child) {
-            final userInfo = ref.read(userControllerProvider);
+            final userInfo = ref.read(userControllerProvider(null));
             return userInfo.value!.id == journal.writer
                 ? MyCascadingMenu(
                     color: journal.images!.isEmpty
@@ -169,7 +169,7 @@ class _BuildAppBar extends StatelessWidget {
                         type: AlertDialogType.block,
                         cb: () {
                           ref
-                              .read(userControllerProvider.notifier)
+                              .read(userControllerProvider(null).notifier)
                               .blockUser(id: journal.writer!);
                           ref.invalidate(communityViewControllerProvider);
                           Navigator.pop(context);

@@ -57,7 +57,7 @@ class CommentTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userControllerProvider).value;
+    final user = ref.watch(userControllerProvider(null)).value;
     final isMyComment = user?.id == comment.writerId;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,7 +119,7 @@ class CommentTile extends ConsumerWidget {
                       type: AlertDialogType.block,
                       cb: () {
                         ref
-                            .read(userControllerProvider.notifier)
+                            .read(userControllerProvider(null).notifier)
                             .blockUser(id: comment.writerId!);
                         ref.invalidate(communityViewControllerProvider);
                         Navigator.pop(context);

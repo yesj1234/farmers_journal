@@ -153,19 +153,33 @@ class FireStoreUserRepository implements UserRepository {
   }
 
   @override
-  Future<AppUser?> getUser() async {
-    try {
-      final userRef = await _fetchUserRef();
-      final result = await userRef?.get().then((DocumentSnapshot doc) {
-        final json = doc.data();
-        if (json != null) {
-          final userModel = AppUser.fromJson(json as Map<String, dynamic>);
-          return userModel;
-        }
-      });
-      return result;
-    } catch (error) {
-      throw Exception(error);
+  Future<AppUser?> getUser({String? userId}) async {
+    if (userId == null) {
+      try {
+        final userRef = await _fetchUserRef();
+        final result = await userRef?.get().then((DocumentSnapshot doc) {
+          final json = doc.data();
+          if (json != null) {
+            return AppUser.fromJson(json as Map<String, dynamic>);
+          }
+        });
+        return result;
+      } catch (error) {
+        throw Exception(error);
+      }
+    } else {
+      try {
+        final snapshot = instance.collection('users').doc(userId);
+        final result = await snapshot.get().then((DocumentSnapshot doc) {
+          final json = doc.data();
+          if (json != null) {
+            return AppUser.fromJson(json as Map<String, dynamic>);
+          }
+        });
+        return result;
+      } catch (error) {
+        throw Exception(error);
+      }
     }
   }
 

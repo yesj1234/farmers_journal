@@ -76,7 +76,7 @@ class DataStateDialog extends StatelessWidget {
                   ),
                   const Spacer(),
                   Consumer(builder: (context, ref, child) {
-                    final userInfo = ref.read(userControllerProvider);
+                    final userInfo = ref.read(userControllerProvider(null));
                     return userInfo.value!.id == journalInfo.writer
                         ? MyCascadingMenu(
                             menuType: CascadingMenuType.personal,
@@ -139,7 +139,8 @@ class DataStateDialog extends StatelessWidget {
                                 type: AlertDialogType.block,
                                 cb: () {
                                   ref
-                                      .read(userControllerProvider.notifier)
+                                      .read(
+                                          userControllerProvider(null).notifier)
                                       .blockUser(id: journalInfo.writer!);
                                   ref.invalidate(
                                       communityViewControllerProvider);

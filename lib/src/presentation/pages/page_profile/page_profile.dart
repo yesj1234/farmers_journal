@@ -59,7 +59,7 @@ class _PlantSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userRef = ref.watch(userControllerProvider);
+    final userRef = ref.watch(userControllerProvider(null));
     return SettingContainer(
       settingTitle: "작물",
       items: [

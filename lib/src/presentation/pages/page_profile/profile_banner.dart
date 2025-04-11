@@ -90,7 +90,7 @@ class _UserDisplayNameState extends ConsumerState<_UserDisplayName> {
 
   @override
   Widget build(BuildContext context) {
-    final userRef = ref.watch(userControllerProvider);
+    final userRef = ref.watch(userControllerProvider(null));
     return userRef.maybeWhen(
       orElse: () => Column(
         mainAxisAlignment: MainAxisAlignment.center,

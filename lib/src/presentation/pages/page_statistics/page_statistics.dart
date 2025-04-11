@@ -12,7 +12,7 @@ class PageStatistics extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userRef = ref.watch(userControllerProvider);
+    final userRef = ref.watch(userControllerProvider(null));
     return Scaffold(
       appBar: AppBar(
         title: Text(

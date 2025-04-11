@@ -53,7 +53,7 @@ class _PageProfileState extends ConsumerState<PageEditProfile> {
         isLoading = true;
       });
       await ref
-          .read(userControllerProvider.notifier)
+          .read(userControllerProvider(null).notifier)
           .editProfile(
               name: newName, nickName: newNickName, profileImage: selectedImage)
           .then((v) {
@@ -183,7 +183,7 @@ class _UserName extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userRef = ref.watch(userControllerProvider);
+    final userRef = ref.watch(userControllerProvider(null));
     return userRef.maybeWhen(
         orElse: () => const SizedBox.shrink(),
         data: (value) => Column(
@@ -224,7 +224,7 @@ class _ProfileForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userControllerProvider);
+    final user = ref.watch(userControllerProvider(null));
     return Form(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,

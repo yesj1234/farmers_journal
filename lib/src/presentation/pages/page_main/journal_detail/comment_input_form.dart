@@ -22,7 +22,7 @@ class _CommentInputFieldState extends ConsumerState<CommentInputField> {
     final content = _controller.text.trim();
     if (content.isEmpty || isSending) return;
 
-    final user = ref.read(userControllerProvider).value;
+    final user = ref.read(userControllerProvider(null)).value;
     if (user == null) return;
 
     setState(() => isSending = true);

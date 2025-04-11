@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 /// Abstract class for user repository.md
 ///
 abstract class UserRepository {
-  Future<AppUser?> getUser();
+  Future<AppUser?> getUser({String? userId});
   Future<void> setProfileImage({required Uint8List bytes});
   Future<void> editProfile(
       {String? name, String? nickName, XFile? profileImage});

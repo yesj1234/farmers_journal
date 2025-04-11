@@ -32,7 +32,7 @@ class ContentForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userRef = ref.watch(userControllerProvider);
+    final userRef = ref.watch(userControllerProvider(null));
     final themeData = Theme.of(context);
     AsyncValue<Widget> tag = userRef.whenData((appUser) {
       if (appUser!.plants.isNotEmpty) {

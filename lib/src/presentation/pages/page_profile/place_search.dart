@@ -29,7 +29,7 @@ class _PagePlaceSearchState extends ConsumerState<PagePlaceSearch> {
 
   @override
   Widget build(BuildContext context) {
-    final userRef = ref.watch(userControllerProvider);
+    final userRef = ref.watch(userControllerProvider(null));
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -44,7 +44,7 @@ class _PagePlaceSearchState extends ConsumerState<PagePlaceSearch> {
             onPressed: () async {
               final plantId = userRef.value?.plants[0].id;
               await ref
-                  .read(userControllerProvider.notifier)
+                  .read(userControllerProvider(null).notifier)
                   .setPlace(id: plantId, newPlantPlace: selectedPlace)
                   .then((_) {
                 if (context.mounted) {

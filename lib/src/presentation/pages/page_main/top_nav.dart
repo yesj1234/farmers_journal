@@ -12,7 +12,7 @@ class TopNav extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userControllerProvider);
+    final user = ref.watch(userControllerProvider(null));
     final journal = ref.watch(journalControllerProvider);
     return IntrinsicHeight(
       child: SizedBox(

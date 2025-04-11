@@ -29,7 +29,7 @@ class PageMain extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final journalRef = ref.watch(journalControllerProvider);
-    final userRef = ref.watch(userControllerProvider);
+    final userRef = ref.watch(userControllerProvider(null));
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(30),

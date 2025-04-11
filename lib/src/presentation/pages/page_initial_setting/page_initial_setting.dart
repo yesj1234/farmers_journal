@@ -119,7 +119,7 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
       return false;
     } else {
       return await _showAlertDialog(context, () {
-        ref.read(userControllerProvider.notifier).setInitial(
+        ref.read(userControllerProvider(null).notifier).setInitial(
             plantName: plant,
             place: place,
             code: code!,

@@ -66,8 +66,8 @@ class _PagePlantState extends ConsumerState<PagePlant> {
     if (_isCode(code)) {
       showSnackBar(context, '$plant는 등록되지 않은 작물입니다. 검색 결과 중에 선택해주세요.');
     } else {
-      final userRef = ref.read(userControllerProvider);
-      await ref.read(userControllerProvider.notifier).setPlant(
+      final userRef = ref.read(userControllerProvider(null));
+      await ref.read(userControllerProvider(null).notifier).setPlant(
           id: userRef.value!.plants[0].id, newPlantName: plant, code: code!);
       showSnackBar(context, '작물이 $plant로 변경되었습니다.');
       context.pop();

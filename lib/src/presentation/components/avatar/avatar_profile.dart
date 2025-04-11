@@ -20,7 +20,7 @@ class AvatarProfile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<AppUser?> user = ref.watch(userControllerProvider);
+    final AsyncValue<AppUser?> user = ref.watch(userControllerProvider(null));
     return GestureDetector(
       onTap: onNavigateTap,
       child: SizedBox(
