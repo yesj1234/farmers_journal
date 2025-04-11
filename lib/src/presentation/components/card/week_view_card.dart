@@ -26,6 +26,7 @@ class WeekViewCard extends ConsumerWidget {
     this.verticalPadding = 0.0,
     this.textMaxLine = 3,
     this.dateFontSize = 12,
+    this.doEnlarge,
   });
 
   /// The journal entry to be displayed in the card.
@@ -52,6 +53,7 @@ class WeekViewCard extends ConsumerWidget {
   /// Font size for the date display.
   final double dateFontSize;
 
+  final bool? doEnlarge;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -72,14 +74,15 @@ class WeekViewCard extends ConsumerWidget {
                 ? Expanded(
                     flex: 4,
                     child: CustomImageWidgetLayout(
+                        doEnlarge: doEnlarge,
                         images: journal.images!.map((item) {
-                      if (item is String) {
-                        return UrlImage(item);
-                      } else {
-                        throw ArgumentError(
-                            'Invalid type in list: ${item.runtimeType}');
-                      }
-                    }).toList()),
+                          if (item is String) {
+                            return UrlImage(item);
+                          } else {
+                            throw ArgumentError(
+                                'Invalid type in list: ${item.runtimeType}');
+                          }
+                        }).toList()),
                   )
                 : const SizedBox.shrink(),
             journal.title != null
@@ -125,6 +128,7 @@ class WeekViewCard extends ConsumerWidget {
                 onDelete: () {
                   handleJournalDelete(context, ref, journal.id!);
                 },
+                iconSize: 18,
               ),
             ),
           ],

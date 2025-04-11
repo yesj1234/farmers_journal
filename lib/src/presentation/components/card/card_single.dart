@@ -56,6 +56,7 @@ class DatePortion extends StatelessWidget {
     required this.fontSize,
     this.editable = true,
     this.onTapCallback,
+    this.iconSize,
   });
 
   final double horizontalPadding;
@@ -66,6 +67,7 @@ class DatePortion extends StatelessWidget {
   final double fontSize;
   final bool editable;
   final void Function()? onTapCallback;
+  final double? iconSize;
 
   /// Formats the [date] into a Korean-style string (e.g., "10월 15일 화요일").
   String? _formatDate(DateTime date) {
@@ -105,6 +107,7 @@ class DatePortion extends StatelessWidget {
                     onCallback1: onEdit,
                     onCallback2: onDelete,
                     onTapCallback: onTapCallback,
+                    iconSize: iconSize,
                   ),
                 ) // Show menu if editable
               : const SizedBox.shrink(), // Hide if not editable
@@ -138,6 +141,7 @@ class MyCascadingMenu extends StatefulWidget {
     this.color,
     this.onCallback1Name,
     this.onCallback2Name,
+    this.iconSize,
   });
 
   final CascadingMenuType menuType;
@@ -147,6 +151,7 @@ class MyCascadingMenu extends StatefulWidget {
   final Color? color;
   final String? onCallback1Name;
   final String? onCallback2Name;
+  final double? iconSize;
 
   @override
   State<StatefulWidget> createState() => _MyCascadingMenuState();
@@ -216,7 +221,7 @@ class _MyCascadingMenuState extends State<MyCascadingMenu> {
             color: widget.color ??
                 themeData.buttonTheme.colorScheme
                     ?.onSurface, // Semi-transparent black
-            size: 24,
+            size: widget.iconSize ?? 24,
           ),
         );
       },
