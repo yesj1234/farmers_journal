@@ -20,18 +20,18 @@ class PageSettings extends ConsumerWidget {
         title: Text(
           '설정',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
             color: Theme.of(context).primaryColor,
           ),
         ),
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.all(26),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 15,
+            spacing: 45,
             children: [
               ToggleThemeButton(
                 initialTheme: ref.read(themeControllerProvider).maybeWhen(
@@ -58,7 +58,7 @@ class ToggleThemeButton extends ConsumerStatefulWidget {
 class _ToggleThemeButtonState extends ConsumerState<ToggleThemeButton> {
   /// Text style for the selection name.
   TextStyle get selectionNameTextStyle => const TextStyle(
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: FontWeight.normal,
       );
   double? iconSize = 30;
@@ -98,62 +98,56 @@ class _ToggleThemeButtonState extends ConsumerState<ToggleThemeButton> {
   @override
   Widget build(BuildContext context) {
     return SettingContainer(
+      containerColor: Colors.transparent,
       settingTitle: '앱 설정',
       items: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 10, right: 5, top: 5, bottom: 5),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                transitionBuilder: (Widget child, Animation<double> animation) {
-                  return ScaleTransition(scale: animation, child: child);
-                },
-                child: _currentIcon,
-              ),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return ScaleTransition(scale: animation, child: child);
+              },
+              child: _currentIcon,
             ),
             const SizedBox(width: 10),
             Text('테마', style: selectionNameTextStyle),
             const Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: ToggleButtons(
-                borderRadius: const BorderRadius.horizontal(
-                  left: Radius.circular(10),
-                  right: Radius.circular(10),
-                ),
-                onPressed: (index) {
-                  setState(() {
-                    if (index == 0) {
-                      _selectedTheme = ThemeMode.light;
-                      ref
-                          .read(themeControllerProvider.notifier)
-                          .setUserThemeMode(ThemeMode.light);
-                    }
-                    if (index == 1) {
-                      _selectedTheme = ThemeMode.dark;
-                      ref
-                          .read(themeControllerProvider.notifier)
-                          .setUserThemeMode(ThemeMode.dark);
-                    }
-                    if (index == 2) {
-                      _selectedTheme = ThemeMode.system;
-                      ref
-                          .read(themeControllerProvider.notifier)
-                          .setUserThemeMode(ThemeMode.system);
-                    }
-                  });
-                },
-                isSelected: _isSelected,
-                children: const [
-                  _ThemeModeIcon(icon: Icons.light_mode_outlined, name: '라이트'),
-                  _ThemeModeIcon(icon: Icons.mode_night_outlined, name: '다크'),
-                  _ThemeModeIcon(icon: Icons.settings_outlined, name: '시스템'),
-                ],
+            ToggleButtons(
+              borderRadius: const BorderRadius.horizontal(
+                left: Radius.circular(10),
+                right: Radius.circular(10),
               ),
+              onPressed: (index) {
+                setState(() {
+                  if (index == 0) {
+                    _selectedTheme = ThemeMode.light;
+                    ref
+                        .read(themeControllerProvider.notifier)
+                        .setUserThemeMode(ThemeMode.light);
+                  }
+                  if (index == 1) {
+                    _selectedTheme = ThemeMode.dark;
+                    ref
+                        .read(themeControllerProvider.notifier)
+                        .setUserThemeMode(ThemeMode.dark);
+                  }
+                  if (index == 2) {
+                    _selectedTheme = ThemeMode.system;
+                    ref
+                        .read(themeControllerProvider.notifier)
+                        .setUserThemeMode(ThemeMode.system);
+                  }
+                });
+              },
+              isSelected: _isSelected,
+              children: const [
+                _ThemeModeIcon(icon: Icons.light_mode_outlined, name: '라이트'),
+                _ThemeModeIcon(icon: Icons.mode_night_outlined, name: '다크'),
+                _ThemeModeIcon(icon: Icons.settings_outlined, name: '시스템'),
+              ],
             ),
           ],
         )
@@ -170,7 +164,7 @@ class _ThemeModeIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       child: Column(
         children: [
           Expanded(
@@ -182,6 +176,9 @@ class _ThemeModeIcon extends StatelessWidget {
           FittedBox(
             child: Text(
               name ?? '',
+              style: const TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
             ),
           )
         ],
@@ -196,6 +193,7 @@ class Account extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SettingContainer(
+      containerColor: Colors.transparent,
       settingTitle: '계정',
       items: [
         SelectionItemWithCallback(
@@ -267,6 +265,8 @@ class TermsAndPolicy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingContainer(
+      // containerColor: Colors.grey[200],
+      containerColor: Colors.transparent,
       settingTitle: '이용약관',
       items: [
         SelectionItemWithCallback(

@@ -6,8 +6,12 @@ import 'package:flutter/material.dart';
 /// Displays a section title and a list of selectable items, separated by dividers.
 class SettingContainer extends StatelessWidget {
   /// Creates a [SettingContainer] with a title and a list of items.
-  const SettingContainer(
-      {super.key, required this.settingTitle, required this.items});
+  const SettingContainer({
+    super.key,
+    required this.settingTitle,
+    required this.items,
+    this.containerColor,
+  });
 
   /// The title of the settings section.
   final String settingTitle;
@@ -15,16 +19,18 @@ class SettingContainer extends StatelessWidget {
   /// A list of selectable items within the settings container.
   final List<Widget> items;
 
+  final Color? containerColor;
+
   /// Text style for the settings title.
   TextStyle get settingTitleStyle => const TextStyle(
-        fontWeight: FontWeight.bold,
+        fontWeight: FontWeight.w500,
         fontSize: 20,
       );
 
   /// Decoration for the container, including background color and border radius.
-  BoxDecoration get containerDecoration => const BoxDecoration(
-        color: Color.fromRGBO(174, 189, 175, 0.5),
-        borderRadius: BorderRadius.all(
+  BoxDecoration get containerDecoration => BoxDecoration(
+        color: containerColor ?? const Color.fromRGBO(174, 189, 175, 0.5),
+        borderRadius: const BorderRadius.all(
           Radius.circular(10),
         ),
       );
@@ -60,9 +66,6 @@ class SettingContainer extends StatelessWidget {
         const SizedBox(height: 5),
         Container(
           padding: const EdgeInsets.symmetric(vertical: 5),
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.sizeOf(context).width - 30,
-          ),
           decoration: containerDecoration,
           child: Column(
             children: settingItems,
@@ -96,7 +99,7 @@ class SelectionItemWithCallback extends StatelessWidget {
 
   /// Text style for the selection name.
   TextStyle get selectionNameTextStyle => const TextStyle(
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: FontWeight.normal,
       );
 
@@ -105,29 +108,28 @@ class SelectionItemWithCallback extends StatelessWidget {
     return GestureDetector(
       onTap: callback,
       behavior: HitTestBehavior.translucent,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 10, right: 16, top: 5, bottom: 5),
-            child: Icon(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8, bottom: 6),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
               icon,
-              size: 50,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Text(selectionName, style: selectionNameTextStyle),
-          const Spacer(),
-          const Opacity(
-            opacity: 0.5,
-            child: Icon(
-              Icons.navigate_next,
               size: 30,
             ),
-          ),
-        ],
+            const SizedBox(width: 10),
+            Text(selectionName, style: selectionNameTextStyle),
+            const Spacer(),
+            const Opacity(
+              opacity: 0.5,
+              child: Icon(
+                Icons.navigate_next,
+                size: 30,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

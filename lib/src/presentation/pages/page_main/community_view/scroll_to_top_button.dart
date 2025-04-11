@@ -36,10 +36,18 @@ class ScrollToTopButton extends StatelessWidget {
               ScaleTransition(scale: animation, child: child),
           child: scrollOffset > MediaQuery.sizeOf(context).height * 0.4
               ? IconButton(
-                  icon: Icon(
-                    Icons.keyboard_double_arrow_up_outlined,
-                    size: 35, // Larger icon for better visibility
-                    color: Theme.of(context).primaryColor, // Theme-based color
+                  icon: Container(
+                    // color: Colors.red,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.grey,
+                    ),
+                    child: Icon(
+                      Icons.keyboard_arrow_up_outlined,
+                      size: 35, // Larger icon for better visibility
+                      color: Colors.white,
+                      // Theme.of(context).primaryColor, // Theme-based color
+                    ),
                   ),
                   onPressed: () async {
                     // Animate scroll back to top with smooth easing

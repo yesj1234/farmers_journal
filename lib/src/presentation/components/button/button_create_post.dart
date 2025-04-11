@@ -21,10 +21,10 @@ class ButtonCreatePost extends StatelessWidget {
     return ElevatedButton(
       onPressed: onClick,
       style: buttonStyle,
-      child: const Icon(
+      child: Icon(
         Icons.add,
         size: 30,
-        color: Colors.white,
+        color: colorScheme.surface,
       ),
     );
   }

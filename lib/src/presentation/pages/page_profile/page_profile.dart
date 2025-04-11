@@ -38,13 +38,16 @@ class _PageProfileState extends ConsumerState<PageProfile> {
           children: [
             const ProfileBanner(),
             Expanded(
-              child: ListView(
-                children: const [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Center(child: _PlantSettings()),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(26),
+                child: ListView(
+                  children: const [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Center(child: _PlantSettings()),
+                  ],
+                ),
               ),
             ),
           ],
@@ -61,6 +64,7 @@ class _PlantSettings extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userRef = ref.watch(userControllerProvider(null));
     return SettingContainer(
+      containerColor: Colors.transparent,
       settingTitle: "작물",
       items: [
         SelectionItemWithCallback(
