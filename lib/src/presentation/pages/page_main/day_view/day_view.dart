@@ -1,6 +1,4 @@
 import 'package:farmers_journal/src/presentation/controller/journal/day_view_controller.dart';
-import 'package:farmers_journal/src/presentation/controller/user/user_controller.dart';
-import 'package:farmers_journal/src/presentation/pages/page_main/community_view/detail_dialog.dart';
 import 'package:farmers_journal/src/presentation/pages/page_main/community_view/scroll_to_top_button.dart';
 import 'package:farmers_journal/src/presentation/pages/page_main/day_view_shimmer.dart';
 import 'package:flutter/material.dart';

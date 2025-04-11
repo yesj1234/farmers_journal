@@ -51,10 +51,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
 
 class _DataState extends StatelessWidget {
   const _DataState(
-      {super.key,
-      required this.place,
-      required this.plant,
-      required this.userInfo});
+      {required this.place, required this.plant, required this.userInfo});
   final AppUser userInfo;
   final String? place;
   final String? plant;
@@ -118,7 +115,7 @@ class _DataState extends StatelessWidget {
 }
 
 class _ShimmerLoadingState extends StatelessWidget {
-  const _ShimmerLoadingState({super.key});
+  const _ShimmerLoadingState();
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +173,7 @@ class _ShimmerLoadingState extends StatelessWidget {
 }
 
 class _ErrorState extends StatelessWidget {
-  const _ErrorState({super.key});
+  const _ErrorState();
 
   @override
   Widget build(BuildContext context) {

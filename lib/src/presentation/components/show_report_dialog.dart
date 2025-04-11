@@ -48,9 +48,7 @@ void showCupertinoReportDialog({
                 height: selectedReason == '기타' ? 43 : 100,
                 child: CupertinoPicker(
                   scrollController: FixedExtentScrollController(
-                    initialItem: selectedReason != null
-                        ? reasons.indexOf(selectedReason!)
-                        : 0,
+                    initialItem: reasons.indexOf(selectedReason),
                   ),
                   itemExtent: 40,
                   onSelectedItemChanged: (index) {
@@ -91,7 +89,7 @@ void showCupertinoReportDialog({
                     ? customReasonController.text
                     : selectedReason;
 
-                if (reason != null && reason.isNotEmpty) {
+                if (reason.isNotEmpty) {
                   onConfirm(reason);
                   Navigator.pop(ctx);
                 }
