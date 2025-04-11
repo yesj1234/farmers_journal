@@ -58,8 +58,10 @@ class CommentTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final curUser = ref.watch(userControllerProvider(null)).value;
     final user = ref.watch(userControllerProvider(comment.writerId)).value;
-    final isMyComment = user?.id == comment.writerId;
+    final isMyComment = curUser?.id == comment.writerId;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
