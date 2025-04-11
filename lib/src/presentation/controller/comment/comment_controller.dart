@@ -24,7 +24,7 @@ class CommentController extends _$CommentController {
     final repo = ref.read(commentRepositoryProvider);
     try {
       await repo.addComment(journalId, comment);
-      state = AsyncValue.data(await repo.getComments(journalId));
+      state = AsyncValue.data(await build(journalId));
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
