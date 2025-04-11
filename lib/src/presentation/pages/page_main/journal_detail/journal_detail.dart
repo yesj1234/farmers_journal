@@ -91,7 +91,7 @@ class JournalDetail extends StatelessWidget {
 }
 
 class _BuildAppBar extends StatelessWidget {
-  const _BuildAppBar({super.key, required this.journal});
+  const _BuildAppBar({required this.journal});
   final Journal journal;
   @override
   Widget build(BuildContext context) {
@@ -185,7 +185,7 @@ class _BuildAppBar extends StatelessWidget {
 }
 
 class _JournalTitle extends StatelessWidget {
-  const _JournalTitle({super.key, required this.title});
+  const _JournalTitle({required this.title});
   final String title;
   @override
   Widget build(BuildContext context) {
@@ -199,7 +199,7 @@ class _JournalTitle extends StatelessWidget {
 }
 
 class _JournalContent extends StatelessWidget {
-  const _JournalContent({super.key, required this.content});
+  const _JournalContent({required this.content});
   final String content;
   @override
   Widget build(BuildContext context) {

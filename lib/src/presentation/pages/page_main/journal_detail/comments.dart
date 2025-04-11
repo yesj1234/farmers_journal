@@ -67,8 +67,7 @@ class CommentTile extends ConsumerWidget {
           children: [
             Text(comment.content ?? ''),
             Text(
-              DateFormat('M/d HH:mm').format(comment.createdAt!.toLocal()) ??
-                  '',
+              DateFormat('M/d HH:mm').format(comment.createdAt!.toLocal()),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
