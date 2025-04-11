@@ -1,7 +1,7 @@
 name: farmers_journal
 description: "farmers jounal app project"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.5+1
+version: 1.0.6+1
 environment:
   sdk: ^3.5.1
 
@@ -73,13 +73,16 @@ flutter_launcher_icons:
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: "assets/icons/app_icon_splash.png"
+  image: "assets/icons/app_icon_splash_1.png"
   android_gravity: center
   ios_content_mode: center
   fullscreen: true
   android_12:
     color: "#FFFFFF"
-    image: "assets/icons/app_icon_splash.png"
+    image: "assets/icons/app_icon_splash_1.png"
+  info_plist_files:
+    - 'ios/Runner/Info-Debug.plist'
+    - 'ios/Runner/Info-Release.plist'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
