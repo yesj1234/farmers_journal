@@ -16,30 +16,34 @@ class PagePlant extends ConsumerStatefulWidget {
 class _PagePlantState extends ConsumerState<PagePlant> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(
-            '작물 변경',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: onSave,
-              child: const Text(
-                '저장',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+            title: Text(
+              '작물 변경',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
               ),
             ),
-          ]),
-      body: PlantSelection(
-        onChange: setPlant,
-        autoFocus: true,
+            actions: [
+              TextButton(
+                onPressed: onSave,
+                child: const Text(
+                  '저장',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ]),
+        body: PlantSelection(
+          onChange: setPlant,
+          autoFocus: true,
+        ),
       ),
     );
   }

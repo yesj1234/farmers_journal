@@ -22,67 +22,76 @@ class JournalDetail extends StatelessWidget {
   final Journal? journal;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        children: [
-          LayoutBuilder(
-            builder: (context, viewport) => SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: viewport.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    spacing: 5,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      journal!.images!.isEmpty
-                          ? SizedBox(
-                              height: MediaQuery.sizeOf(context).height / 2.4,
-                              child: Center(
-                                child:
-                                    Image.asset('assets/icons/leaf_icon.png'),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        extendBodyBehindAppBar: true,
+        body: Stack(
+          children: [
+            LayoutBuilder(
+              builder: (context, viewport) => SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: viewport.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      spacing: 5,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        journal!.images!.isEmpty
+                            ? SizedBox(
+                                height: MediaQuery.sizeOf(context).height / 2.4,
+                                child: Center(
+                                  child:
+                                      Image.asset('assets/icons/leaf_icon.png'),
+                                ),
+                              )
+                            : SizedBox(
+                                height: MediaQuery.sizeOf(context).height / 2.4,
+                                child: ImagePageView(journal: journal!),
                               ),
-                            )
-                          : SizedBox(
-                              height: MediaQuery.sizeOf(context).height / 2.4,
-                              child: ImagePageView(journal: journal!),
-                            ),
-                      const SizedBox(height: 5),
-                      SizedBox(
-                        height: 55,
-                        child: UserProfile(journal: journal!),
-                      ),
-                      const SizedBox(height: 1),
-                      journal!.title!.isEmpty
-                          ? const SizedBox.shrink()
-                          : Padding(
-                              padding: const EdgeInsets.only(left: 12),
-                              child: _JournalTitle(title: journal!.title!),
-                            ),
-                      journal!.content!.isEmpty
-                          ? const SizedBox.shrink()
-                          : Padding(
-                              padding: const EdgeInsets.only(left: 12),
-                              child:
-                                  _JournalContent(content: journal!.content!),
-                            ),
-                      const Divider(),
-                      Comments(journalId: journal!.id!),
-                      const SizedBox(height: 90),
-                    ],
+                        const SizedBox(height: 5),
+                        SizedBox(
+                          height: 55,
+                          child: UserProfile(journal: journal!),
+                        ),
+                        const SizedBox(height: 1),
+                        journal!.title!.isEmpty
+                            ? const SizedBox.shrink()
+                            : Padding(
+                                padding: const EdgeInsets.only(left: 12),
+                                child: _JournalTitle(title: journal!.title!),
+                              ),
+                        journal!.content!.isEmpty
+                            ? const SizedBox.shrink()
+                            : Padding(
+                                padding: const EdgeInsets.only(left: 12),
+                                child:
+                                    _JournalContent(content: journal!.content!),
+                              ),
+                        const Divider(),
+                        Comments(journalId: journal!.id!),
+                        const SizedBox(height: 90),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          _BuildAppBar(journal: journal!),
-          Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: CommentInputField(journalId: journal!.id!))
-        ],
+            _BuildAppBar(journal: journal!),
+            Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: CommentInputField(journalId: journal!.id!))
+          ],
+        ),
+        bottomNavigationBar: Container(
+          height: 1,
+          decoration:
+              BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
+        ),
       ),
     );
   }
@@ -108,6 +117,7 @@ class _BuildAppBar extends StatelessWidget {
           ),
           Consumer(builder: (context, ref, child) {
             final userInfo = ref.read(userControllerProvider(null));
+
             return userInfo.value!.id == journal.writer
                 ? MyCascadingMenu(
                     color: journal.images!.isEmpty

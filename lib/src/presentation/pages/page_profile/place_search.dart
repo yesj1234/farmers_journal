@@ -30,76 +30,80 @@ class _PagePlaceSearchState extends ConsumerState<PagePlaceSearch> {
   @override
   Widget build(BuildContext context) {
     final userRef = ref.watch(userControllerProvider(null));
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "위치 변경",
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          TextButton.icon(
-            onPressed: () async {
-              final plantId = userRef.value?.plants[0].id;
-              await ref
-                  .read(userControllerProvider(null).notifier)
-                  .setPlace(id: plantId, newPlantPlace: selectedPlace)
-                  .then((_) {
-                if (context.mounted) {
-                  showSnackBar(context, '위치가 $selectedPlace(으)로 변경되었습니다.');
-                  context.pop();
-                }
-              });
-            },
-            icon: Icon(
-              widget.actionIcon,
-              size: 20,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "위치 변경",
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
             ),
-            iconAlignment: IconAlignment.end,
-            label: Text(
-              widget.actionText,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+          ),
+          actions: [
+            TextButton.icon(
+              onPressed: () async {
+                final plantId = userRef.value?.plants[0].id;
+                await ref
+                    .read(userControllerProvider(null).notifier)
+                    .setPlace(id: plantId, newPlantPlace: selectedPlace)
+                    .then((_) {
+                  if (context.mounted) {
+                    showSnackBar(context, '위치가 $selectedPlace(으)로 변경되었습니다.');
+                    context.pop();
+                  }
+                });
+              },
+              icon: Icon(
+                widget.actionIcon,
+                size: 20,
               ),
-            ),
-          ),
-        ],
-      ),
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  alignment: Alignment.bottomRight,
-                  image: Svg('assets/svgs/layer_1.svg'),
+              iconAlignment: IconAlignment.end,
+              label: Text(
+                widget.actionText,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-          ),
-          SafeArea(
-            child: Center(
-              child: Column(
-                spacing: 10,
-                children: [
-                  PlaceSearch(
-                    onSelect: onSelect,
-                    autoFocus: true,
+          ],
+        ),
+        resizeToAvoidBottomInset: false,
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    alignment: Alignment.bottomRight,
+                    image: Svg('assets/svgs/layer_1.svg'),
                   ),
-                  selectedPlace.isNotEmpty
-                      ? PlaceMap2(
-                          finalAddress: selectedPlace,
-                        )
-                      : const SizedBox.shrink(),
-                ],
+                ),
               ),
             ),
-          ),
-        ],
+            SafeArea(
+              child: Center(
+                child: Column(
+                  spacing: 10,
+                  children: [
+                    PlaceSearch(
+                      onSelect: onSelect,
+                      autoFocus: true,
+                    ),
+                    selectedPlace.isNotEmpty
+                        ? PlaceMap2(
+                            finalAddress: selectedPlace,
+                          )
+                        : const SizedBox.shrink(),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
