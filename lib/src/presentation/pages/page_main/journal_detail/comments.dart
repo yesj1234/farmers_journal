@@ -44,7 +44,7 @@ class Comments extends ConsumerWidget {
           ],
         ),
       ),
-      loading: () => const CircularProgressIndicator(),
+      loading: () => const SizedBox.shrink(),
       error: (e, st) => const Text('댓글을 불러오지 못했습니다.'),
     );
   }
