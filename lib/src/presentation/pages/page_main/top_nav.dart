@@ -46,7 +46,9 @@ class TopNav extends ConsumerWidget {
                         onNavigateTap: () => context.go('/initial_setting'),
                       ),
                 const VerticalDivider(
-                  thickness: 2,
+                  thickness: 1.5,
+                  indent: 10,
+                  endIndent: 10,
                 ),
                 ButtonStatus(
                   status: "일지",
