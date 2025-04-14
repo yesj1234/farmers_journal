@@ -13,7 +13,7 @@ import 'package:farmers_journal/src/presentation/controller/journal/journal_cont
 import 'package:farmers_journal/src/data/providers.dart';
 // custom components
 import 'package:farmers_journal/src/presentation/components/button/button_create_post.dart';
-import 'package:farmers_journal/src/presentation/components/button/button_filter_date.dart';
+
 // enums
 import 'package:farmers_journal/enums.dart';
 // models
@@ -28,24 +28,12 @@ class PageMain extends ConsumerWidget {
   const PageMain({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final journalRef = ref.watch(journalControllerProvider);
     final userRef = ref.watch(userControllerProvider(null));
+    final currentMainView = ref.watch(mainViewFilterProvider);
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(30),
-        child: AppBar(
-          title: Text(
-            '농업 일지',
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+        child: SafeArea(
           child: Column(
             spacing: 10,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -61,15 +49,6 @@ class PageMain extends ConsumerWidget {
                 endIndent: 10,
                 color: Theme.of(context).primaryColor,
               ),
-              journalRef.hasValue && journalRef.value!.isNotEmpty
-                  ? Align(
-                      alignment: Alignment.center,
-                      child: ButtonMainViewFilter(
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                      ),
-                    )
-                  : const SizedBox.shrink(),
               const Expanded(child: _Content()),
             ],
           ),
@@ -86,6 +65,68 @@ class PageMain extends ConsumerWidget {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF1A1A1A)
+            : const Color(0xFFF2F2F2),
+        padding: EdgeInsets.zero,
+        shape: const CircularNotchedRectangle(),
+        height: 68,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () =>
+                    ref.read(mainViewFilterProvider.notifier).changeDateFilter(
+                          MainView.day,
+                        ),
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Icon(Icons.calendar_view_day), Text("일간")],
+                ),
+              ),
+            ),
+            Expanded(
+              child: GestureDetector(
+                onTap: () =>
+                    ref.read(mainViewFilterProvider.notifier).changeDateFilter(
+                          MainView.week,
+                        ),
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Icon(Icons.calendar_view_week), Text("주간")],
+                ),
+              ),
+            ),
+            const Spacer(),
+            Expanded(
+              child: GestureDetector(
+                onTap: () =>
+                    ref.read(mainViewFilterProvider.notifier).changeDateFilter(
+                          MainView.month,
+                        ),
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Icon(Icons.calendar_view_week), Text("월간")],
+                ),
+              ),
+            ),
+            Expanded(
+              child: GestureDetector(
+                onTap: () =>
+                    ref.read(mainViewFilterProvider.notifier).changeDateFilter(
+                          MainView.community,
+                        ),
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Icon(Icons.calendar_view_week), Text("커뮤니티")],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -126,16 +167,15 @@ class _UserContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mainViewFilter = ref.watch(mainViewFilterProvider);
-    if (journals.isNotEmpty) {
-      return switch (mainViewFilter) {
-        MainView.day => const DayView(),
-        MainView.week => const WeekView(),
-        MainView.month => const MonthView(),
-        MainView.community => const CommunityView(),
-      };
-    } else {
-      return const _DefaultContent();
-    }
+    return switch (mainViewFilter) {
+      MainView.day =>
+        journals.isEmpty ? const _DefaultContent() : const DayView(),
+      MainView.week =>
+        journals.isEmpty ? const _DefaultContent() : const WeekView(),
+      MainView.month =>
+        journals.isEmpty ? const _DefaultContent() : const MonthView(),
+      MainView.community => const CommunityView(),
+    };
   }
 }
 

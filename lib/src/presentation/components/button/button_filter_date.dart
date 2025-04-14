@@ -35,10 +35,10 @@ class ButtonMainViewFilter extends ConsumerWidget {
         side: const WidgetStatePropertyAll(BorderSide.none),
         textStyle: WidgetStateProperty.resolveWith((Set<WidgetState> state) {
           return TextStyle(
-              fontSize: 15,
+              fontSize: 13,
               fontWeight: state.contains(WidgetState.selected)
                   ? FontWeight.bold
-                  : FontWeight.normal,
+                  : FontWeight.w500,
               height: 1.2,
               wordSpacing: 0,
               decorationThickness: 2.5);
@@ -49,30 +49,58 @@ class ButtonMainViewFilter extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentMainView = ref.watch(mainViewFilterProvider);
+
     return SegmentedButton<MainView>(
       style: buttonStyle,
+      showSelectedIcon: false,
       segments: const <ButtonSegment<MainView>>[
         ButtonSegment<MainView>(
-            value: MainView.day,
-            label: Text('일간'),
-            icon: Icon(Icons.calendar_view_day)),
+          value: MainView.day,
+          label: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.calendar_view_day),
+              SizedBox(height: 4),
+              Text('일간'),
+            ],
+          ),
+        ),
         ButtonSegment<MainView>(
-            value: MainView.week,
-            label: Text('주간'),
-            icon: Icon(Icons.calendar_view_week)),
+          value: MainView.week,
+          label: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.calendar_view_week),
+              SizedBox(height: 4),
+              Text('주간'),
+            ],
+          ),
+        ),
         ButtonSegment<MainView>(
-            value: MainView.month,
-            label: Text('월간'),
-            icon: Icon(Icons.calendar_view_month)),
+          value: MainView.month,
+          label: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.calendar_view_month),
+              SizedBox(height: 4),
+              Text('월간'),
+            ],
+          ),
+        ),
         ButtonSegment<MainView>(
-            value: MainView.community,
-            label: Text(
-              '커뮤니티',
-              style: TextStyle(
-                fontSize: 14,
+          value: MainView.community,
+          label: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.people),
+              SizedBox(height: 4),
+              Text(
+                '커뮤니티',
+                style: TextStyle(fontSize: 13),
               ),
-            ),
-            icon: Icon(Icons.people)),
+            ],
+          ),
+        ),
       ],
       selected: <MainView>{currentMainView},
       onSelectionChanged: (Set<MainView> newSelection) {
