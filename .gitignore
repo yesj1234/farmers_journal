@@ -54,3 +54,5 @@ app.*.map.json
 *.freezed.*
 # env config
 *.env
+#firebase_admin node modules
+firebase_admin/node_modules/
