@@ -210,23 +210,44 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                                   isPublic = !isPublic;
                                 }),
                                 child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 300),
+                                  duration: const Duration(milliseconds: 500),
                                   transitionBuilder: (child, animation) =>
                                       ScaleTransition(
                                           scale: animation, child: child),
                                   child: isPublic
                                       ? const Padding(
-                                          padding: EdgeInsets.only(right: 2),
-                                          child: FaIcon(
-                                            key: ValueKey("pubic"),
-                                            FontAwesomeIcons.eye,
-                                            semanticLabel: 'Public',
+                                          padding: EdgeInsets.only(right: 5),
+                                          child: Row(
+                                            children: [
+                                              FaIcon(
+                                                key: ValueKey("pubic"),
+                                                FontAwesomeIcons.eye,
+                                                color: Colors.red,
+                                                semanticLabel: 'Public',
+                                              ),
+                                              SizedBox(width: 3),
+                                              FaIcon(
+                                                FontAwesomeIcons.eye,
+                                                color: Colors.red,
+                                                semanticLabel: 'Public',
+                                              )
+                                            ],
                                           ),
                                         )
-                                      : const FaIcon(
-                                          key: ValueKey("private"),
-                                          FontAwesomeIcons.eyeSlash,
-                                          semanticLabel: 'Private',
+                                      : const Row(
+                                          children: [
+                                            FaIcon(
+                                              key: ValueKey("private"),
+                                              color: Colors.red,
+                                              FontAwesomeIcons.eyeSlash,
+                                              semanticLabel: 'Private',
+                                            ),
+                                            FaIcon(
+                                              color: Colors.red,
+                                              FontAwesomeIcons.eyeSlash,
+                                              semanticLabel: 'Private',
+                                            )
+                                          ],
                                         ),
                                 ),
                               ),
