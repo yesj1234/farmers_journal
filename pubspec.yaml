@@ -46,6 +46,7 @@ dependencies:
   flutter_svg_provider: ^1.0.7
   shared_preferences: ^2.5.2
   photo_manager: ^3.6.4
+  font_awesome_flutter: ^10.8.0
 
 
 
