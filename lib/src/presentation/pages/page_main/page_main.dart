@@ -26,9 +26,15 @@ import 'package:farmers_journal/src/domain/model/journal.dart';
 class PageMain extends ConsumerWidget {
   /// Creates a [PageMain] widget.
   const PageMain({super.key});
+
+  Icon get selectedIcon =>
+      const Icon(Icons.check_outlined, key: ValueKey('selected'));
+  TextStyle get selectedText => const TextStyle(fontWeight: FontWeight.bold);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRef = ref.watch(userControllerProvider(null));
+    final mainView = ref.watch(mainViewFilterProvider);
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
@@ -75,56 +81,83 @@ class PageMain extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: GestureDetector(
-                onTap: () =>
-                    ref.read(mainViewFilterProvider.notifier).changeDateFilter(
-                          MainView.day,
-                        ),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Icon(Icons.calendar_view_day), Text("일간")],
-                ),
-              ),
+              child: _BottomNavigationItem(
+                  currentMainView: mainView,
+                  view: MainView.day,
+                  icon: const Icon(Icons.calendar_view_day),
+                  title: "일간",
+                  selectedIcon: selectedIcon,
+                  selectedText: selectedText),
             ),
             Expanded(
-              child: GestureDetector(
-                onTap: () =>
-                    ref.read(mainViewFilterProvider.notifier).changeDateFilter(
-                          MainView.week,
-                        ),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Icon(Icons.calendar_view_week), Text("주간")],
-                ),
-              ),
+              child: _BottomNavigationItem(
+                  currentMainView: mainView,
+                  view: MainView.week,
+                  icon: const Icon(Icons.calendar_view_week),
+                  title: "주간",
+                  selectedIcon: selectedIcon,
+                  selectedText: selectedText),
             ),
             const Spacer(),
             Expanded(
-              child: GestureDetector(
-                onTap: () =>
-                    ref.read(mainViewFilterProvider.notifier).changeDateFilter(
-                          MainView.month,
-                        ),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Icon(Icons.calendar_view_week), Text("월간")],
-                ),
-              ),
+              child: _BottomNavigationItem(
+                  currentMainView: mainView,
+                  view: MainView.month,
+                  icon: const Icon(Icons.calendar_month),
+                  title: "월간",
+                  selectedIcon: selectedIcon,
+                  selectedText: selectedText),
             ),
             Expanded(
-              child: GestureDetector(
-                onTap: () =>
-                    ref.read(mainViewFilterProvider.notifier).changeDateFilter(
-                          MainView.community,
-                        ),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Icon(Icons.calendar_view_week), Text("커뮤니티")],
-                ),
-              ),
+              child: _BottomNavigationItem(
+                  currentMainView: mainView,
+                  view: MainView.community,
+                  icon: const Icon(Icons.people),
+                  title: "커뮤니티",
+                  selectedIcon: selectedIcon,
+                  selectedText: selectedText),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _BottomNavigationItem extends ConsumerWidget {
+  const _BottomNavigationItem({
+    required this.currentMainView,
+    required this.view,
+    required this.icon,
+    required this.title,
+    required this.selectedIcon,
+    required this.selectedText,
+  });
+  final MainView currentMainView;
+  final MainView view;
+  final String title;
+  final Icon icon;
+  final Icon selectedIcon;
+  final TextStyle selectedText;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => ref.read(mainViewFilterProvider.notifier).changeDateFilter(
+            view,
+          ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) =>
+                ScaleTransition(scale: animation, child: child),
+            child: currentMainView == view ? selectedIcon : icon,
+          ),
+          Text(title, style: currentMainView == view ? selectedText : null)
+        ],
       ),
     );
   }
