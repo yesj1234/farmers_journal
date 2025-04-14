@@ -29,7 +29,6 @@ class PageMain extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRef = ref.watch(userControllerProvider(null));
-    final currentMainView = ref.watch(mainViewFilterProvider);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
