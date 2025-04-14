@@ -44,6 +44,10 @@ class FireStoreJournalRepository implements JournalRepository {
     if (lastJournal == null) {
       try {
         final journals = await journalRef
+            .where(
+              'isPublic',
+              isEqualTo: true,
+            )
             .where('date', isLessThanOrEqualTo: DateTime.now())
             .orderBy('date', descending: true)
             .limit(10)
