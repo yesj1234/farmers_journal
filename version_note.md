@@ -30,3 +30,8 @@
 - Fix validation logic when creating or updating journal.
 - Add journal detail view. 
 - Add comments for journal.
+
+**version 1.0.7** 
+- Fix comment layout.
+- Add toggle button whether to show or hide the journal.
+- Common layout fix. 
