@@ -187,6 +187,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                                   ref.invalidate(journalControllerProvider);
                                   if (context.mounted) {
                                     context.pop();
+                                    context.pop();
                                   }
                                 },
                                 onError: (e, st) {
