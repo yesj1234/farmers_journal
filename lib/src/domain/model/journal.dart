@@ -12,6 +12,7 @@ class Journal {
   final String? place;
   final String? writer;
   final int? reportCount;
+  final bool? isPublic;
   Journal({
     this.id,
     this.title,
@@ -23,6 +24,7 @@ class Journal {
     this.place,
     this.writer,
     this.reportCount,
+    this.isPublic,
   });
 
   factory Journal.fromJson(
@@ -36,16 +38,18 @@ class Journal {
         map['images'] is Iterable ? List.from(map['images']) : null;
 
     return Journal(
-        id: map['id'],
-        title: map['title'],
-        content: map['content'],
-        plant: map['plant'],
-        place: map['place'],
-        images: images,
-        date: dateDateTime,
-        createdAt: createdAtDateTime,
-        writer: map['writer'],
-        reportCount: map['reportCount']);
+      id: map['id'],
+      title: map['title'],
+      content: map['content'],
+      plant: map['plant'],
+      place: map['place'],
+      images: images,
+      date: dateDateTime,
+      createdAt: createdAtDateTime,
+      writer: map['writer'],
+      reportCount: map['reportCount'],
+      isPublic: map['isPublic'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -60,6 +64,7 @@ class Journal {
       "createdAt": createdAt ?? DateTime.now(),
       "writer": writer ?? '',
       "reportCount": reportCount ?? 0,
+      "isPublic": isPublic ?? true,
     };
   }
 
@@ -74,6 +79,7 @@ class Journal {
     String? place,
     String? writer,
     int? reportCount,
+    bool? isPublic,
   }) {
     return Journal(
       id: id ?? this.id,
@@ -86,6 +92,7 @@ class Journal {
       place: place ?? this.place,
       writer: writer ?? this.writer,
       reportCount: reportCount ?? this.reportCount,
+      isPublic: isPublic ?? this.isPublic,
     );
   }
 }

@@ -247,6 +247,7 @@ class FireStoreUserRepository implements UserRepository {
       {required String title,
       required String content,
       required DateTime date,
+      required bool? isPublic,
       required List<XFile>? images,
       void Function({
         int transferred,
@@ -277,6 +278,7 @@ class FireStoreUserRepository implements UserRepository {
         createdAt: DateTime.now(),
         writer: writerId,
         reportCount: 0,
+        isPublic: isPublic,
       );
 
       if (images != null) {
@@ -312,10 +314,11 @@ class FireStoreUserRepository implements UserRepository {
     required String content,
     required DateTime date,
     required List<ImageType?>? images,
+    required bool? isPublic,
     void Function({int transferred, int totalBytes})? progressCallback,
   }) async {
     final journalRef = instance.collection("journals").doc(id);
-
+    List<dynamic> imageURLs = [];
     if (images != null && images.isNotEmpty) {
       final imageUploadTasks = images.map((image) async {
         switch (image) {
@@ -332,15 +335,16 @@ class FireStoreUserRepository implements UserRepository {
             throw UnimplementedError();
         }
       }).toList();
-      final imageURLs = await Future.wait(imageUploadTasks);
-      await journalRef.update({
-        'id': id,
-        'title': title,
-        'content': content,
-        'date': date,
-        'images': imageURLs,
-      });
+      imageURLs = await Future.wait(imageUploadTasks);
     }
+    await journalRef.update({
+      'id': id,
+      'title': title,
+      'content': content,
+      'date': date,
+      'images': imageURLs,
+      'isPublic': isPublic,
+    });
     return await getJournals();
   }
 

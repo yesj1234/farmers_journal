@@ -8,6 +8,7 @@ import 'package:farmers_journal/src/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/src/presentation/controller/journal/journal_form_controller.dart';
 import 'package:farmers_journal/src/presentation/pages/page_journal/image_type.dart';
 import 'package:farmers_journal/src/presentation/controller/journal/journal_controller.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +44,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
   final TextEditingController contentController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
   final ValueNotifier<List<ImageType>> imageNotifier = ValueNotifier([]);
+  bool isPublic = true;
 
   Future<void> pickImage() async {
     XFile? _image = await _imagePicker.pickImage(source: ImageSource.gallery);
@@ -77,7 +79,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
         titleController.text = journal.title ?? '';
         contentController.text = journal.content ?? '';
         date = journal.date;
-
+        isPublic = journal.isPublic ?? true;
         imageNotifier.value =
             journal.images?.map((path) => UrlImage(path!)).toList() ?? [];
       });
@@ -168,6 +170,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                                       content: contentController.text,
                                       date: date ?? snapshot.data!.date!,
                                       images: imageNotifier.value,
+                                      isPublic: isPublic,
                                       progressCallback: (
                                           {int? transferred,
                                           int? totalBytes}) async {
@@ -239,10 +242,46 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                             child: Column(
                               spacing: 10,
                               children: [
-                                DateForm(
-                                  initialDate: date!,
-                                  datePicked: date,
-                                  onDatePicked: onDatePicked,
+                                Stack(
+                                  children: [
+                                    DateForm(
+                                      initialDate: date!,
+                                      datePicked: date,
+                                      onDatePicked: onDatePicked,
+                                    ),
+                                    Positioned(
+                                      right: 0,
+                                      child: GestureDetector(
+                                        onTap: () => setState(() {
+                                          isPublic = !isPublic;
+                                        }),
+                                        child: AnimatedSwitcher(
+                                          duration:
+                                              const Duration(milliseconds: 300),
+                                          transitionBuilder:
+                                              (child, animation) =>
+                                                  ScaleTransition(
+                                                      scale: animation,
+                                                      child: child),
+                                          child: isPublic
+                                              ? const Padding(
+                                                  padding:
+                                                      EdgeInsets.only(right: 2),
+                                                  child: FaIcon(
+                                                    key: ValueKey("pubic"),
+                                                    FontAwesomeIcons.eye,
+                                                    semanticLabel: 'Public',
+                                                  ),
+                                                )
+                                              : const FaIcon(
+                                                  key: ValueKey("private"),
+                                                  FontAwesomeIcons.eyeSlash,
+                                                  semanticLabel: 'Private',
+                                                ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                                 ValueListenableBuilder(
                                     valueListenable: imageNotifier,

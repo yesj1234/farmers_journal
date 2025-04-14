@@ -21,6 +21,7 @@ class JournalFormController extends _$JournalFormController {
     required String content,
     required DateTime date,
     required List<XFile>? images,
+    required bool? isPublic,
     void Function({
       int transferred,
       int totalBytes,
@@ -38,6 +39,7 @@ class JournalFormController extends _$JournalFormController {
           content: content,
           date: date,
           images: images,
+          isPublic: isPublic,
           progressCallback: progressCallback);
       state = const JournalFormControllerState.done();
     }
@@ -51,6 +53,7 @@ class JournalFormController extends _$JournalFormController {
     required String content,
     required DateTime date,
     required List<ImageType?>? images,
+    required bool? isPublic,
     void Function({
       int transferred,
       int totalBytes,
@@ -69,6 +72,7 @@ class JournalFormController extends _$JournalFormController {
           content: content,
           date: date,
           images: images,
+          isPublic: isPublic,
           progressCallback: progressCallback);
     }
     ref.invalidate(dayViewControllerProvider);
