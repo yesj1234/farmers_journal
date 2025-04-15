@@ -210,7 +210,7 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                                   isPublic = !isPublic;
                                 }),
                                 child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 500),
+                                  duration: const Duration(milliseconds: 100),
                                   transitionBuilder: (child, animation) =>
                                       ScaleTransition(
                                           scale: animation, child: child),

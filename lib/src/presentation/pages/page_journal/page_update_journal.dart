@@ -257,7 +257,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                                         }),
                                         child: AnimatedSwitcher(
                                           duration:
-                                              const Duration(milliseconds: 300),
+                                              const Duration(milliseconds: 100),
                                           transitionBuilder:
                                               (child, animation) =>
                                                   ScaleTransition(
