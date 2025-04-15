@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 enum AlertDialogType {
   delete,
   block,
+  logout,
+  deleteAccount,
 }
 
 /// Displays a confirmation alert dialog based on the specified [AlertDialogType].
@@ -26,6 +28,10 @@ Future<void> showMyAlertDialog(
       const Text('삭제', style: TextStyle(color: Colors.red)),
     AlertDialogType.block =>
       const Text('차단', style: TextStyle(color: Colors.red)),
+    AlertDialogType.logout =>
+      const Text('로그아웃', style: TextStyle(color: Colors.red)),
+    AlertDialogType.deleteAccount =>
+      const Text('회원 탈퇴', style: TextStyle(color: Colors.red)),
   };
 
   final alertChildren = switch (type) {
@@ -37,6 +43,12 @@ Future<void> showMyAlertDialog(
         Text('정말 차단 하시겠습니까?'),
         Text('이 동작은 이 유저의 모든 글을 차단합니다.')
       ],
+    AlertDialogType.logout => const [
+        Text('로그아웃 하시겠습니까?'),
+      ],
+    AlertDialogType.deleteAccount => const [
+        Text('회원탈퇴 하시겠습니까?'),
+      ],
   };
   final confirmText = switch (type) {
     AlertDialogType.delete => const Text(
@@ -47,6 +59,18 @@ Future<void> showMyAlertDialog(
       ),
     AlertDialogType.block => const Text(
         '차단',
+        style: TextStyle(
+          color: Colors.red,
+        ),
+      ),
+    AlertDialogType.logout => const Text(
+        '로그아웃',
+        style: TextStyle(
+          color: Colors.red,
+        ),
+      ),
+    AlertDialogType.deleteAccount => const Text(
+        '회원 탈퇴',
         style: TextStyle(
           color: Colors.red,
         ),
@@ -86,17 +110,25 @@ Future<void> showMyCupertinoAlertDialog({
   final alertTitle = switch (type) {
     AlertDialogType.delete => const Text('삭제'),
     AlertDialogType.block => const Text('차단'),
+    AlertDialogType.logout =>
+      const Text('로그아웃', style: TextStyle(color: Colors.red)),
+    AlertDialogType.deleteAccount =>
+      const Text('회원 탈퇴', style: TextStyle(color: Colors.red)),
   };
 
   final alertContent = switch (type) {
     AlertDialogType.delete => const Text('정말 삭제 하시겠습니까?\n이 동작은 되돌릴 수 없습니다.'),
     AlertDialogType.block =>
       const Text('정말 차단 하시겠습니까?\n이 동작은 이 유저의 모든 글을 차단합니다.'),
+    AlertDialogType.logout => const Text('로그아웃 하시겠습니까?'),
+    AlertDialogType.deleteAccount => const Text('회원탈퇴 하시겠습니까?'),
   };
 
   final confirmText = switch (type) {
     AlertDialogType.delete => '삭제',
     AlertDialogType.block => '차단',
+    AlertDialogType.logout => '로그아웃',
+    AlertDialogType.deleteAccount => '회원탈퇴',
   };
 
   return showCupertinoDialog(

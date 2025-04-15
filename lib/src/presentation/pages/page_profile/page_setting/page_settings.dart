@@ -1,4 +1,5 @@
 import 'package:farmers_journal/src/presentation/components/selection_item_with_callback.dart';
+import 'package:farmers_journal/src/presentation/components/show_alert_dialog.dart';
 import 'package:farmers_journal/src/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/src/presentation/controller/auth/auth_controller.dart';
 import 'package:farmers_journal/src/presentation/controller/theme/theme_controller.dart';
@@ -198,42 +199,30 @@ class Account extends ConsumerWidget {
       items: [
         SelectionItemWithCallback(
           callback: () async {
-            bool confirm = await showAlertDialog(context,
-                title: "로그아웃",
-                message: "로그아웃 하시겠습니까?",
-                onCancel:
-                    MyButtonType(onPressed: () {}, child: const Text("취소")),
-                onConfirm: MyButtonType(
-                  onPressed: () {},
-                  child: const Text("확인"),
-                ));
-            if (confirm) {
-              ref.read(authControllerProvider.notifier).signOut();
-              if (context.mounted) {
-                context.go('/');
-              }
-            }
+            showMyCupertinoAlertDialog(
+                context: context,
+                type: AlertDialogType.logout,
+                cb: () {
+                  ref.read(authControllerProvider.notifier).signOut();
+                  if (context.mounted) {
+                    context.go('/');
+                  }
+                });
           },
           icon: Icons.logout,
           selectionName: '로그아웃',
         ),
         SelectionItemWithCallback(
           callback: () async {
-            bool confirm = await showAlertDialog(context,
-                title: "회원탈퇴",
-                message: "회원 탈퇴 하시겠습니까??",
-                onCancel:
-                    MyButtonType(onPressed: () {}, child: const Text("취소")),
-                onConfirm: MyButtonType(
-                  onPressed: () {},
-                  child: const Text("확인"),
-                ));
-            if (confirm) {
-              ref.read(authControllerProvider.notifier).deleteAccount();
-              if (context.mounted) {
-                context.go('/');
-              }
-            }
+            showMyCupertinoAlertDialog(
+                context: context,
+                type: AlertDialogType.deleteAccount,
+                cb: () {
+                  ref.read(authControllerProvider.notifier).deleteAccount();
+                  if (context.mounted) {
+                    context.go('/');
+                  }
+                });
           },
           icon: Icons.person_remove_alt_1_outlined,
           selectionName: '회원탈퇴',
