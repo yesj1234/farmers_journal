@@ -1,4 +1,5 @@
 import 'package:farmers_journal/component.dart';
+import 'package:farmers_journal/src/presentation/components/handle_journal_delete.dart';
 import 'package:farmers_journal/src/presentation/pages/page_main/journal_detail/comment_input_form.dart';
 import 'package:farmers_journal/src/presentation/pages/page_main/journal_detail/user_profile.dart';
 import 'package:flutter/material.dart';
@@ -126,16 +127,7 @@ class _BuildAppBar extends StatelessWidget {
                     menuType: CascadingMenuType.personal,
                     onCallback1: () => context.push('/update/${journal.id}'),
                     onCallback2: () {
-                      showMyAlertDialog(
-                        context: context,
-                        type: AlertDialogType.delete,
-                        cb: () {
-                          ref
-                              .read(journalControllerProvider.notifier)
-                              .deleteJournal(id: journal.id as String);
-                          Navigator.of(context).pop();
-                        },
-                      );
+                      handleJournalDelete(context, ref, journal.id!);
                     },
                   )
                 : MyCascadingMenu(
