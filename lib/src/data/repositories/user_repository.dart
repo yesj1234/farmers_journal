@@ -117,7 +117,10 @@ class FireStoreUserRepository implements UserRepository {
 
   @override
   Future<void> setPlace(
-      {required String? id, required String? newPlantPlace}) async {
+      {required String? id,
+      required String? newPlantPlace,
+      required num? lat,
+      required num? lng}) async {
     try {
       final userRef = await _fetchUserRef();
       final user = await userRef?.get();
@@ -125,6 +128,8 @@ class FireStoreUserRepository implements UserRepository {
       int index = plants.indexWhere((plant) => plant['id'] == id);
       Map<String, dynamic> plant = plants[index];
       plant.update('place', (_) => newPlantPlace);
+      plant.update('lat', (_) => lat);
+      plant.update('lng', (_) => lng);
       plants[index] = plant;
       await userRef?.update({'plants': plants});
     } catch (error) {

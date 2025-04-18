@@ -17,7 +17,11 @@ abstract class UserRepository {
       {required String? id,
       required String? newPlantName,
       required String code});
-  Future<void> setPlace({required String? id, required String? newPlantPlace});
+  Future<void> setPlace(
+      {required String? id,
+      required String? newPlantPlace,
+      required num? lat,
+      required num? lng});
   Future<void> setInitial({required Plant plant, required String name});
 
   Future<List<Journal?>> getJournals();

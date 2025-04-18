@@ -27,6 +27,13 @@ class _PagePlaceSearchState extends ConsumerState<PagePlaceSearch> {
     });
   }
 
+  num? placeLat;
+  num? placeLng;
+  void setLatLng(num? lat, num? lng) {
+    placeLat = lat;
+    placeLng = lng;
+  }
+
   @override
   Widget build(BuildContext context) {
     final userRef = ref.watch(userControllerProvider(null));
@@ -48,7 +55,11 @@ class _PagePlaceSearchState extends ConsumerState<PagePlaceSearch> {
                 final plantId = userRef.value?.plants[0].id;
                 await ref
                     .read(userControllerProvider(null).notifier)
-                    .setPlace(id: plantId, newPlantPlace: selectedPlace)
+                    .setPlace(
+                        id: plantId,
+                        newPlantPlace: selectedPlace,
+                        lat: placeLat,
+                        lng: placeLng)
                     .then((_) {
                   if (context.mounted) {
                     showSnackBar(context, '위치가 $selectedPlace(으)로 변경되었습니다.');
@@ -96,6 +107,7 @@ class _PagePlaceSearchState extends ConsumerState<PagePlaceSearch> {
                     selectedPlace.isNotEmpty
                         ? PlaceMap2(
                             finalAddress: selectedPlace,
+                            setLatLng: setLatLng,
                           )
                         : const SizedBox.shrink(),
                   ],

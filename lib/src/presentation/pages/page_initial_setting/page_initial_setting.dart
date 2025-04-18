@@ -5,6 +5,7 @@ import 'package:farmers_journal/src/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/src/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/src/presentation/pages/page_initial_setting/place_autocomplete.dart';
 import 'package:farmers_journal/src/presentation/components/plant_selection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -44,8 +45,16 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
   }
 
   String place = '';
+
   void setPlace(value) {
     place = value;
+  }
+
+  num? placeLat;
+  num? placeLng;
+  void setLatLng(num? lat, num? lng) {
+    placeLat = lat;
+    placeLng = lng;
   }
 
   @override
@@ -64,6 +73,7 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
         alignment: Alignment.topCenter,
         child: Stepper(
           currentStep: _index,
+          onStepTapped: onStepTapped,
           onStepCancel: onStepCancel,
           onStepContinue: onStepContinue,
           steps: [
@@ -101,7 +111,10 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
                   maxHeight: MediaQuery.sizeOf(context).height,
                 ),
                 child: PlaceSetting(
-                    sessionToken: const Uuid().v4(), onChanged: setPlace),
+                  sessionToken: const Uuid().v4(),
+                  onChanged: setPlace,
+                  setLatLng: setLatLng,
+                ),
               ),
               isActive: _index >= 2,
               state: _index == 2 ? StepState.editing : StepState.indexed,
@@ -114,101 +127,27 @@ class _PageInitialSettingState extends ConsumerState<PageInitialSetting> {
 
   //internal functions
   Future<bool> _completeSetting(context) async {
+    if (nameController.text.trim().isEmpty) {
+      showSnackBar(context, '이름을 설정해주세요.');
+      return false;
+    }
     if (_isCode(code)) {
       showSnackBar(context, '$plant는 등록되지 않은 작물입니다. 검색 결과 중에 선택해주세요.');
       return false;
-    } else {
-      return await _showAlertDialog(context, () {
-        ref.read(userControllerProvider(null).notifier).setInitial(
-            plantName: plant,
-            place: place,
-            code: code!,
-            name: nameController.text);
-      });
     }
-  }
+    if (place.isEmpty) {
+      showSnackBar(context, '위치를 설정해주세요.');
+      return false;
+    }
 
-  Future<bool> _showAlertDialog(context, cb) async {
-    return await showDialog<bool>(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text(
-                  '확정',
-                  style: TextStyle(
-                    color: Colors.redAccent,
-                  ),
-                ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 5,
-                  children: <Widget>[
-                    RichText(
-                      text: TextSpan(
-                        text: '작물: ',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: plant,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    RichText(
-                      text: TextSpan(
-                        text: '위치:',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: place,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text(
-                      '취소',
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
-                  TextButton(
-                    child: const Text(
-                      '확정',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop(true);
-                      cb();
-                    },
-                  )
-                ],
-              );
-            }) ??
-        false;
+    await ref.read(userControllerProvider(null).notifier).setInitial(
+        plantName: plant,
+        place: place,
+        code: code!,
+        name: nameController.text,
+        lat: placeLat,
+        lng: placeLng);
+    return true;
   }
 
   //Stepper related callbacks
@@ -262,12 +201,36 @@ class NameSetting extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController controller;
 
+  InputDecoration get inputDecoration => const InputDecoration(
+        filled: false,
+        hintStyle: TextStyle(
+          fontSize: 14,
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            width: 1,
+          ),
+        ),
+        disabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(width: 0.5),
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(width: 0.5),
+        ),
+        errorBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            width: 1,
+            color: Colors.red,
+          ),
+        ),
+      );
   @override
   Widget build(BuildContext context) {
     return Form(
         key: formKey,
         child: TextFormField(
             controller: controller,
+            decoration: inputDecoration,
             validator: (value) {
               if (value == null) {
                 return '이름은 빈 값일 수 없습니다.';
@@ -283,9 +246,13 @@ class NameSetting extends StatelessWidget {
 
 class PlaceSetting extends ConsumerStatefulWidget {
   const PlaceSetting(
-      {super.key, required this.sessionToken, required this.onChanged});
+      {super.key,
+      required this.sessionToken,
+      required this.onChanged,
+      required this.setLatLng});
   final String sessionToken;
   final void Function(String? value) onChanged;
+  final void Function(num? lat, num? lng) setLatLng;
   @override
   ConsumerState<PlaceSetting> createState() => _PlaceSetting();
 }
@@ -328,6 +295,8 @@ class _PlaceSetting extends ConsumerState<PlaceSetting> {
                         .geoCodingAPI(controller.text),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
+                        widget.setLatLng(
+                            snapshot.data?.lat, snapshot.data?.lng);
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: PlaceMap(

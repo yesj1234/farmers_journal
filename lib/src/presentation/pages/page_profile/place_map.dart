@@ -5,10 +5,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 /// {@category Presentation}
 class PlaceMap2 extends ConsumerWidget {
-  const PlaceMap2({super.key, required this.finalAddress, this.initialValue});
+  const PlaceMap2(
+      {super.key,
+      required this.finalAddress,
+      this.initialValue,
+      this.setLatLng});
+
   final String finalAddress;
   final String? initialValue;
-
+  final void Function(num? lat, num? lng)? setLatLng;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return FutureBuilder(
@@ -22,6 +27,7 @@ class PlaceMap2 extends ConsumerWidget {
             if (snapshot.data == null) {
               return const SizedBox.shrink();
             }
+            setLatLng?.call(snapshot.data?.lat, snapshot.data?.lng);
             return PlaceMap(lat: snapshot.data?.lat, lng: snapshot.data?.lng);
           }
           return const SizedBox.shrink();
