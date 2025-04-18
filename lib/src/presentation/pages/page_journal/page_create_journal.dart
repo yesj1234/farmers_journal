@@ -167,20 +167,13 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                 },
               );
             },
-            child: const Text(
-              "완료",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: const _CompleteButton(),
           ),
         ],
-        title: Text(
-          "일지 쓰기",
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
+        title: DateForm(
+          initialDate: date,
+          datePicked: widget.initialDate ?? date,
+          onDatePicked: onDatePicked,
         ),
       ),
       body: SafeArea(
@@ -194,65 +187,23 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                 child: IntrinsicHeight(
                   child: Center(
                     child: Column(
-                      spacing: 10,
                       children: [
-                        Stack(
-                          children: [
-                            DateForm(
-                              initialDate: date,
-                              datePicked: widget.initialDate ?? date,
-                              onDatePicked: onDatePicked,
-                            ),
-                            Positioned(
-                              right: 0,
-                              child: GestureDetector(
-                                onTap: () => setState(() {
-                                  isPublic = !isPublic;
-                                }),
-                                child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 100),
-                                  transitionBuilder: (child, animation) =>
-                                      ScaleTransition(
-                                          scale: animation, child: child),
-                                  child: isPublic
-                                      ? const Padding(
-                                          padding: EdgeInsets.only(right: 5),
-                                          child: Row(
-                                            children: [
-                                              FaIcon(
-                                                key: ValueKey("pubic"),
-                                                FontAwesomeIcons.eye,
-                                                color: Colors.red,
-                                                semanticLabel: 'Public',
-                                              ),
-                                              SizedBox(width: 3),
-                                              FaIcon(
-                                                FontAwesomeIcons.eye,
-                                                color: Colors.red,
-                                                semanticLabel: 'Public',
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      : const Row(
-                                          children: [
-                                            FaIcon(
-                                              key: ValueKey("private"),
-                                              color: Colors.red,
-                                              FontAwesomeIcons.eyeSlash,
-                                              semanticLabel: 'Private',
-                                            ),
-                                            FaIcon(
-                                              color: Colors.red,
-                                              FontAwesomeIcons.eyeSlash,
-                                              semanticLabel: 'Private',
-                                            )
-                                          ],
-                                        ),
-                                ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('비공개'),
+                              Checkbox(
+                                value: isPublic,
+                                onChanged: (_) {
+                                  setState(() {
+                                    isPublic = !isPublic;
+                                  });
+                                },
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         ValueListenableBuilder(
                             valueListenable: imageNotifier,
@@ -312,6 +263,20 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
             );
           }),
         ),
+      ),
+    );
+  }
+}
+
+class _CompleteButton extends StatelessWidget {
+  const _CompleteButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Text(
+      "완료",
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
       ),
     );
   }

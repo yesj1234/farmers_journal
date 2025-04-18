@@ -55,34 +55,16 @@ class DateForm extends StatelessWidget {
           ),
         ),
       ),
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: DatePickerWrapper(
-                onDatePicked: onDatePicked,
-                initialDate: initialDate,
-                child: const Icon(
-                  Icons.calendar_month,
-                  size: 25,
-                ),
-              ),
-            ),
+      child: Align(
+        alignment: Alignment.center,
+        child: DatePickerWrapper(
+          onDatePicked: onDatePicked,
+          initialDate: initialDate,
+          child: Text(
+            '${datePicked?.year}. ${datePicked?.month}. ${datePicked?.day}.',
+            style: textStyle,
           ),
-          Align(
-            alignment: Alignment.center,
-            child: DatePickerWrapper(
-              onDatePicked: onDatePicked,
-              initialDate: initialDate,
-              child: Text(
-                '${datePicked?.year}. ${datePicked?.month}. ${datePicked?.day}.',
-                style: textStyle,
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
