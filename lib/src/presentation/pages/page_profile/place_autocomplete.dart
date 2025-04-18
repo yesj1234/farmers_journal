@@ -113,8 +113,9 @@ class _PlaceAutoComplete2State extends State<PlaceAutoComplete2> {
           isPlaceFinal
               ? Flexible(
                   child: PlaceMap2(
-                      finalAddress:
-                          finalAddress)) // Show map when place is final
+                    finalAddress: finalAddress,
+                  ),
+                )
               : userInput != "" && userInput != null
                   ? Flexible(
                       child: PredictedPlaces(

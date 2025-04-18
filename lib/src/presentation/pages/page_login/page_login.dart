@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:farmers_journal/src/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/src/presentation/controller/auth/auth_controller.dart';
 import 'login_button.dart';
@@ -98,26 +100,28 @@ class PageLogin extends ConsumerWidget {
                         },
                       ),
                     ),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.sizeOf(context).width / 1.2,
-                      ),
-                      child: AppleLoginButton(
-                        onPressed: () async {
-                          await ref
-                              .read(authControllerProvider.notifier)
-                              .signInWithApple()
-                              .then((_) {}, onError: (error) {
-                            if (context.mounted) {
-                              showSnackBar(context, error);
-                            }
-                          });
-                          if (context.mounted) {
-                            context.go('/');
-                          }
-                        },
-                      ),
-                    )
+                    Platform.isIOS
+                        ? ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.sizeOf(context).width / 1.2,
+                            ),
+                            child: AppleLoginButton(
+                              onPressed: () async {
+                                await ref
+                                    .read(authControllerProvider.notifier)
+                                    .signInWithApple()
+                                    .then((_) {}, onError: (error) {
+                                  if (context.mounted) {
+                                    showSnackBar(context, error);
+                                  }
+                                });
+                                if (context.mounted) {
+                                  context.go('/');
+                                }
+                              },
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ],
                 ),
               ),
