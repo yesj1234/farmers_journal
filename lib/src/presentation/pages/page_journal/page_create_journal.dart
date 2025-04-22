@@ -300,7 +300,7 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
 }
 
 class _CompleteButton extends StatelessWidget {
-  const _CompleteButton({super.key});
+  const _CompleteButton();
 
   @override
   Widget build(BuildContext context) {

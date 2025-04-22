@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:open_meteo/open_meteo.dart';
 
 class OpenMeteoWeatherRepository {
