@@ -1,5 +1,6 @@
 import 'dart:typed_data';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:farmers_journal/src/presentation/controller/weather/weather_controller.dart';
+import 'package:farmers_journal/src/presentation/pages/page_journal/weather_icon_helper.dart';
 
 import '../../components/journal_form_content.dart';
 import '../../components/journal_form_date.dart';
@@ -88,6 +89,8 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
   @override
   Widget build(BuildContext context) {
     final journalFormController = ref.watch(journalFormControllerProvider);
+    final weatherController = ref.watch(weatherControllerProvider);
+
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.pop('/main')),
@@ -190,19 +193,47 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                       children: [
                         Align(
                           alignment: Alignment.centerRight,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('비공개'),
-                              Checkbox(
-                                value: isPublic,
-                                onChanged: (_) {
-                                  setState(() {
-                                    isPublic = !isPublic;
-                                  });
-                                },
-                              ),
-                            ],
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 24.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: 90,
+                                  child: weatherController.maybeWhen(
+                                    orElse: () =>
+                                        const CircularProgressIndicator(),
+                                    data: (info) => Row(
+                                      spacing: 4,
+                                      children: [
+                                        Icon(
+                                          WeatherIconHelper.getIcon(
+                                              info['weatherCode']),
+                                        ), // Weather Icon depending on the weather code.
+                                        Text('${info['temperature']}℃'),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 90,
+                                  child: Row(
+                                    children: [
+                                      const Text('비공개'),
+                                      Checkbox(
+                                        value: isPublic,
+                                        onChanged: (_) {
+                                          setState(() {
+                                            isPublic = !isPublic;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         ValueListenableBuilder(
