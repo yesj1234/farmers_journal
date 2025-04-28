@@ -8,10 +8,16 @@ part 'weather_controller.g.dart';
 
 @riverpod
 class WeatherController extends _$WeatherController {
+  double? _latitude;
+  double? _longitude;
   @override
-  WeatherControllerState build() {
-    currentWeather();
-    return const WeatherControllerState.initial();
+  WeatherControllerState build({Map? initialWeatherInfo}) {
+    if (initialWeatherInfo == null) {
+      currentWeather();
+      return const WeatherControllerState.initial();
+    } else {
+      return WeatherControllerState.data(initialWeatherInfo);
+    }
   }
 
   void currentWeather() async {
@@ -22,9 +28,40 @@ class WeatherController extends _$WeatherController {
 
       final double latitude = userInfo!.plants.first.lat;
       final double longitude = userInfo.plants.first.lng;
-
+      _latitude = latitude;
+      _longitude = longitude;
       final response =
           await api.requestWeather(latitude: latitude, longitude: longitude);
+      state = WeatherControllerState.data(response);
+    } catch (error) {
+      state = WeatherControllerState.error(error);
+    }
+  }
+
+  void setWeather({
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    if (_latitude == null || _longitude == null) {
+      try {
+        final userInfo = await ref.read(userRepositoryProvider).getUser();
+
+        final double latitude = userInfo!.plants.first.lat;
+        final double longitude = userInfo.plants.first.lng;
+        _latitude = latitude;
+        _longitude = longitude;
+      } catch (error) {
+        state = WeatherControllerState.error(error);
+        return;
+      }
+    }
+    try {
+      final api = ref.read(weatherRepositoryProvider);
+      final response = await api.requestHistoricalWeather(
+          latitude: _latitude ?? 0,
+          longitude: _longitude ?? 0,
+          startDate: startDate,
+          endDate: endDate);
       state = WeatherControllerState.data(response);
     } catch (error) {
       state = WeatherControllerState.error(error);

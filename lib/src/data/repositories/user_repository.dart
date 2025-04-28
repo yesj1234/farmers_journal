@@ -254,6 +254,8 @@ class FireStoreUserRepository implements UserRepository {
       required DateTime date,
       required bool? isPublic,
       required List<XFile>? images,
+      double? temperature,
+      int? weatherCode,
       void Function({
         int transferred,
         int totalBytes,
@@ -284,6 +286,8 @@ class FireStoreUserRepository implements UserRepository {
         writer: writerId,
         reportCount: 0,
         isPublic: isPublic,
+        temperature: temperature,
+        weatherCode: weatherCode,
       );
 
       if (images != null) {
@@ -320,6 +324,8 @@ class FireStoreUserRepository implements UserRepository {
     required DateTime date,
     required List<ImageType?>? images,
     required bool? isPublic,
+    double? temperature,
+    int? weatherCode,
     void Function({int transferred, int totalBytes})? progressCallback,
   }) async {
     final journalRef = instance.collection("journals").doc(id);
@@ -349,6 +355,8 @@ class FireStoreUserRepository implements UserRepository {
       'date': date,
       'images': imageURLs,
       'isPublic': isPublic,
+      'temperature': temperature,
+      'weatherCode': weatherCode,
     });
     return await getJournals();
   }

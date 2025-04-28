@@ -13,6 +13,8 @@ class Journal {
   final String? writer;
   final int? reportCount;
   final bool? isPublic;
+  final double? temperature;
+  final int? weatherCode;
   Journal({
     this.id,
     this.title,
@@ -25,6 +27,8 @@ class Journal {
     this.writer,
     this.reportCount,
     this.isPublic,
+    this.temperature,
+    this.weatherCode,
   });
 
   factory Journal.fromJson(
@@ -49,6 +53,8 @@ class Journal {
       writer: map['writer'],
       reportCount: map['reportCount'],
       isPublic: map['isPublic'],
+      temperature: map['temperature'],
+      weatherCode: map['weatherCode'],
     );
   }
 
@@ -65,6 +71,8 @@ class Journal {
       "writer": writer ?? '',
       "reportCount": reportCount ?? 0,
       "isPublic": isPublic ?? true,
+      "temperature": temperature,
+      "weatherCode": weatherCode,
     };
   }
 
@@ -80,6 +88,8 @@ class Journal {
     String? writer,
     int? reportCount,
     bool? isPublic,
+    double? temperature,
+    int? weatherCode,
   }) {
     return Journal(
       id: id ?? this.id,
@@ -93,6 +103,8 @@ class Journal {
       writer: writer ?? this.writer,
       reportCount: reportCount ?? this.reportCount,
       isPublic: isPublic ?? this.isPublic,
+      temperature: temperature ?? this.temperature,
+      weatherCode: weatherCode ?? this.weatherCode,
     );
   }
 }

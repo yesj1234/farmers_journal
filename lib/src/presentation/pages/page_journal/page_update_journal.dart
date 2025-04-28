@@ -1,18 +1,21 @@
 import 'dart:typed_data';
-import 'package:farmers_journal/src/domain/model/journal.dart';
-import 'package:farmers_journal/src/presentation/components/journal_form_content.dart';
-import 'package:farmers_journal/src/presentation/components/journal_form_date.dart';
-import 'package:farmers_journal/src/presentation/components/journal_form_title.dart';
-import 'package:farmers_journal/src/presentation/components/layout_images/layout_images.dart';
-import 'package:farmers_journal/src/presentation/components/show_snackbar.dart';
-import 'package:farmers_journal/src/presentation/controller/journal/journal_form_controller.dart';
-import 'package:farmers_journal/src/presentation/pages/page_journal/image_type.dart';
-import 'package:farmers_journal/src/presentation/controller/journal/journal_controller.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../../domain/model/journal.dart';
+import '../../../presentation/components/journal_form_content.dart';
+import '../../../presentation/components/journal_form_title.dart';
+import '../../../presentation/components/layout_images/layout_images.dart';
+import '../../../presentation/components/show_snackbar.dart';
+import '../../../presentation/controller/journal/journal_form_controller.dart';
+import '../../../presentation/pages/page_journal/image_type.dart';
+import '../../../presentation/controller/journal/journal_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../components/journal_form_date.dart';
+import '../../controller/weather/weather_controller.dart';
+import '../../controller/weather/weather_controller_state.dart';
+import 'weather_icon_helper.dart';
 
 /// {@category Presentation}
 /// A page that allows users to update an existing journal entry.
@@ -38,6 +41,11 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
   String? title;
   String? content;
   DateTime? date;
+  double? temperature;
+
+  int? weatherCode;
+
+  Map<String, dynamic>? initialInfo;
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController titleController = TextEditingController();
@@ -79,6 +87,9 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
         titleController.text = journal.title ?? '';
         contentController.text = journal.content ?? '';
         date = journal.date;
+        temperature = journal.temperature ?? 0;
+        weatherCode = journal.weatherCode ?? -1;
+        initialInfo = {'temperature': temperature, 'weatherCode': weatherCode};
         isPublic = journal.isPublic ?? true;
         imageNotifier.value =
             journal.images?.map((path) => UrlImage(path!)).toList() ?? [];
@@ -95,9 +106,17 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
     super.dispose();
   }
 
+  Future<void> setWeather() async {
+    ref
+        .read(
+            weatherControllerProvider(initialWeatherInfo: initialInfo).notifier)
+        .setWeather(startDate: date!, endDate: date!); //
+  }
+
   void onDatePicked(DateTime? value) {
     setState(() {
       date = value;
+      setWeather();
     });
   }
 
@@ -123,6 +142,14 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
   @override
   Widget build(BuildContext context) {
     final journalFormController = ref.watch(journalFormControllerProvider);
+    final WeatherControllerState weatherController;
+    if (initialInfo != null) {
+      weatherController =
+          ref.watch(weatherControllerProvider(initialWeatherInfo: initialInfo));
+    } else {
+      weatherController = ref.watch(weatherControllerProvider());
+    }
+
     return FutureBuilder(
       future: _journal,
       builder: (context, snapshot) {
@@ -170,6 +197,8 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                                       content: contentController.text,
                                       date: date ?? snapshot.data!.date!,
                                       images: imageNotifier.value,
+                                      temperature: temperature,
+                                      weatherCode: weatherCode,
                                       isPublic: isPublic,
                                       progressCallback: (
                                           {int? transferred,
@@ -219,12 +248,10 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                   ),
                 ),
               ],
-              title: Text(
-                "일지 쓰기",
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
+              title: DateForm(
+                initialDate: date ?? snapshot.data!.date!,
+                datePicked: date,
+                onDatePicked: onDatePicked,
               ),
             ),
             body: SafeArea(
@@ -240,69 +267,104 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                         child: IntrinsicHeight(
                           child: Center(
                             child: Column(
-                              spacing: 10,
                               children: [
-                                Stack(
-                                  children: [
-                                    DateForm(
-                                      initialDate: date!,
-                                      datePicked: date,
-                                      onDatePicked: onDatePicked,
-                                    ),
-                                    Positioned(
-                                      right: 0,
-                                      child: GestureDetector(
-                                        onTap: () => setState(() {
-                                          isPublic = !isPublic;
-                                        }),
-                                        child: AnimatedSwitcher(
-                                          duration:
-                                              const Duration(milliseconds: 100),
-                                          transitionBuilder:
-                                              (child, animation) =>
-                                                  ScaleTransition(
-                                                      scale: animation,
-                                                      child: child),
-                                          child: isPublic
-                                              ? const Padding(
-                                                  padding:
-                                                      EdgeInsets.only(right: 5),
-                                                  child: Row(
-                                                    children: [
-                                                      FaIcon(
-                                                        key: ValueKey("pubic"),
-                                                        FontAwesomeIcons.eye,
-                                                        color: Colors.red,
-                                                        semanticLabel: 'Public',
-                                                      ),
-                                                      SizedBox(width: 3),
-                                                      FaIcon(
-                                                        FontAwesomeIcons.eye,
-                                                        color: Colors.red,
-                                                        semanticLabel: 'Public',
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              : const Row(
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 24.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SizedBox(
+                                          width: 90,
+                                          child: AnimatedOpacity(
+                                            opacity:
+                                                weatherController.maybeWhen(
+                                                    orElse: () => 0,
+                                                    data: (_) => 1),
+                                            duration:
+                                                const Duration(seconds: 1),
+                                            child: weatherController.maybeWhen(
+                                                orElse: () {
+                                              return AnimatedSwitcher(
+                                                duration: const Duration(
+                                                    milliseconds: 500),
+                                                transitionBuilder:
+                                                    (child, animation) {
+                                                  return FadeTransition(
+                                                      opacity: animation,
+                                                      child: child);
+                                                },
+                                                child: Row(
+                                                  key: const ValueKey(
+                                                      'initialValue'),
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
-                                                    FaIcon(
-                                                      key: ValueKey("private"),
-                                                      color: Colors.red,
-                                                      FontAwesomeIcons.eyeSlash,
-                                                      semanticLabel: 'Private',
+                                                    Icon(
+                                                      WeatherIconHelper.getIcon(
+                                                          snapshot.data!
+                                                              .weatherCode!),
                                                     ),
-                                                    FaIcon(
-                                                      color: Colors.red,
-                                                      FontAwesomeIcons.eyeSlash,
-                                                      semanticLabel: 'Private',
-                                                    )
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                        '${snapshot.data!.temperature!}℃'),
                                                   ],
                                                 ),
+                                              );
+                                            }, data: (info) {
+                                              temperature = info['temperature'];
+                                              weatherCode = info['weatherCode'];
+                                              return AnimatedSwitcher(
+                                                duration: const Duration(
+                                                    milliseconds: 500),
+                                                transitionBuilder:
+                                                    (child, animation) {
+                                                  return FadeTransition(
+                                                    opacity: animation,
+                                                    child: child,
+                                                  );
+                                                },
+                                                child: Row(
+                                                  key: ValueKey(
+                                                      '$date - ${info['temperature']} - ${info['weatherCode']}'),
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: [
+                                                    Icon(
+                                                      WeatherIconHelper.getIcon(
+                                                          info['weatherCode']),
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                        '${info['temperature']}℃'),
+                                                  ],
+                                                ),
+                                              );
+                                            }),
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  ],
+                                        SizedBox(
+                                          width: 90,
+                                          child: Row(
+                                            children: [
+                                              const Text('비공개'),
+                                              Checkbox(
+                                                value: isPublic,
+                                                onChanged: (_) {
+                                                  setState(() {
+                                                    isPublic = !isPublic;
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                                 ValueListenableBuilder(
                                     valueListenable: imageNotifier,

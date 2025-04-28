@@ -15,8 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:farmers_journal/src/presentation/pages/page_journal/image_type.dart';
 
-// TODO: Refactoring needed. Merge create journal and update journal page.
-
+// TODO: temperature UI update. show the lowest, highest, and mid temperature with horizontal graph. some research for the weather UI needed.
 /// {@category Presentation}
 class PageCreateJournal extends ConsumerStatefulWidget {
   const PageCreateJournal({super.key, this.initialDate});
@@ -53,13 +52,22 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
-
+  double? temperature;
+  int? weatherCode;
   bool isPublic = true;
-  late final DateTime date;
+
+  late DateTime date;
+
+  Future<void> setWeather() async {
+    ref.read(weatherControllerProvider().notifier).setWeather(
+        startDate: date,
+        endDate: date); // updates the weather controller state.
+  }
 
   void onDatePicked(DateTime value) {
     setState(() {
       date = value;
+      setWeather();
     });
   }
 
@@ -89,7 +97,7 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
   @override
   Widget build(BuildContext context) {
     final journalFormController = ref.watch(journalFormControllerProvider);
-    final weatherController = ref.watch(weatherControllerProvider);
+    final weatherController = ref.watch(weatherControllerProvider());
 
     return Scaffold(
       appBar: AppBar(
@@ -132,6 +140,8 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                               date: date,
                               images: imageNotifier.value,
                               isPublic: isPublic,
+                              temperature: temperature,
+                              weatherCode: weatherCode,
                               progressCallback: (
                                   {int? transferred, int? totalBytes}) async {
                                 final total = await totalBytesToUpload;
@@ -182,7 +192,7 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
       body: SafeArea(
         child: Form(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.always,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: LayoutBuilder(builder: (context, viewport) {
             return SingleChildScrollView(
               child: ConstrainedBox(
@@ -201,18 +211,42 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                               children: [
                                 SizedBox(
                                   width: 90,
-                                  child: weatherController.maybeWhen(
-                                    orElse: () =>
-                                        const CircularProgressIndicator(),
-                                    data: (info) => Row(
-                                      spacing: 4,
-                                      children: [
-                                        Icon(
-                                          WeatherIconHelper.getIcon(
-                                              info['weatherCode']),
-                                        ), // Weather Icon depending on the weather code.
-                                        Text('${info['temperature']}℃'),
-                                      ],
+                                  child: AnimatedOpacity(
+                                    opacity: weatherController.maybeWhen(
+                                      data: (_) => 1.0,
+                                      orElse: () => 0.0,
+                                    ),
+                                    duration: const Duration(seconds: 1),
+                                    child: weatherController.maybeWhen(
+                                      orElse: () => const SizedBox.shrink(),
+                                      data: (info) {
+                                        temperature = info['temperature'];
+                                        weatherCode = info['weatherCode'];
+                                        return AnimatedSwitcher(
+                                          duration:
+                                              const Duration(milliseconds: 500),
+                                          transitionBuilder:
+                                              (child, animation) {
+                                            return FadeTransition(
+                                              opacity: animation,
+                                              child: child,
+                                            );
+                                          },
+                                          child: Row(
+                                            key: ValueKey(
+                                                '$date - ${info['temperature']} - ${info['weatherCode']}'),
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Icon(
+                                                WeatherIconHelper.getIcon(
+                                                    info['weatherCode']),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text('${info['temperature']}℃'),
+                                            ],
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),

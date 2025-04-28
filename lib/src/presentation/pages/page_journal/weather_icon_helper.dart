@@ -1,5 +1,5 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 /// Helper class that maps (WMO)[https://www.nodc.noaa.gov/archive/arc0021/0002199/1.1/data/0-data/HTML/WMO-CODE/WMO4677.HTM] code into matching weather icon.
 class WeatherIconHelper {
@@ -13,7 +13,7 @@ class WeatherIconHelper {
       case 1:
       case 2:
       case 3:
-        return FontAwesomeIcons.sun;
+        return Icons.sunny;
       case 4:
       case 5:
         return FontAwesomeIcons.smog;
