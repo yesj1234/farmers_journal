@@ -41,6 +41,14 @@ class Journal {
     List<String?>? images =
         map['images'] is Iterable ? List.from(map['images']) : null;
 
+    // Fetched data can potentially be one of the following.
+    // 1. null -> null.
+    // 2. int -> parse to double.
+    // 3. double -> double.
+    double? temperature = map['temperature'] == null
+        ? null
+        : double.parse('${map['temperature']}');
+
     return Journal(
       id: map['id'],
       title: map['title'],
@@ -53,7 +61,7 @@ class Journal {
       writer: map['writer'],
       reportCount: map['reportCount'],
       isPublic: map['isPublic'],
-      temperature: map['temperature'],
+      temperature: temperature,
       weatherCode: map['weatherCode'],
     );
   }

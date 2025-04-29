@@ -37,6 +37,7 @@ class FireStoreJournalRepository implements JournalRepository {
     return result;
   }
 
+  // TODO: Improve handling the error. A single error just throws an exception causing the whole page broken.
   @override
   Future<List<Journal>> fetchPaginatedJournals({Journal? lastJournal}) async {
     final journalRef = instance.collection('journals');
