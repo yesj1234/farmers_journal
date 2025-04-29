@@ -10,6 +10,7 @@ import '../../../../domain/model/journal.dart';
 import '../../../components/show_alert_dialog.dart';
 import '../../../components/show_report_dialog.dart';
 import '../../../components/show_snackbar.dart';
+import '../../../components/weather_icon_builder.dart';
 import '../../../controller/journal/journal_controller.dart';
 import '../../../controller/journal/pagination_controller.dart';
 import '../../../controller/journal/report_controller.dart';
@@ -64,6 +65,12 @@ class JournalDetail extends StatelessWidget {
                                 padding: const EdgeInsets.only(left: 12),
                                 child: _JournalTitle(title: journal!.title!),
                               ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: WeatherIconBuilder(
+                              temperature: journal!.temperature,
+                              weatherCode: journal!.weatherCode),
+                        ),
                         journal!.content!.isEmpty
                             ? const SizedBox.shrink()
                             : Padding(

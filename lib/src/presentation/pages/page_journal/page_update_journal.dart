@@ -7,15 +7,14 @@ import '../../../presentation/components/show_snackbar.dart';
 import '../../../presentation/controller/journal/journal_form_controller.dart';
 import '../../../presentation/pages/page_journal/image_type.dart';
 import '../../../presentation/controller/journal/journal_controller.dart';
+import '../../components/journal_form_date.dart';
+import '../../components/weather_icon_builder.dart';
+import '../../controller/weather/weather_controller.dart';
+import '../../controller/weather/weather_controller_state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../components/journal_form_date.dart';
-import '../../controller/weather/weather_controller.dart';
-import '../../controller/weather/weather_controller_state.dart';
-import 'weather_icon_helper.dart';
 
 /// {@category Presentation}
 /// A page that allows users to update an existing journal entry.
@@ -297,21 +296,14 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                                                       opacity: animation,
                                                       child: child);
                                                 },
-                                                child: Row(
+                                                child: WeatherIconBuilder(
                                                   key: const ValueKey(
                                                       'initialValue'),
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Icon(
-                                                      WeatherIconHelper.getIcon(
-                                                          snapshot.data!
-                                                              .weatherCode!),
-                                                    ),
-                                                    const SizedBox(width: 4),
-                                                    Text(
-                                                        '${snapshot.data!.temperature!}℃'),
-                                                  ],
+                                                  temperature: snapshot
+                                                      .data!.temperature!,
+                                                  weatherCode: snapshot
+                                                      .data!.weatherCode!,
+                                                  iconSize: 24,
                                                 ),
                                               );
                                             }, data: (info) {
@@ -327,20 +319,14 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                                                     child: child,
                                                   );
                                                 },
-                                                child: Row(
+                                                child: WeatherIconBuilder(
                                                   key: ValueKey(
                                                       '$date - ${info['temperature']} - ${info['weatherCode']}'),
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  children: [
-                                                    Icon(
-                                                      WeatherIconHelper.getIcon(
-                                                          info['weatherCode']),
-                                                    ),
-                                                    const SizedBox(width: 4),
-                                                    Text(
-                                                        '${info['temperature']}℃'),
-                                                  ],
+                                                  temperature:
+                                                      info['temperature'],
+                                                  weatherCode:
+                                                      info['weatherCode'],
+                                                  iconSize: 24,
                                                 ),
                                               );
                                             }),

@@ -3,6 +3,34 @@ import 'package:flutter/material.dart';
 
 /// Helper class that maps (WMO)[https://www.nodc.noaa.gov/archive/arc0021/0002199/1.1/data/0-data/HTML/WMO-CODE/WMO4677.HTM] code into matching weather icon.
 class WeatherIconHelper {
+  /// Returns the appropriate color for a given weather icon.
+  static Color getColor(IconData icon) {
+    switch (icon) {
+      case Icons.sunny:
+        return Colors.amber;
+      case FontAwesomeIcons.smog:
+        return Colors.brown;
+      case FontAwesomeIcons.wind:
+        return Colors.lightBlue;
+      case FontAwesomeIcons.bolt:
+        return Colors.deepPurpleAccent;
+      case FontAwesomeIcons.cloudRain:
+        return Colors.blueGrey;
+      case FontAwesomeIcons.tornado:
+        return Colors.grey;
+      case FontAwesomeIcons.cloud:
+        return Colors.blueGrey;
+      case FontAwesomeIcons.snowflake:
+        return Colors.lightBlueAccent;
+      case FontAwesomeIcons.cloudShowersHeavy:
+        return Colors.indigo;
+      case FontAwesomeIcons.question:
+        return Colors.grey;
+      default:
+        return Colors.grey; // Fallback for any unknown icon
+    }
+  }
+
   static IconData getIcon(int wmoCode) {
     if (wmoCode < 0 || wmoCode > 99) {
       return FontAwesomeIcons.question;

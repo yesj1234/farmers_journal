@@ -1,19 +1,18 @@
 import 'dart:typed_data';
-import 'package:farmers_journal/src/presentation/controller/weather/weather_controller.dart';
-import 'package:farmers_journal/src/presentation/pages/page_journal/weather_icon_helper.dart';
-
+import '../../controller/weather/weather_controller.dart';
 import '../../components/journal_form_content.dart';
 import '../../components/journal_form_date.dart';
 import '../../components/journal_form_title.dart';
 import '../../components/layout_images/layout_images.dart';
 import '../../components/show_snackbar.dart';
+import '../../components/weather_icon_builder.dart';
 import '../../controller/journal/journal_controller.dart';
 import '../../controller/journal/journal_form_controller.dart';
+import '../../../presentation/pages/page_journal/image_type.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:farmers_journal/src/presentation/pages/page_journal/image_type.dart';
 
 // TODO: temperature UI update. show the lowest, highest, and mid temperature with horizontal graph. some research for the weather UI needed.
 /// {@category Presentation}
@@ -232,18 +231,12 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                                               child: child,
                                             );
                                           },
-                                          child: Row(
+                                          child: WeatherIconBuilder(
                                             key: ValueKey(
                                                 '$date - ${info['temperature']} - ${info['weatherCode']}'),
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Icon(
-                                                WeatherIconHelper.getIcon(
-                                                    info['weatherCode']),
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Text('${info['temperature']}℃'),
-                                            ],
+                                            temperature: info['temperature'],
+                                            weatherCode: info['weatherCode'],
+                                            iconSize: 24,
                                           ),
                                         );
                                       },
