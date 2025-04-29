@@ -35,3 +35,7 @@
 - Fix comment layout.
 - Add toggle button whether to show or hide the journal.
 - Common layout fix. 
+
+**version 1.0.8**
+- Minor fix of login page.
+- Add weather data on journal. 
