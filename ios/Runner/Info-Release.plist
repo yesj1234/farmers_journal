@@ -86,5 +86,7 @@
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>NSLocalNetworkUsageDescription</key>
+        <string>This app uses the local network for debugging purposes.</string>
 	</dict>
 </plist>
