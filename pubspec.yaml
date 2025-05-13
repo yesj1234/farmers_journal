@@ -1,7 +1,7 @@
 name: farmers_journal
 description: "farmers jounal app project"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.7+5
+version: 1.0.8+1
 environment:
   sdk: ^3.5.1
 
@@ -48,6 +48,8 @@ dependencies:
   photo_manager: ^3.6.4
   font_awesome_flutter: ^10.8.0
   open_meteo: ^2.0.3
+  firebase_messaging: ^15.2.5
+  flutter_local_notifications: ^19.2.0
 
 
 
