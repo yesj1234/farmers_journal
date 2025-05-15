@@ -1,5 +1,9 @@
 import 'dart:math' hide log;
 import 'dart:typed_data';
+import 'package:farmers_journal/notification.dart';
+import 'package:farmers_journal/src/data/fcm_token_provider.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -88,11 +92,14 @@ class FirebaseAuthRepository implements AuthRepository {
 
   @override
   Future<void> signInWithEmail(
-      {required String email, required String password}) async {
+      {required String email,
+      required String password,
+      required WidgetRef widgetRef}) async {
     String? errorMessage;
     try {
       await instance.signInWithEmailAndPassword(
           email: email, password: password);
+      _handlePostLogin(widgetRef);
     } on firebase_auth.FirebaseAuthException catch (error) {
       switch (error.code) {
         case 'user-not-found':
@@ -120,8 +127,9 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> signOut() async {
+  Future<void> signOut(WidgetRef ref) async {
     try {
+      await ref.read(fcmTokenRepositoryProvider).deleteTokenFromDatabase();
       await instance.signOut();
     } catch (e) {
       throw Exception(e.toString());
@@ -176,7 +184,7 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> signInWithApple() async {
+  Future<void> signInWithApple(WidgetRef widgetRef) async {
     try {
       final AuthorizationCredentialAppleID appleCredential =
           await SignInWithApple.getAppleIDCredential(
@@ -211,6 +219,7 @@ class FirebaseAuthRepository implements AuthRepository {
         await userCredential.user
             ?.updateProfile(displayName: '${appleCredential.email}');
       }
+      _handlePostLogin(widgetRef);
     } on SignInWithAppleAuthorizationException catch (appleError) {
       throw Exception(
           'SignInWithAppleAuthorizationException Authentication failed: ${appleError.message}'); // 에러를 던짐
@@ -220,7 +229,7 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> signInWithKakaoTalk() async {
+  Future<void> signInWithKakaoTalk(WidgetRef widgetRef) async {
     var provider = firebase_auth.OAuthProvider("oidc.kakao");
     try {
       // Login with kakao auth sdk
@@ -257,6 +266,7 @@ class FirebaseAuthRepository implements AuthRepository {
         await instance.signOut();
         await instance.signInWithCredential(credential);
       }
+      _handlePostLogin(widgetRef);
     } catch (error) {
       throw Exception(error);
     }
@@ -311,5 +321,9 @@ class FirebaseAuthRepository implements AuthRepository {
     } catch (error) {
       throw Exception(error);
     }
+  }
+
+  Future<void> _handlePostLogin(WidgetRef ref) async {
+    FlutterLocalNotification.saveTokenToDatabase();
   }
 }

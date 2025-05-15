@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:farmers_journal/src/data/firestore_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,10 +32,10 @@ class AuthController extends _$AuthController {
     }
   }
 
-  Future<void> signInWithApple() async {
+  Future<void> signInWithApple(WidgetRef widgetRef) async {
     state = const AsyncLoading();
     try {
-      await ref.read(authRepositoryProvider).signInWithApple();
+      await ref.read(authRepositoryProvider).signInWithApple(widgetRef);
     } catch (error) {
       state = AsyncError(error, StackTrace.current);
     } finally {
@@ -42,10 +43,10 @@ class AuthController extends _$AuthController {
     }
   }
 
-  Future<void> signInWithKakaoTalk() async {
+  Future<void> signInWithKakaoTalk(WidgetRef widgetRef) async {
     state = const AsyncLoading();
     try {
-      await ref.read(authRepositoryProvider).signInWithKakaoTalk();
+      await ref.read(authRepositoryProvider).signInWithKakaoTalk(widgetRef);
     } catch (error) {
       state = AsyncError(error, StackTrace.current);
     } finally {
@@ -54,12 +55,13 @@ class AuthController extends _$AuthController {
   }
 
   Future<void> signInWithEmail(
-      {required String email, required String password}) async {
+      {required String email,
+      required String password,
+      required WidgetRef widgetRef}) async {
     state = const AsyncLoading();
     try {
-      await ref
-          .read(authRepositoryProvider)
-          .signInWithEmail(email: email, password: password);
+      await ref.read(authRepositoryProvider).signInWithEmail(
+          email: email, password: password, widgetRef: widgetRef);
       ref.invalidateSelf();
     } catch (error) {
       state = const AsyncData(null);
@@ -67,9 +69,9 @@ class AuthController extends _$AuthController {
     }
   }
 
-  Future<void> signOut() async {
+  Future<void> signOut(WidgetRef widgetRef) async {
     state = const AsyncLoading();
-    await ref.read(authRepositoryProvider).signOut();
+    await ref.read(authRepositoryProvider).signOut(widgetRef);
     ref.invalidateSelf();
   }
 
