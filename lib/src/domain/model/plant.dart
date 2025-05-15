@@ -19,8 +19,8 @@ class Plant {
     String name = json['name'] as String;
     String place = json['place'] as String;
     String code = json['code'] as String;
-    double? lat = json['lat'] as double;
-    double? lng = json['lng'] as double;
+    double? lat = json['lat'] as double?;
+    double? lng = json['lng'] as double?;
     return Plant(
         id: id, name: name, place: place, code: code, lat: lat, lng: lng);
   }
