@@ -19,7 +19,8 @@ class CommunityViewController extends _$CommunityViewController {
           await ref.read(userRepositoryProvider).getUserById(id: id);
 
       state = CommunityViewState.data(userInfo);
-    } catch (error) {
+    } catch (stk, error) {
+      print(stk);
       state = CommunityViewState.error(error);
     }
   }

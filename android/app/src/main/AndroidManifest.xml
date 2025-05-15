@@ -8,7 +8,8 @@
     <application
         android:label="farmers_journal"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:extractNativeLibs="true">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA847Y-rI2TprKxVAUrNJkrsx2bf0KEvOY"/>
         <activity android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"

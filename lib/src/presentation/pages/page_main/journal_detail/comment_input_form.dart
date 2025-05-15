@@ -6,8 +6,10 @@ import '../../../controller/comment/comment_controller.dart';
 import '../../../controller/user/user_controller.dart';
 
 class CommentInputField extends ConsumerStatefulWidget {
-  const CommentInputField({super.key, required this.journalId});
+  const CommentInputField(
+      {super.key, required this.journalId, required this.journalWriterId});
   final String journalId;
+  final String journalWriterId;
 
   @override
   ConsumerState<CommentInputField> createState() => _CommentInputFieldState();
@@ -35,7 +37,10 @@ class _CommentInputFieldState extends ConsumerState<CommentInputField> {
 
     await ref
         .read(commentControllerProvider(widget.journalId).notifier)
-        .addComment(journalId: widget.journalId, comment: newComment);
+        .addComment(
+            journalId: widget.journalId,
+            journalWriterId: widget.journalWriterId,
+            comment: newComment);
 
     _controller.clear();
     setState(() => isSending = false);

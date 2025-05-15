@@ -33,7 +33,10 @@ class FireStoreCommentRepository extends CommentRepository {
   }
 
   @override
-  Future<void> addComment(String journalId, Comment comment) async {
+  Future<void> addComment(
+      {required String journalId,
+      required String journalWriterId,
+      required Comment comment}) async {
     try {
       final docRef = instance
           .collection('journals')

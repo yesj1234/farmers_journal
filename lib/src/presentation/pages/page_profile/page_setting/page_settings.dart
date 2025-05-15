@@ -202,7 +202,7 @@ class Account extends ConsumerWidget {
                 context: context,
                 type: AlertDialogType.logout,
                 cb: () {
-                  ref.read(authControllerProvider.notifier).signOut();
+                  ref.read(authControllerProvider.notifier).signOut(ref);
                   if (context.mounted) {
                     context.go('/');
                   }

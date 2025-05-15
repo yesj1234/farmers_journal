@@ -1,5 +1,8 @@
 // Flutter imports
+import 'dart:async';
+
 import 'package:farmers_journal/src/presentation/controller/theme/theme_controller.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 //Firebase imports
@@ -21,6 +24,10 @@ import 'package:farmers_journal/gorouter_config.dart';
 // provider observer
 import 'package:farmers_journal/src/data/my_observer.dart';
 
+import 'notification.dart';
+
+StreamController<String> streamController = StreamController.broadcast();
+
 /// {@category Architecture}
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +36,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FirebaseMessaging.onBackgroundMessage(
+      FlutterLocalNotification.backgroundHandler);
+
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'],
     javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_KEY'],
@@ -44,11 +55,28 @@ void main() async {
   );
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyApp();
+}
+
+class _MyApp extends ConsumerState<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    FlutterLocalNotification.init(ref);
+  }
+
+  @override
+  void dispose() {
+    streamController.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final themeRef = ref.watch(themeControllerProvider);
 
     return MaterialApp.router(

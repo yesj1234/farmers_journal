@@ -20,10 +20,15 @@ class CommentController extends _$CommentController {
   }
 
   Future<void> addComment(
-      {required String journalId, required Comment comment}) async {
+      {required String journalId,
+      required String journalWriterId,
+      required Comment comment}) async {
     final repo = ref.read(commentRepositoryProvider);
     try {
-      await repo.addComment(journalId, comment);
+      await repo.addComment(
+          journalId: journalId,
+          journalWriterId: journalWriterId,
+          comment: comment);
       state = AsyncValue.data(await build(journalId));
     } catch (e, st) {
       state = AsyncValue.error(e, st);
