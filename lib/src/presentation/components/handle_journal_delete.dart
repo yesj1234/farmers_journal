@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../controller/journal/journal_controller.dart';
 
-void handleJournalDelete(
-    BuildContext context, WidgetRef ref, String journalId) {
-  showCupertinoModalPopup(
+Future<bool?> handleJournalDelete(
+    BuildContext context, WidgetRef ref, String journalId) async {
+  final isDeleted = await showCupertinoModalPopup<bool>(
       context: context,
       builder: (context) {
         return CupertinoPopupSurface(
@@ -50,7 +50,8 @@ void handleJournalDelete(
                               ref
                                   .read(journalControllerProvider.notifier)
                                   .deleteJournal(id: journalId);
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pop(
+                                  true); // return true and dismiss the popup
                             },
                             child: const SizedBox(
                               width: double.infinity,
@@ -75,7 +76,8 @@ void handleJournalDelete(
                 SizedBox(
                   width: double.infinity,
                   child: CupertinoButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.of(context)
+                        .pop(false), // return false and dismiss popup
                     color: CupertinoTheme.of(context).scaffoldBackgroundColor,
                     child: const Text(
                       '취소',
@@ -90,4 +92,5 @@ void handleJournalDelete(
           ),
         );
       });
+  return isDeleted;
 }
