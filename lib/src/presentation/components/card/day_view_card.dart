@@ -28,7 +28,7 @@ class DayViewCard extends ConsumerStatefulWidget {
     required this.journal,
     this.editable = true,
     this.cardMinHeight = 0,
-    this.cardMaxHeight = 320,
+    this.cardMaxHeight = 340,
     this.cardMaxWidth = 300,
     this.horizontalPadding = 16.0,
     this.verticalPadding = 0.0,
