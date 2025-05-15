@@ -3,6 +3,7 @@ import 'package:farmers_journal/src/presentation/pages/page_main/community_view/
 import 'package:farmers_journal/src/presentation/pages/page_main/day_view_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../journal_detail/journal_detail.dart';
 import 'animated_day_view.dart';
 
@@ -50,10 +51,11 @@ class _DayViewState extends ConsumerState<DayView> {
               if (journal != null) {
                 children.add(
                   GestureDetector(
-                    onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (BuildContext context) {
-                      return JournalDetail(journal: journal);
-                    })),
+                    onTap: () => context.pushNamed(
+                      'journal-detail',
+                      pathParameters: {"journalId": journal.id!},
+                      extra: journal,
+                    ),
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 4),
                       child: AnimatedDayViewCard(

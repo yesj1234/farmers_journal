@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:farmers_journal/src/domain/model/journal.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../pages/page_main/journal_detail/journal_detail.dart';
 
@@ -44,10 +45,11 @@ class _MyCarouselState extends ConsumerState<MyCarousel> {
           // Iterate over journal entries and create a carousel item for each.
           for (var journal in widget.journals)
             GestureDetector(
-              onTap: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (BuildContext context) {
-                return JournalDetail(journal: journal);
-              })),
+              onTap: () => context.pushNamed(
+                'journal-detail',
+                pathParameters: {"journalId": journal.id!},
+                extra: journal,
+              ),
               child: WeekViewCard(
                 dateFontSize: 10,
                 textMaxLine: 1,

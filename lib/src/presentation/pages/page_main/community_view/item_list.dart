@@ -6,6 +6,7 @@ import 'package:farmers_journal/src/presentation/controller/user/community_view_
 import 'package:farmers_journal/src/presentation/pages/page_main/day_view_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../journal_detail/journal_detail.dart';
 
@@ -102,10 +103,11 @@ class ItemsListBuilder extends ConsumerWidget {
         (context, index) {
           final journalInfo = journals[index];
           return GestureDetector(
-            onTap: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: (BuildContext context) {
-              return JournalDetail(journal: journalInfo);
-            })),
+            onTap: () => context.pushNamed(
+              'journal-detail',
+              pathParameters: {"journalId": journalInfo!.id!},
+              extra: journalInfo,
+            ),
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 4),
               child: _DayViewCard(journal: journals[index]!),

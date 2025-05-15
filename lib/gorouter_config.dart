@@ -1,5 +1,7 @@
+import 'package:farmers_journal/src/domain/model/journal.dart';
 import 'package:farmers_journal/src/presentation/pages/page_journal/page_update_journal.dart';
 import 'package:farmers_journal/src/presentation/pages/page_login/page_reset_password.dart';
+import 'package:farmers_journal/src/presentation/pages/page_main/journal_detail/journal_detail.dart';
 import 'package:farmers_journal/src/presentation/pages/page_profile/page_setting/page_settings.dart';
 import 'package:farmers_journal/src/presentation/pages/page_journal/page_create_journal.dart';
 import 'package:farmers_journal/src/presentation/pages/page_login/auth_bridge.dart';
@@ -70,6 +72,14 @@ final router = GoRouter(
       path: '/main',
       builder: (context, state) => const PageMain(),
       routes: [
+        GoRoute(
+          path: 'journal/:journalId',
+          name: 'journal-detail',
+          builder: (context, state) {
+            final journal = state.extra as Journal;
+            return JournalDetail(journal: journal);
+          },
+        ),
         GoRoute(
             path: '/profile',
             builder: (context, state) => const PageProfile(),

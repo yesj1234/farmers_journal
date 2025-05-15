@@ -140,10 +140,9 @@ class MonthViewDetailPageBuilder extends ConsumerWidget {
               .map((journal) => Container(
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     child: GestureDetector(
-                      onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return JournalDetail(journal: journal);
-                      })),
+                      onTap: () => context.pushNamed('journal-detail',
+                          pathParameters: {"journalId": journal.id!},
+                          extra: journal),
                       child: AnimatedDayViewCard(
                         journal: journal!,
                         doEnlarge: false,
