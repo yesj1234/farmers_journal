@@ -68,8 +68,8 @@ class JournalDetail extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: WeatherIconBuilder(
-                              temperature: journal!.temperature,
-                              weatherCode: journal!.weatherCode),
+                              temperature: journal!.temperature ?? 0,
+                              weatherCode: journal!.weatherCode ?? -1),
                         ),
                         journal!.content!.isEmpty
                             ? const SizedBox.shrink()
@@ -92,7 +92,8 @@ class JournalDetail extends StatelessWidget {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                child: CommentInputField(journalId: journal!.id!))
+                child: CommentInputField(
+                    journalId: journal!.id!, journalWriterId: journal!.writer!))
           ],
         ),
         bottomNavigationBar: Container(
@@ -133,8 +134,14 @@ class _BuildAppBar extends StatelessWidget {
                         : Colors.white,
                     menuType: CascadingMenuType.personal,
                     onCallback1: () => context.push('/update/${journal.id}'),
-                    onCallback2: () {
-                      handleJournalDelete(context, ref, journal.id!);
+                    onCallback2: () async {
+                      final isDeleted =
+                          await handleJournalDelete(context, ref, journal.id!);
+                      if (isDeleted == true) {
+                        if (context.mounted) {
+                          context.pop();
+                        }
+                      }
                     },
                   )
                 : MyCascadingMenu(
