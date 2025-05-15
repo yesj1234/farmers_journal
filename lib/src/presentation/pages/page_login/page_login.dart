@@ -34,49 +34,52 @@ class PageLogin extends ConsumerWidget {
                     const _DividerWithText(text: "혹은"),
                     SizedBox(
                       width: 250,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        spacing: 4,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            spacing: 4,
-                            children: [
-                              const Text('비밀번호를 잊으셨나요?'),
-                              const Spacer(),
-                              GestureDetector(
-                                onTap: () => context.go('/reset_password'),
-                                child: Text(
-                                  "비밀번호 찾기",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).primaryColor,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          spacing: 10,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              spacing: 4,
+                              children: [
+                                const Text('비밀번호를 잊으셨나요?'),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () => context.go('/reset_password'),
+                                  child: Text(
+                                    "비밀번호 찾기",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            spacing: 4,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              const Text('계정이 없으신가요?'),
-                              const Spacer(),
-                              GestureDetector(
-                                onTap: () {
-                                  context.go('/registration');
-                                },
-                                child: Text(
-                                  '회원가입',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).primaryColor,
+                              ],
+                            ),
+                            Row(
+                              spacing: 4,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                const Text('계정이 없으신가요?'),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    context.go('/registration');
+                                  },
+                                  child: Text(
+                                    '회원가입',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const Spacer(),
@@ -88,7 +91,7 @@ class PageLogin extends ConsumerWidget {
                         onPressed: () async {
                           await ref
                               .read(authControllerProvider.notifier)
-                              .signInWithKakaoTalk()
+                              .signInWithKakaoTalk(ref)
                               .then((_) {}, onError: (error) {
                             if (context.mounted) {
                               showSnackBar(context, error);
@@ -109,7 +112,7 @@ class PageLogin extends ConsumerWidget {
                               onPressed: () async {
                                 await ref
                                     .read(authControllerProvider.notifier)
-                                    .signInWithApple()
+                                    .signInWithApple(ref)
                                     .then((_) {}, onError: (error) {
                                   if (context.mounted) {
                                     showSnackBar(context, error);
@@ -316,7 +319,10 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
                         _formKey.currentState?.save();
                         ref
                             .read(authControllerProvider.notifier)
-                            .signInWithEmail(email: email!, password: password!)
+                            .signInWithEmail(
+                                email: email!,
+                                password: password!,
+                                widgetRef: ref)
                             .then((_) {
                           if (context.mounted) {
                             context.go('/');
