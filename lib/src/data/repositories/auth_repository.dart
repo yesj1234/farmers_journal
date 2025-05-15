@@ -2,7 +2,6 @@ import 'dart:math' hide log;
 import 'dart:typed_data';
 import 'package:farmers_journal/notification.dart';
 import 'package:farmers_journal/src/data/fcm_token_provider.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

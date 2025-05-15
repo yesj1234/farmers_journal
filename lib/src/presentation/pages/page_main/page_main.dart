@@ -1,5 +1,4 @@
 // packages
-import 'package:farmers_journal/notification.dart';
 import 'package:farmers_journal/src/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/src/presentation/pages/page_main/community_view/community_view.dart';
 import 'package:farmers_journal/src/presentation/pages/page_main/day_view/day_view.dart';

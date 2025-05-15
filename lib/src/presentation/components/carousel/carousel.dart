@@ -5,8 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmers_journal/src/domain/model/journal.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../pages/page_main/journal_detail/journal_detail.dart';
-
 /// {@category Presentation}
 /// A carousel widget displaying a list of journal entries.
 ///

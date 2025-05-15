@@ -8,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../journal_detail/journal_detail.dart';
-
 /// {@category Presentation}
 /// A widget that displays a list of journal items based on pagination state.
 ///

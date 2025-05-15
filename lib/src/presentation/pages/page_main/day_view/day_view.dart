@@ -4,7 +4,6 @@ import 'package:farmers_journal/src/presentation/pages/page_main/day_view_shimme
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../journal_detail/journal_detail.dart';
 import 'animated_day_view.dart';
 
 /// {@category Presentation}
