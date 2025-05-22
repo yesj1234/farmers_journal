@@ -7,10 +7,10 @@ import 'package:farmers_journal/src/presentation/controller/journal/journal_cont
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// TODO: Add token refresh listener.
 class FlutterLocalNotification {
   // Private constructor. Prevents creating new instance from outside.
   // This is to implement FlutterNotification class with singleton pattern.
@@ -34,19 +34,19 @@ class FlutterLocalNotification {
       android: androidInitializationSettings,
       iOS: iosInitializationSettings,
     );
+    requestNotificationPermission();
     FirebaseMessaging.onMessage.listen(_handleForeGroundMessage);
     FirebaseMessaging.onMessageOpenedApp.listen((message) async {
       if (kDebugMode) {
         debugPrint("Notification opened: ${message.notification?.title}");
       }
-      // Write code that redirect to the journal detail page.
-      // a single journal can be retrieved through
+      // a single journal can be retrieved through journalId.
       final String journalId = message.data['journalId'];
       try {
         final journal = await ref
             .read(journalControllerProvider.notifier)
             .getJournal(journalId);
-        // Write code that redirects the user to the Journal detail page.
+
         router.goNamed('journal-detail',
             pathParameters: {"journalId": journalId}, extra: journal);
       } catch (error) {
@@ -56,7 +56,6 @@ class FlutterLocalNotification {
           debugPrint("Error: $error}");
         }
       }
-
       ref.read(fcmTokenInitializerProvider);
     });
     try {
@@ -124,7 +123,8 @@ class FlutterLocalNotification {
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(alert: true, badge: true, sound: true);
+        ?.requestPermissions(
+            alert: true, badge: true, sound: true, provisional: true);
 
     // Android:AndroidFlutterLocalNotificationsPlugin
     // flutterLocalNotificationsPlugin
@@ -146,7 +146,10 @@ class FlutterLocalNotification {
     );
     const DarwinNotificationDetails iosNotificationDetails =
         DarwinNotificationDetails(
-      badgeNumber: 1,
+      presentBanner: true,
+      presentBadge: true,
+      presentList: true,
+      badgeNumber: 0,
     );
 
     const NotificationDetails notificationDetails = NotificationDetails(
