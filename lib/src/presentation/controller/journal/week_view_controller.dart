@@ -10,7 +10,6 @@ part 'week_view_controller.g.dart';
 /// {@category Controller}
 @Riverpod(keepAlive: true)
 class WeekViewController extends _$WeekViewController {
-  List<Journal?> _journals = [];
   @override
   WeekViewState build() {
     initialFetch();
@@ -23,9 +22,7 @@ class WeekViewController extends _$WeekViewController {
     try {
       state = const WeekViewState.loading();
       List<Journal?> journals = await repository.getJournals();
-      if (journals.isEmpty) {
-        _journals = journals;
-      }
+
       final sortedJournals = CustomDateUtils.groupItemsByWeek(journals);
       state = WeekViewState.data(sortedJournals);
     } catch (e, st) {
