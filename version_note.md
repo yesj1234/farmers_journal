@@ -38,4 +38,7 @@
 
 **version 1.0.8**
 - Minor fix of login page.
-- Add weather data on journal. 
+- Login screen will no longer be showed on loading authentication state. 
+- Add weather data on journal.
+- Add Push notification if comment is being added to user's journal.
+
