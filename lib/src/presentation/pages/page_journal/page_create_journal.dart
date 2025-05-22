@@ -53,7 +53,7 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
   final ImagePicker _imagePicker = ImagePicker();
   double? temperature;
   int? weatherCode;
-  bool isPublic = true;
+  bool isPublic = false;
 
   late DateTime date;
 
@@ -249,7 +249,7 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                                     children: [
                                       const Text('비공개'),
                                       Checkbox(
-                                        value: isPublic,
+                                        value: !isPublic,
                                         onChanged: (_) {
                                           setState(() {
                                             isPublic = !isPublic;

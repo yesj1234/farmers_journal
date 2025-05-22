@@ -51,7 +51,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
   final TextEditingController contentController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
   final ValueNotifier<List<ImageType>> imageNotifier = ValueNotifier([]);
-  bool isPublic = true;
+  bool isPublic = false;
 
   Future<void> pickImage() async {
     XFile? _image = await _imagePicker.pickImage(source: ImageSource.gallery);
@@ -338,7 +338,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                                             children: [
                                               const Text('비공개'),
                                               Checkbox(
-                                                value: isPublic,
+                                                value: !isPublic,
                                                 onChanged: (_) {
                                                   setState(() {
                                                     isPublic = !isPublic;
