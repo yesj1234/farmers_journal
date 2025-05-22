@@ -12,14 +12,15 @@ class FireStoreJournalRepository implements JournalRepository {
   @override
   Future<Journal> getJournal(String id) async {
     Journal journal;
-    return await instance
-        .collection("journals")
-        .doc(id)
-        .get()
-        .then((docSnapshot) {
-      journal = Journal.fromJson(docSnapshot.data() as Map<String, dynamic>);
+    try {
+      final journalSnapshot =
+          await instance.collection("journals").doc(id).get();
+      journal =
+          Journal.fromJson(journalSnapshot.data() as Map<String, dynamic>);
       return journal;
-    });
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
