@@ -1,3 +1,4 @@
+import 'package:farmers_journal/controller.dart';
 import 'package:farmers_journal/src/data/firestore_providers.dart';
 import 'package:farmers_journal/src/presentation/controller/journal/day_view_controller.dart';
 import 'package:farmers_journal/src/presentation/controller/journal/journal_form_controller_state.dart';
@@ -48,6 +49,7 @@ class JournalFormController extends _$JournalFormController {
       state = const JournalFormControllerState.done();
     }
     ref.invalidate(dayViewControllerProvider);
+    ref.invalidate(weekViewControllerProvider);
     ref.invalidate(monthViewControllerProvider);
   }
 
@@ -84,6 +86,7 @@ class JournalFormController extends _$JournalFormController {
           progressCallback: progressCallback);
     }
     ref.invalidate(dayViewControllerProvider);
+    ref.invalidate(weekViewControllerProvider);
     ref.invalidate(monthViewControllerProvider);
   }
 }
