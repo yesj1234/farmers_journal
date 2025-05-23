@@ -34,13 +34,12 @@ class RecordBarChart extends StatelessWidget {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 22,
-            getTitlesWidget: (value, meta) => SideTitleWidget(
-              axisSide: AxisSide.bottom,
-              child: Text(
+            getTitlesWidget: (value, meta) {
+              return Text(
                 '${value.toInt()}월',
                 style: const TextStyle(fontSize: 10),
-              ),
-            ),
+              );
+            },
           ),
         ),
       );
@@ -124,17 +123,16 @@ class PriceLineChart extends ConsumerWidget {
           sideTitles: SideTitles(
             reservedSize: 22,
             showTitles: true,
-            getTitlesWidget: (value, meta) => SideTitleWidget(
-              axisSide: AxisSide.bottom,
-              child: Text(
+            getTitlesWidget: (value, meta) {
+              return Text(
                 times[value.toInt()],
                 style: const TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       );
@@ -212,17 +210,16 @@ class PriceBarChart extends ConsumerWidget {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 22,
-            getTitlesWidget: (value, meta) => SideTitleWidget(
-              axisSide: AxisSide.bottom,
-              child: Text(
+            getTitlesWidget: (value, meta) {
+              return Text(
                 times[value.toInt()],
                 style: const TextStyle(
                   fontSize: 8,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       );
