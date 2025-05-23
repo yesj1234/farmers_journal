@@ -14,9 +14,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../domain/model/places_autocomplete_response.dart'
-    show GooglePlaceResponse;
-
 /// {@category Presentation}
 class PagePlaceSearch extends ConsumerStatefulWidget {
   const PagePlaceSearch(

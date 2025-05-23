@@ -8,7 +8,7 @@ import 'package:farmers_journal/src/presentation/pages/page_login/auth_bridge.da
 import 'package:farmers_journal/src/presentation/pages/page_login/page_signup.dart';
 import 'package:farmers_journal/src/presentation/pages/page_profile/page_plant.dart';
 import 'package:farmers_journal/src/presentation/pages/page_profile/page_edit_profile.dart'; //
-import 'package:farmers_journal/src/presentation/pages/page_profile/place_search.dart';
+import 'package:farmers_journal/src/presentation/pages/page_profile/page_place/page_place_search.dart';
 import 'package:farmers_journal/src/presentation/pages/page_profile/page_setting/page_terms_and_policy.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

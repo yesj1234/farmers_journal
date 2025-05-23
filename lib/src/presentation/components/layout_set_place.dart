@@ -1,4 +1,4 @@
-import 'package:farmers_journal/src/presentation/pages/page_profile/place_autocomplete.dart';
+import 'package:farmers_journal/src/presentation/pages/page_profile/page_place/place_autocomplete.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
