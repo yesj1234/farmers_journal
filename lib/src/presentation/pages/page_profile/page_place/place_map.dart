@@ -46,9 +46,22 @@ class PlaceMap extends StatefulWidget {
 
 class _PlaceMapState extends State<PlaceMap> {
   late GoogleMapController mapController;
-
+  Marker? _marker;
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+    if (widget.lat != null && widget.lng != null) {
+      final LatLng latLng =
+          LatLng(widget.lat!.toDouble(), widget.lng!.toDouble());
+      controller.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(target: latLng, zoom: 16)));
+      setState(() {
+        _marker = Marker(
+          markerId: MarkerId('current selected location'),
+          position: latLng,
+          infoWindow: InfoWindow(title: "You are currently here!"),
+        );
+      });
+    }
   }
 
   @override
@@ -68,9 +81,10 @@ class _PlaceMapState extends State<PlaceMap> {
         borderRadius: BorderRadius.circular(10),
         child: GoogleMap(
           onMapCreated: _onMapCreated,
+          markers: _marker == null ? {} : {_marker!},
           initialCameraPosition: CameraPosition(
             target: LatLng(widget.lat as double, widget.lng as double),
-            zoom: 15.0,
+            zoom: 10.0,
           ),
         ),
       ),
