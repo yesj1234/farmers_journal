@@ -56,3 +56,5 @@ app.*.map.json
 *.env
 #firebase_admin node modules
 firebase_admin/node_modules/
+
+functions/build/
