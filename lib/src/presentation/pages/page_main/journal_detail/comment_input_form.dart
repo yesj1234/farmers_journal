@@ -50,8 +50,8 @@ class _CommentInputFieldState extends ConsumerState<CommentInputField> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        color: Theme.of(context).colorScheme.surface,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Row(
           children: [
             Expanded(
@@ -59,10 +59,12 @@ class _CommentInputFieldState extends ConsumerState<CommentInputField> {
                 controller: _controller,
                 decoration: InputDecoration(
                   hintText: "댓글을 입력하세요.",
-                  border: const OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
                   isDense: true,
                   filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor,
                 ),
                 minLines: 1,
                 maxLines: 4,
