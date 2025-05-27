@@ -103,6 +103,14 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
   @override
   Widget build(BuildContext context) {
     /// Creates a list of widgets for the page view, each wrapped in a Hero animation.
+    ///
+    /// By default, InteractiveViewer clips its child using Clip.hardEdge.
+    /// To prevent this behavior, consider setting clipBehavior to Clip.none.
+    /// When clipBehavior is Clip.none, InteractiveViewer may draw outside of its original area of the screen,
+    /// such as when a child is zoomed in and increases in size.
+    /// However, it will not receive gestures outside of its original area.
+    /// To prevent dead areas where InteractiveViewer does not receive gestures, don't set clipBehavior
+    /// or be sure that the InteractiveViewer widget is the size of the area that should be interactive.
     final heroWidgets = widget.tags.map(
       (path) {
         final tag = path.value;
@@ -110,16 +118,22 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
           tag: tag,
           transitionOnUserGestures: true,
           child: Center(
-            child: URLImageTile(
-                url: tag,
-                onDelete: () {},
-                isEditMode: false,
-                maxWidth: MediaQuery.sizeOf(context).width,
-                minWidth: MediaQuery.sizeOf(context).width,
-                maxHeight: MediaQuery.sizeOf(context).height,
-                minHeight: MediaQuery.sizeOf(context).height,
-                borderRadius: BorderRadius.circular(10),
-                boxFit: BoxFit.cover),
+            child: InteractiveViewer(
+              panEnabled: true,
+              minScale: 1.0,
+              maxScale: 6.0,
+              clipBehavior: Clip.none,
+              child: URLImageTile(
+                  url: tag,
+                  onDelete: () {},
+                  isEditMode: false,
+                  maxWidth: MediaQuery.sizeOf(context).width,
+                  minWidth: MediaQuery.sizeOf(context).width,
+                  maxHeight: MediaQuery.sizeOf(context).height,
+                  minHeight: MediaQuery.sizeOf(context).height,
+                  borderRadius: BorderRadius.circular(10),
+                  boxFit: BoxFit.cover),
+            ),
           ),
         );
       },
