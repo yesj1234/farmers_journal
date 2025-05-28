@@ -5,7 +5,7 @@ import '../../../domain/model/journal.dart';
 part 'month_view_state.freezed.dart';
 
 @freezed
-class MonthViewState with _$MonthViewState {
+sealed class MonthViewState with _$MonthViewState {
   const factory MonthViewState.initial() = Initial;
   const factory MonthViewState.data(
       LinkedHashMap<DateTime, List<Journal?>> data) = Data;

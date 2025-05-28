@@ -5,7 +5,7 @@ import '../../../../utils.dart';
 part 'week_view_state.freezed.dart';
 
 @freezed
-class WeekViewState with _$WeekViewState {
+sealed class WeekViewState with _$WeekViewState {
   const factory WeekViewState.initial() = Initial;
   const factory WeekViewState.data(List<WeeklyGroup<Journal>> data) = Data;
   const factory WeekViewState.loading() = Loading;

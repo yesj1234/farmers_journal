@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part "report_state.freezed.dart";
 
 @freezed
-class ReportState with _$ReportState {
+sealed class ReportState with _$ReportState {
   const factory ReportState.initial() = Initial;
   const factory ReportState.data(List<Report?> reports) = Data;
   const factory ReportState.error(Object? e, [StackTrace? stk]) = Error;
