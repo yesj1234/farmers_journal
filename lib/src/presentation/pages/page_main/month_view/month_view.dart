@@ -2,6 +2,8 @@ import 'dart:collection';
 import 'package:farmers_journal/controller.dart';
 import 'package:farmers_journal/src/domain/model/journal.dart';
 import 'package:farmers_journal/src/presentation/controller/journal/month_view_controller.dart';
+import 'package:farmers_journal/src/presentation/controller/journal/month_view_state.dart'
+    as month_view_state;
 import 'package:farmers_journal/utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +18,11 @@ class MonthView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final journals = ref.watch(monthViewControllerProvider);
-    return journals.maybeWhen(
-        orElse: () => const SizedBox.shrink(),
-        data: (sortedJournals) => Center(
-              child: CalendarWidget(events: sortedJournals),
-            ));
+    return switch (journals) {
+      month_view_state.Data(:final data) =>
+        Center(child: CalendarWidget(events: data)),
+      _ => const SizedBox.shrink(),
+    };
   }
 }
 

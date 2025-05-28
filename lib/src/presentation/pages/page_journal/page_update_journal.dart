@@ -5,12 +5,15 @@ import '../../../presentation/components/journal_form_title.dart';
 import '../../../presentation/components/layout_images/layout_images.dart';
 import '../../../presentation/components/show_snackbar.dart';
 import '../../../presentation/controller/journal/journal_form_controller.dart';
+import '../../../presentation/controller/journal/journal_form_controller_state.dart'
+    as journal_form_controller_state;
 import '../../../presentation/pages/page_journal/image_type.dart';
 import '../../../presentation/controller/journal/journal_controller.dart';
 import '../../components/journal_form_date.dart';
 import '../../components/weather_icon_builder.dart';
 import '../../controller/weather/weather_controller.dart';
-import '../../controller/weather/weather_controller_state.dart';
+import '../../controller/weather/weather_controller_state.dart'
+    as weather_controller_state;
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -141,7 +144,7 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
   @override
   Widget build(BuildContext context) {
     final journalFormController = ref.watch(journalFormControllerProvider);
-    final WeatherControllerState weatherController;
+    final weather_controller_state.WeatherControllerState weatherController;
     if (initialInfo != null) {
       weatherController =
           ref.watch(weatherControllerProvider(initialWeatherInfo: initialInfo));
@@ -163,82 +166,81 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
               ),
               actions: [
                 TextButton(
-                  onPressed: journalFormController.maybeWhen(
-                      orElse: () {
-                        return () async {
-                          bool validated =
-                              _formKey.currentState?.validate() ?? false;
+                  onPressed: switch (journalFormController) {
+                    journal_form_controller_state.Loading() => null,
+                    _ => () async {
+                        bool validated =
+                            _formKey.currentState?.validate() ?? false;
 
-                          if (validated) {
-                            _formKey.currentState?.save();
-                            try {
-                              void Function(VoidCallback)? dialogSetState;
-                              showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (BuildContext context) {
-                                    return StatefulBuilder(
-                                        builder: (context, setState) {
-                                      dialogSetState = setState;
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          color: Theme.of(context).primaryColor,
-                                          value: progress,
-                                        ),
-                                      );
-                                    });
-                                  });
-                              await ref
-                                  .read(journalFormControllerProvider.notifier)
-                                  .updateJournal(
-                                      id: widget.id!,
-                                      title: titleController.text,
-                                      content: contentController.text,
-                                      date: date ?? snapshot.data!.date!,
-                                      images: imageNotifier.value,
-                                      temperature: temperature,
-                                      weatherCode: weatherCode,
-                                      isPublic: isPublic,
-                                      progressCallback: (
-                                          {int? transferred,
-                                          int? totalBytes}) async {
-                                        final total = await totalBytesToUpload;
-                                        if (transferred != null &&
-                                            totalBytes != null) {
-                                          totalTransferred += transferred;
-                                          double newProgress =
-                                              totalTransferred / total;
-                                          dialogSetState!(() {
-                                            progress = newProgress.clamp(0, 1);
-                                          });
-                                        }
-                                      })
-                                  .then(
-                                (_) {
-                                  ref.invalidate(journalControllerProvider);
-                                  if (context.mounted) {
-                                    context.pop();
-                                    context.pop();
-                                  }
-                                },
-                                onError: (e, st) {
-                                  if (context.mounted) {
-                                    showSnackBar(
-                                      context,
-                                      e.toString(),
+                        if (validated) {
+                          _formKey.currentState?.save();
+                          try {
+                            void Function(VoidCallback)? dialogSetState;
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return StatefulBuilder(
+                                      builder: (context, setState) {
+                                    dialogSetState = setState;
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        color: Theme.of(context).primaryColor,
+                                        value: progress,
+                                      ),
                                     );
-                                  }
-                                },
-                              );
-                            } catch (error) {
-                              if (context.mounted) {
-                                showSnackBar(context, error.toString());
-                              }
+                                  });
+                                });
+                            await ref
+                                .read(journalFormControllerProvider.notifier)
+                                .updateJournal(
+                                    id: widget.id!,
+                                    title: titleController.text,
+                                    content: contentController.text,
+                                    date: date ?? snapshot.data!.date!,
+                                    images: imageNotifier.value,
+                                    temperature: temperature,
+                                    weatherCode: weatherCode,
+                                    isPublic: isPublic,
+                                    progressCallback: (
+                                        {int? transferred,
+                                        int? totalBytes}) async {
+                                      final total = await totalBytesToUpload;
+                                      if (transferred != null &&
+                                          totalBytes != null) {
+                                        totalTransferred += transferred;
+                                        double newProgress =
+                                            totalTransferred / total;
+                                        dialogSetState!(() {
+                                          progress = newProgress.clamp(0, 1);
+                                        });
+                                      }
+                                    })
+                                .then(
+                              (_) {
+                                ref.invalidate(journalControllerProvider);
+                                if (context.mounted) {
+                                  context.pop();
+                                  context.pop();
+                                }
+                              },
+                              onError: (e, st) {
+                                if (context.mounted) {
+                                  showSnackBar(
+                                    context,
+                                    e.toString(),
+                                  );
+                                }
+                              },
+                            );
+                          } catch (error) {
+                            if (context.mounted) {
+                              showSnackBar(context, error.toString());
                             }
                           }
-                        };
-                      },
-                      loading: null),
+                        }
+                      }
+                  },
                   child: const Text(
                     "완료",
                     style: TextStyle(
@@ -279,58 +281,70 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
                                         SizedBox(
                                           width: 90,
                                           child: AnimatedOpacity(
-                                            opacity:
-                                                weatherController.maybeWhen(
-                                                    orElse: () => 0,
-                                                    data: (_) => 1),
-                                            duration:
-                                                const Duration(seconds: 1),
-                                            child: weatherController.maybeWhen(
-                                                orElse: () {
-                                              return AnimatedSwitcher(
-                                                duration: const Duration(
-                                                    milliseconds: 500),
-                                                transitionBuilder:
-                                                    (child, animation) {
-                                                  return FadeTransition(
-                                                      opacity: animation,
-                                                      child: child);
-                                                },
-                                                child: WeatherIconBuilder(
-                                                  key: const ValueKey(
-                                                      'initialValue'),
-                                                  temperature: snapshot
-                                                      .data!.temperature!,
-                                                  weatherCode: snapshot
-                                                      .data!.weatherCode!,
-                                                  iconSize: 24,
-                                                ),
-                                              );
-                                            }, data: (info) {
-                                              temperature = info['temperature'];
-                                              weatherCode = info['weatherCode'];
-                                              return AnimatedSwitcher(
-                                                duration: const Duration(
-                                                    milliseconds: 500),
-                                                transitionBuilder:
-                                                    (child, animation) {
-                                                  return FadeTransition(
-                                                    opacity: animation,
-                                                    child: child,
-                                                  );
-                                                },
-                                                child: WeatherIconBuilder(
-                                                  key: ValueKey(
-                                                      '$date - ${info['temperature']} - ${info['weatherCode']}'),
-                                                  temperature:
-                                                      info['temperature'],
-                                                  weatherCode:
-                                                      info['weatherCode'],
-                                                  iconSize: 24,
-                                                ),
-                                              );
-                                            }),
-                                          ),
+                                              opacity: switch (
+                                                  weatherController) {
+                                                weather_controller_state
+                                                  .Data() =>
+                                                  1,
+                                                _ => 0,
+                                              },
+                                              duration:
+                                                  const Duration(seconds: 1),
+                                              child: switch (
+                                                  weatherController) {
+                                                weather_controller_state.Data(
+                                                  :final weatherInfo
+                                                ) =>
+                                                  () {
+                                                    temperature = weatherInfo[
+                                                        'temperature'];
+                                                    weatherCode = weatherInfo[
+                                                        'weatherCode'];
+                                                    return AnimatedSwitcher(
+                                                      duration: const Duration(
+                                                          milliseconds: 500),
+                                                      transitionBuilder:
+                                                          (child, animation) {
+                                                        return FadeTransition(
+                                                          opacity: animation,
+                                                          child: child,
+                                                        );
+                                                      },
+                                                      child: WeatherIconBuilder(
+                                                        key: ValueKey(
+                                                            '$date - ${weatherInfo['temperature']} - ${weatherInfo['weatherCode']}'),
+                                                        temperature:
+                                                            weatherInfo[
+                                                                'temperature'],
+                                                        weatherCode:
+                                                            weatherInfo[
+                                                                'weatherCode'],
+                                                        iconSize: 24,
+                                                      ),
+                                                    );
+                                                  }(),
+                                                _ => () {
+                                                    return AnimatedSwitcher(
+                                                      duration: const Duration(
+                                                          milliseconds: 500),
+                                                      transitionBuilder:
+                                                          (child, animation) {
+                                                        return FadeTransition(
+                                                            opacity: animation,
+                                                            child: child);
+                                                      },
+                                                      child: WeatherIconBuilder(
+                                                        key: const ValueKey(
+                                                            'initialValue'),
+                                                        temperature: snapshot
+                                                            .data!.temperature!,
+                                                        weatherCode: snapshot
+                                                            .data!.weatherCode!,
+                                                        iconSize: 24,
+                                                      ),
+                                                    );
+                                                  }()
+                                              }),
                                         ),
                                         SizedBox(
                                           width: 90,

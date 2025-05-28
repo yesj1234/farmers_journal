@@ -3,6 +3,8 @@ import 'package:farmers_journal/src/presentation/components/show_alert_dialog.da
 import 'package:farmers_journal/src/presentation/components/show_snackbar.dart';
 import 'package:farmers_journal/src/presentation/controller/auth/auth_controller.dart';
 import 'package:farmers_journal/src/presentation/controller/theme/theme_controller.dart';
+import 'package:farmers_journal/src/presentation/controller/theme/theme_controller_state.dart'
+    as theme_controller_state;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +17,7 @@ class PageSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final themeRef = ref.watch(themeControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -34,9 +37,10 @@ class PageSettings extends ConsumerWidget {
             spacing: 45,
             children: [
               ToggleThemeButton(
-                initialTheme: ref.read(themeControllerProvider).maybeWhen(
-                    orElse: () => ThemeMode.system, data: (mode) => mode),
-              ),
+                  initialTheme: switch (themeRef) {
+                theme_controller_state.Data(:final data) => data,
+                _ => ThemeMode.system,
+              }),
               const TermsAndPolicy(),
               const Account(),
             ],

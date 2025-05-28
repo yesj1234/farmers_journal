@@ -1,6 +1,8 @@
 import 'package:farmers_journal/src/presentation/components/carousel/carousel.dart';
 
 import 'package:farmers_journal/src/presentation/controller/journal/week_view_controller.dart';
+import 'package:farmers_journal/src/presentation/controller/journal/week_view_state.dart'
+    as week_view_state;
 import 'package:farmers_journal/src/presentation/pages/page_main/community_view/scroll_to_top_button.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,51 +37,51 @@ class _WeekViewState extends ConsumerState<WeekView> {
   @override
   Widget build(BuildContext context) {
     final journals = ref.watch(weekViewControllerProvider);
-    return journals.when(
-      data: (journals) {
-        final List<Widget> children = [];
-        for (var items in journals) {
-          children.add(
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Text(
-                    items.weekLabel, // Display week label
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+    return switch (journals) {
+      week_view_state.Data(:final data) => () {
+          final List<Widget> children = [];
+          for (var items in data) {
+            children.add(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      items.weekLabel, // Display week label
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 200, // Fixed height for carousel
-                  child: MyCarousel(journals: items.items),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return Stack(
-          children: [
-            ListView(
-              controller: scrollController,
-              children: children,
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: ScrollToTopButton(
-                scrollController: scrollController,
+                  SizedBox(
+                    height: 200, // Fixed height for carousel
+                    child: MyCarousel(journals: items.items),
+                  ),
+                ],
               ),
-            ),
-          ],
-        );
-      },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, st) => const SizedBox.shrink(),
-      initial: () => const SizedBox.shrink(),
-    );
+            );
+          }
+
+          return Stack(
+            children: [
+              ListView(
+                controller: scrollController,
+                children: children,
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: ScrollToTopButton(
+                  scrollController: scrollController,
+                ),
+              ),
+            ],
+          );
+        }(),
+      week_view_state.Loading() =>
+        const Center(child: CircularProgressIndicator()),
+      _ => const SizedBox.shrink(),
+    };
   }
 }

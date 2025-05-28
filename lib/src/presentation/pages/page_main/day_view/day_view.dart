@@ -1,4 +1,6 @@
 import 'package:farmers_journal/src/presentation/controller/journal/day_view_controller.dart';
+import 'package:farmers_journal/src/presentation/controller/journal/day_view_state.dart'
+    as day_view_state;
 import 'package:farmers_journal/src/presentation/pages/page_main/community_view/scroll_to_top_button.dart';
 import 'package:farmers_journal/src/presentation/pages/page_main/day_view_shimmer.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +34,8 @@ class _DayViewState extends ConsumerState<DayView> {
   @override
   Widget build(BuildContext context) {
     final dayViewJournals = ref.watch(dayViewControllerProvider);
-    return dayViewJournals.when(
-        data: (data) {
+    return switch (dayViewJournals) {
+      day_view_state.Data(:final data) => () {
           List<Widget> children = [];
           for (var entry in data.entries) {
             children.add(
@@ -80,11 +82,11 @@ class _DayViewState extends ConsumerState<DayView> {
               ),
             ],
           );
-        },
-        loading: () => const Column(children: [
-              DayViewShimmer(),
-            ]),
-        error: (e, st) => const SizedBox.shrink(),
-        initial: () => const SizedBox.shrink());
+        }(),
+      day_view_state.Loading() => const Column(children: [
+          DayViewShimmer(),
+        ]),
+      _ => const SizedBox.shrink(),
+    };
   }
 }

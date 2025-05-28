@@ -1,4 +1,6 @@
 import 'package:farmers_journal/src/presentation/controller/journal/pagination_controller.dart';
+import 'package:farmers_journal/src/presentation/controller/journal/pagination_state.dart'
+    as pagination_state;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,11 +22,8 @@ class NoMoreItems extends ConsumerWidget {
     final state = ref.watch(paginationControllerProvider);
 
     return SliverToBoxAdapter(
-      child: state.maybeWhen(
-        // Default case: return an empty widget when state is not data
-        orElse: () => const SizedBox.shrink(),
-        // Handle the data state
-        data: (items) {
+        child: switch (state) {
+      pagination_state.Data(:final journals) => () {
           // Get the noMoreItems status from the pagination controller
           final noMoreItems =
               ref.read(paginationControllerProvider.notifier).noMoreItems;
@@ -48,8 +47,8 @@ class NoMoreItems extends ConsumerWidget {
                 )
               // Return empty widget when there are more items to load
               : const SizedBox.shrink();
-        },
-      ),
-    );
+        }(),
+      _ => const SizedBox.shrink(),
+    });
   }
 }

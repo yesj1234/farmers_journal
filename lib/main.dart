@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:farmers_journal/src/presentation/controller/theme/theme_controller.dart';
+import 'package:farmers_journal/src/presentation/controller/theme/theme_controller_state.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
@@ -91,8 +92,10 @@ class _MyApp extends ConsumerState<MyApp> {
       ],
       routerConfig: router,
       debugShowCheckedModeBanner: false,
-      themeMode: themeRef.maybeWhen(
-          orElse: () => ThemeMode.system, data: (mode) => mode),
+      themeMode: switch (themeRef) {
+        Data(:final data) => data,
+        _ => ThemeMode.system,
+      },
       darkTheme: FlexThemeData.dark(
         scheme: FlexScheme.green,
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,

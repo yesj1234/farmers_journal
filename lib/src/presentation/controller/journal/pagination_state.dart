@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'pagination_state.freezed.dart';
 
 @freezed
-class PaginationState with _$PaginationState {
+sealed class PaginationState with _$PaginationState {
   const factory PaginationState.initial() = Initial;
   const factory PaginationState.data(List<Journal?> journals) = Data;
   const factory PaginationState.error(Object? e, [StackTrace? stk]) = Error;

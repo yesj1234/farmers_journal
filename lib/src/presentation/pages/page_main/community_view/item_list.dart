@@ -1,7 +1,8 @@
 import 'package:farmers_journal/src/domain/model/journal.dart';
 import 'package:farmers_journal/src/presentation/components/card/day_view_card.dart';
 import 'package:farmers_journal/src/presentation/controller/journal/pagination_controller.dart';
-import 'package:farmers_journal/src/presentation/controller/journal/pagination_state.dart';
+import 'package:farmers_journal/src/presentation/controller/journal/pagination_state.dart'
+    as pagination_state;
 import 'package:farmers_journal/src/presentation/controller/user/community_view_controller.dart';
 import 'package:farmers_journal/src/presentation/pages/page_main/day_view_shimmer.dart';
 import 'package:flutter/material.dart';
@@ -20,62 +21,63 @@ class ItemsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final PaginationState state = ref.watch(paginationControllerProvider);
+    final pagination_state.PaginationState state =
+        ref.watch(paginationControllerProvider);
 
-    return state.when(
-      initial: () =>
-          const SliverToBoxAdapter(child: Center(child: DayViewShimmer())),
-      data: (items) {
-        return items.isEmpty
-            ? SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        ref
-                            .read(paginationControllerProvider.notifier)
-                            .fetchFirstBatch();
-                      },
-                      icon: Icon(
-                        Icons.replay,
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
-                    Chip(
-                      label: Text(
-                        "일지가 더 존재 하지 않습니다!",
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            : ItemsListBuilder(journals: items);
-      },
-      loading: () =>
-          const SliverToBoxAdapter(child: Center(child: DayViewShimmer())),
-      error: (e, stk) => const SliverToBoxAdapter(
-        child: Center(
-          child: Column(
-            children: [
-              Icon(Icons.info),
-              SizedBox(height: 20),
-              Text("Something Went Wrong!",
-                  style: TextStyle(color: Colors.black)),
-            ],
+    return switch (state) {
+      pagination_state.Initial() =>
+        const SliverToBoxAdapter(child: Center(child: DayViewShimmer())),
+      pagination_state.Loading() =>
+        const SliverToBoxAdapter(child: Center(child: DayViewShimmer())),
+      pagination_state.Error(:final e, :final stk) => const SliverToBoxAdapter(
+          child: Center(
+            child: Column(
+              children: [
+                Icon(Icons.info),
+                SizedBox(height: 20),
+                Text("Something Went Wrong!",
+                    style: TextStyle(color: Colors.black)),
+              ],
+            ),
           ),
         ),
-      ),
-      onGoingLoading: (items) {
-        return ItemsListBuilder(journals: items);
-      },
-      onGoingError: (items, e, st) {
-        return ItemsListBuilder(journals: items);
-      },
-    );
+      pagination_state.Data(:final journals) => () {
+          return journals.isEmpty
+              ? SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          ref
+                              .read(paginationControllerProvider.notifier)
+                              .fetchFirstBatch();
+                        },
+                        icon: Icon(
+                          Icons.replay,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                      Chip(
+                        label: Text(
+                          "일지가 더 존재 하지 않습니다!",
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : ItemsListBuilder(journals: journals);
+        }(),
+      pagination_state.OnGoingLoading(:final journals) => () {
+          return ItemsListBuilder(journals: journals);
+        }(),
+      pagination_state.OnGoingError(:final journals) => () {
+          return ItemsListBuilder(journals: journals);
+        }(),
+    };
   }
 }
 

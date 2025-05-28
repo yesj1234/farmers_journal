@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'theme_controller_state.freezed.dart';
 
 @freezed
-class ThemeControllerState with _$ThemeControllerState {
+sealed class ThemeControllerState with _$ThemeControllerState {
   const factory ThemeControllerState.initial() = Initial;
   const factory ThemeControllerState.data(ThemeMode data) = Data;
   const factory ThemeControllerState.loading() = Loading;

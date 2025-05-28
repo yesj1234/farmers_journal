@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'day_view_state.freezed.dart';
 
 @freezed
-class DayViewState with _$DayViewState {
+sealed class DayViewState with _$DayViewState {
   const factory DayViewState.initial() = Initial;
   const factory DayViewState.data(Map<DateTime, List<Journal?>> data) = Data;
   const factory DayViewState.loading() = Loading;

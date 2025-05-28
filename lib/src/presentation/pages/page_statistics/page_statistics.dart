@@ -1,5 +1,6 @@
 import 'package:farmers_journal/src/presentation/components/avatar/avatar_profile.dart';
 import 'package:farmers_journal/src/presentation/controller/user/user_controller.dart';
+import 'package:farmers_journal/src/presentation/pages/page_statistics/auction_price.dart';
 import 'package:farmers_journal/src/presentation/pages/page_statistics/journal_record.dart';
 
 import 'package:flutter/material.dart';
@@ -80,6 +81,7 @@ class PageStatistics extends ConsumerWidget {
                       Center(
                         child: JournalRecord(),
                       ),
+                      SizedBox(height: 10),
                     ],
                   ),
                 ),

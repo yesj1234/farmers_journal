@@ -13,18 +13,17 @@ class AuthBridge extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AuthNotifierState authenticated = ref.watch(authNotifierProvider);
-
-    return authenticated.when(
-      initial: () => const PageSplash(),
-      loading: () => const PageSplash(),
-      error: (error, stk) => const PageLogin(),
-      data: (user) {
-        if (user == null) {
-          return const PageLogin();
-        } else {
-          return const PageMain();
-        }
-      },
-    );
+    return switch (authenticated) {
+      Initial() => const PageSplash(),
+      Loading() => const PageSplash(),
+      Error() => const PageLogin(),
+      Data(:final appUser) => () {
+          if (appUser == null) {
+            return const PageLogin();
+          } else {
+            return const PageMain();
+          }
+        }(),
+    };
   }
 }

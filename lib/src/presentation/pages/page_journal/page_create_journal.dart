@@ -1,4 +1,6 @@
 import 'dart:typed_data';
+import '../../controller/journal/journal_form_controller_state.dart'
+    as journal_form_controller_state;
 import '../../controller/weather/weather_controller.dart';
 import '../../components/journal_form_content.dart';
 import '../../components/journal_form_date.dart';
@@ -13,6 +15,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../controller/weather/weather_controller_state.dart'
+    as weather_controller_state;
 
 // TODO: temperature UI update. show the lowest, highest, and mid temperature with horizontal graph. some research for the weather UI needed.
 /// {@category Presentation}
@@ -104,80 +109,85 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
         actions: [
           TextButton(
             onPressed: () {
-              journalFormController.maybeWhen(
-                loading: null,
-                orElse: () async {
-                  _formKey.currentState?.validate();
-                  if (imageNotifier.value.isNotEmpty ||
-                      titleController.text.trim().isNotEmpty ||
-                      contentController.text.trim().isNotEmpty) {
-                    _formKey.currentState?.save();
-                    try {
-                      void Function(VoidCallback)? dialogSetState;
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return StatefulBuilder(builder: (context, setState) {
-                            dialogSetState =
-                                setState; // store the reference to dialogSetState.
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: Theme.of(context).primaryColor,
-                                value: progress,
-                              ),
-                            );
-                          });
-                        },
-                      );
+              switch (journalFormController) {
+                case journal_form_controller_state.Loading():
+                  return;
+                default:
+                  () async {
+                    _formKey.currentState?.validate();
+                    if (imageNotifier.value.isNotEmpty ||
+                        titleController.text.trim().isNotEmpty ||
+                        contentController.text.trim().isNotEmpty) {
+                      _formKey.currentState?.save();
+                      try {
+                        void Function(VoidCallback)? dialogSetState;
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return StatefulBuilder(
+                                builder: (context, setState) {
+                              dialogSetState =
+                                  setState; // store the reference to dialogSetState.
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).primaryColor,
+                                  value: progress,
+                                ),
+                              );
+                            });
+                          },
+                        );
 
-                      await ref
-                          .read(journalFormControllerProvider.notifier)
-                          .createJournal(
-                              title: titleController.text,
-                              content: contentController.text,
-                              date: date,
-                              images: imageNotifier.value,
-                              isPublic: isPublic,
-                              temperature: temperature,
-                              weatherCode: weatherCode,
-                              progressCallback: (
-                                  {int? transferred, int? totalBytes}) async {
-                                final total = await totalBytesToUpload;
-                                if (transferred != null && totalBytes != null) {
-                                  totalTransferred += transferred;
-                                  double newProgress = totalTransferred / total;
-                                  dialogSetState!(() {
-                                    progress = newProgress.clamp(
-                                        0, 1); // Ensure it stays within 0-1
-                                  });
-                                }
-                              })
-                          .then(
-                        (_) {
-                          ref.invalidate(journalControllerProvider);
-                          if (context.mounted) {
-                            context.pop();
-                            context.pop();
-                          }
-                        },
-                        onError: (e, st) {
-                          if (context.mounted) {
-                            showSnackBar(
-                              context,
-                              e.toString(),
-                            );
-                          }
-                        },
-                      );
-                    } catch (error) {
-                      if (context.mounted) {
-                        showSnackBar(context, error.toString());
+                        await ref
+                            .read(journalFormControllerProvider.notifier)
+                            .createJournal(
+                                title: titleController.text,
+                                content: contentController.text,
+                                date: date,
+                                images: imageNotifier.value,
+                                isPublic: isPublic,
+                                temperature: temperature,
+                                weatherCode: weatherCode,
+                                progressCallback: (
+                                    {int? transferred, int? totalBytes}) async {
+                                  final total = await totalBytesToUpload;
+                                  if (transferred != null &&
+                                      totalBytes != null) {
+                                    totalTransferred += transferred;
+                                    double newProgress =
+                                        totalTransferred / total;
+                                    dialogSetState!(() {
+                                      progress = newProgress.clamp(
+                                          0, 1); // Ensure it stays within 0-1
+                                    });
+                                  }
+                                })
+                            .then(
+                          (_) {
+                            ref.invalidate(journalControllerProvider);
+                            if (context.mounted) {
+                              context.pop();
+                              context.pop();
+                            }
+                          },
+                          onError: (e, st) {
+                            if (context.mounted) {
+                              showSnackBar(
+                                context,
+                                e.toString(),
+                              );
+                            }
+                          },
+                        );
+                      } catch (error) {
+                        if (context.mounted) {
+                          showSnackBar(context, error.toString());
+                        }
                       }
                     }
-                  }
-                },
-              );
+                  }();
+              }
             },
             child: const _CompleteButton(),
           ),
@@ -211,37 +221,45 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                                 SizedBox(
                                   width: 90,
                                   child: AnimatedOpacity(
-                                    opacity: weatherController.maybeWhen(
-                                      data: (_) => 1.0,
-                                      orElse: () => 0.0,
-                                    ),
-                                    duration: const Duration(seconds: 1),
-                                    child: weatherController.maybeWhen(
-                                      orElse: () => const SizedBox.shrink(),
-                                      data: (info) {
-                                        temperature = info['temperature'];
-                                        weatherCode = info['weatherCode'];
-                                        return AnimatedSwitcher(
-                                          duration:
-                                              const Duration(milliseconds: 500),
-                                          transitionBuilder:
-                                              (child, animation) {
-                                            return FadeTransition(
-                                              opacity: animation,
-                                              child: child,
-                                            );
-                                          },
-                                          child: WeatherIconBuilder(
-                                            key: ValueKey(
-                                                '$date - ${info['temperature']} - ${info['weatherCode']}'),
-                                            temperature: info['temperature'],
-                                            weatherCode: info['weatherCode'],
-                                            iconSize: 24,
-                                          ),
-                                        );
+                                      opacity: switch (weatherController) {
+                                        weather_controller_state
+                                              .WeatherControllerState.data =>
+                                          1.0,
+                                        _ => 0.0,
                                       },
-                                    ),
-                                  ),
+                                      duration: const Duration(seconds: 1),
+                                      child: switch (weatherController) {
+                                        weather_controller_state.Data(
+                                          :final weatherInfo
+                                        ) =>
+                                          () {
+                                            temperature =
+                                                weatherInfo['temperature'];
+                                            weatherCode =
+                                                weatherInfo['weatherCode'];
+                                            return AnimatedSwitcher(
+                                              duration: const Duration(
+                                                  milliseconds: 500),
+                                              transitionBuilder:
+                                                  (child, animation) {
+                                                return FadeTransition(
+                                                  opacity: animation,
+                                                  child: child,
+                                                );
+                                              },
+                                              child: WeatherIconBuilder(
+                                                key: ValueKey(
+                                                    '$date - ${weatherInfo['temperature']} - ${weatherInfo['weatherCode']}'),
+                                                temperature:
+                                                    weatherInfo['temperature'],
+                                                weatherCode:
+                                                    weatherInfo['weatherCode'],
+                                                iconSize: 24,
+                                              ),
+                                            );
+                                          }(),
+                                        _ => const SizedBox.shrink(),
+                                      }),
                                 ),
                                 SizedBox(
                                   width: 90,

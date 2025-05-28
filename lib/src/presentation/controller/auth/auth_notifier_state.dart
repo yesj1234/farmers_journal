@@ -4,7 +4,7 @@ import '../../../../domain.dart';
 part 'auth_notifier_state.freezed.dart';
 
 @freezed
-class AuthNotifierState with _$AuthNotifierState {
+sealed class AuthNotifierState with _$AuthNotifierState {
   const factory AuthNotifierState.initial() = Initial;
   const factory AuthNotifierState.data(AppUser? appUser) = Data;
   const factory AuthNotifierState.loading() = Loading;

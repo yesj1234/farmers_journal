@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:farmers_journal/src/domain/model/user.dart';
+import 'package:farmers_journal/src/presentation/controller/user/community_view_state.dart'
+    as community_view_state;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
@@ -30,22 +32,21 @@ class _UserProfileState extends ConsumerState<UserProfile> {
   Widget build(BuildContext context) {
     final userInfo = ref.watch(communityViewControllerProvider);
 
-    return userInfo.when(
-      data: (info) => _DataState(
-        userInfo: info,
-        plant: widget.journal.plant,
-        place: widget.journal.place,
-      ),
-      loading: () => const _ShimmerLoadingState(),
-      error: (e, st) => GestureDetector(
+    return switch (userInfo) {
+      community_view_state.Data(:final userInfo) => _DataState(
+          userInfo: userInfo,
+          plant: widget.journal.plant,
+          place: widget.journal.place,
+        ),
+      community_view_state.Error() => GestureDetector(
           onTap: () {
             ref
                 .read(communityViewControllerProvider.notifier)
                 .getUserById(id: widget.journal.writer ?? '');
           },
           child: const _ErrorState()),
-      initial: () => const _ShimmerLoadingState(),
-    );
+      _ => const _ShimmerLoadingState(),
+    };
   }
 }
 
