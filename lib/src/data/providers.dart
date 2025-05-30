@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:farmers_journal/src/data/repositories/auction_price_repository.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
@@ -44,11 +45,18 @@ List<int> price(Ref ref) {
   return List.generate(10, (index) => random.nextInt(6000));
 }
 
-final googleAPIProvider = Provider<GoogleAPI>((ref) {
-  return GoogleAPI();
-});
+@riverpod
+AuctionPriceRepository auctionAPI(Ref ref) {
+  return AuctionPriceRepository();
+}
 
-final loggerProvider = Provider<Logger>((ref) {
+@riverpod
+GoogleAPI googleAPI(Ref ref) {
+  return GoogleAPI();
+}
+
+@riverpod
+Logger logger(Ref ref) {
   return Logger(
     printer: PrettyPrinter(
       methodCount: 2, // Show method calls in logs
@@ -59,4 +67,4 @@ final loggerProvider = Provider<Logger>((ref) {
       dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
     ),
   );
-});
+}

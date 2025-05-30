@@ -16,30 +16,38 @@ import '../domain/interface/journal_interface.dart';
 import '../domain/interface/report_interface.dart';
 import '../domain/interface/user_interface.dart';
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
+part 'firestore_providers.g.dart';
+
+@riverpod
+AuthRepository authRepository(Ref ref) {
   return FirebaseAuthRepository.setLanguage(
       instance: FirebaseAuth.instance, logger: ref.read(loggerProvider));
-});
+}
 
-final userRepositoryProvider = Provider<UserRepository>((ref) {
+@riverpod
+UserRepository userRepository(Ref ref) {
   return FireStoreUserRepository(
     ref,
     instance: FirebaseFirestore.instance,
   );
-});
+}
 
-final reportRepositoryProvider = Provider<ReportRepository>((ref) {
+@riverpod
+ReportRepository reportRepository(Ref ref) {
   return FireStoreReportRepository(instance: FirebaseFirestore.instance);
-});
+}
 
-final journalRepositoryProvider = Provider<JournalRepository>((ref) {
+@riverpod
+JournalRepository journalRepository(Ref ref) {
   return FireStoreJournalRepository(instance: FirebaseFirestore.instance);
-});
+}
 
-final commentRepositoryProvider = Provider<CommentRepository>((ref) {
+@riverpod
+CommentRepository commentRepository(Ref ref) {
   return FireStoreCommentRepository(instance: FirebaseFirestore.instance);
-});
+}
 
-final defaultImageRepositoryProvider = Provider<DefaultImageRepository>((ref) {
+@riverpod
+DefaultImageRepository defaultImageRepository(Ref ref) {
   return FireStoreDefaultImageRepository(instance: FirebaseFirestore.instance);
-});
+}
