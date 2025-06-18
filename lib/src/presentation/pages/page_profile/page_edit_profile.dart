@@ -147,17 +147,17 @@ class _PageProfileState extends ConsumerState<PageEditProfile> {
                     backgroundColor: WidgetStatePropertyAll(Theme.of(context)
                         .buttonTheme
                         .colorScheme
-                        ?.secondaryContainer),
+                        ?.primaryContainer),
                   ),
                   child: isLoading
                       ? const CircularProgressIndicator()
                       : Text(
-                          "Save",
+                          "저장",
                           style: TextStyle(
                             color: Theme.of(context)
                                 .buttonTheme
                                 .colorScheme
-                                ?.onSecondaryFixedVariant,
+                                ?.onPrimary,
                           ),
                         ),
                 ),
