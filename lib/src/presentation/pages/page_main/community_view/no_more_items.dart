@@ -21,8 +21,7 @@ class NoMoreItems extends ConsumerWidget {
     // Watch the pagination controller state
     final state = ref.watch(paginationControllerProvider);
 
-    return SliverToBoxAdapter(
-        child: switch (state) {
+    return switch (state) {
       pagination_state.Data(:final journals) => () {
           // Get the noMoreItems status from the pagination controller
           final noMoreItems =
@@ -49,6 +48,6 @@ class NoMoreItems extends ConsumerWidget {
               : const SizedBox.shrink();
         }(),
       _ => const SizedBox.shrink(),
-    });
+    };
   }
 }

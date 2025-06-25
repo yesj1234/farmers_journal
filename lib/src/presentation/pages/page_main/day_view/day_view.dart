@@ -1,12 +1,10 @@
-import 'package:farmers_journal/src/presentation/controller/journal/day_view_controller.dart';
-import 'package:farmers_journal/src/presentation/controller/journal/day_view_state.dart'
-    as day_view_state;
-import 'package:farmers_journal/src/presentation/pages/page_main/community_view/scroll_to_top_button.dart';
-import 'package:farmers_journal/src/presentation/pages/page_main/day_view_shimmer.dart';
+import 'animated_day_view.dart';
+import '../../../controller/journal/day_view_controller.dart';
+import '../../../controller/journal/day_view_state.dart' as day_view_state;
+import '../../../pages/page_main/day_view_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'animated_day_view.dart';
 
 /// {@category Presentation}
 /// Displays a daily view of journal entries, organized by date.
@@ -40,11 +38,13 @@ class _DayViewState extends ConsumerState<DayView> {
           for (var entry in data.entries) {
             children.add(
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.only(left: 10),
                 child: Text(
                   '${entry.key.month}월 ${entry.key.day}일',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                 ),
               ),
             );
@@ -69,18 +69,9 @@ class _DayViewState extends ConsumerState<DayView> {
               }
             }
           }
-          return Stack(
-            children: [
-              ListView(
-                  controller: scrollController,
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.only(top: 4.0),
-                  children: children),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: ScrollToTopButton(scrollController: scrollController),
-              ),
-            ],
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: children,
           );
         }(),
       day_view_state.Loading() => const Column(children: [

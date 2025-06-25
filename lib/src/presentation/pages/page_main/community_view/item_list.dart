@@ -25,49 +25,43 @@ class ItemsList extends ConsumerWidget {
         ref.watch(paginationControllerProvider);
 
     return switch (state) {
-      pagination_state.Initial() =>
-        const SliverToBoxAdapter(child: Center(child: DayViewShimmer())),
-      pagination_state.Loading() =>
-        const SliverToBoxAdapter(child: Center(child: DayViewShimmer())),
-      pagination_state.Error(:final e, :final stk) => const SliverToBoxAdapter(
-          child: Center(
-            child: Column(
-              children: [
-                Icon(Icons.info),
-                SizedBox(height: 20),
-                Text("Something Went Wrong!",
-                    style: TextStyle(color: Colors.black)),
-              ],
-            ),
+      pagination_state.Initial() => Center(child: DayViewShimmer()),
+      pagination_state.Loading() => Center(child: DayViewShimmer()),
+      pagination_state.Error(:final e, :final stk) => Center(
+          child: Column(
+            children: [
+              Icon(Icons.info),
+              SizedBox(height: 20),
+              Text("Something Went Wrong!",
+                  style: TextStyle(color: Colors.black)),
+            ],
           ),
         ),
       pagination_state.Data(:final journals) => () {
           return journals.isEmpty
-              ? SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          ref
-                              .read(paginationControllerProvider.notifier)
-                              .fetchFirstBatch();
-                        },
-                        icon: Icon(
-                          Icons.replay,
+              ? Column(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        ref
+                            .read(paginationControllerProvider.notifier)
+                            .fetchFirstBatch();
+                      },
+                      icon: Icon(
+                        Icons.replay,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                    Chip(
+                      label: Text(
+                        "일지가 더 존재 하지 않습니다!",
+                        style: theme.textTheme.bodyLarge?.copyWith(
                           color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Chip(
-                        label: Text(
-                          "일지가 더 존재 하지 않습니다!",
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 )
               : ItemsListBuilder(journals: journals);
         }(),
@@ -98,25 +92,20 @@ class ItemsListBuilder extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(communityViewControllerProvider);
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final journalInfo = journals[index];
-          return GestureDetector(
-            onTap: () => context.pushNamed(
-              'journal-detail',
-              pathParameters: {"journalId": journalInfo!.id!},
-              extra: journalInfo,
-            ),
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 4),
-              child: _DayViewCard(journal: journals[index]!),
-            ),
-          );
-        },
-        childCount: journals.length,
-      ),
-    );
+    final children = journals
+        .map((journal) => GestureDetector(
+              onTap: () => context.pushNamed(
+                'journal-detail',
+                pathParameters: {"journalId": journal.id!},
+                extra: journal,
+              ),
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                child: _DayViewCard(journal: journal!),
+              ),
+            ))
+        .toList();
+    return Column(children: children);
   }
 }
 

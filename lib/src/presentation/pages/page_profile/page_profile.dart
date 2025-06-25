@@ -40,7 +40,7 @@ class _PageProfileState extends ConsumerState<PageProfile> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(26),
-                child: ListView(
+                child: Column(
                   children: const [
                     SizedBox(
                       height: 20,

@@ -1,10 +1,6 @@
-import 'package:farmers_journal/src/presentation/components/carousel/carousel.dart';
-
-import 'package:farmers_journal/src/presentation/controller/journal/week_view_controller.dart';
-import 'package:farmers_journal/src/presentation/controller/journal/week_view_state.dart'
-    as week_view_state;
-import 'package:farmers_journal/src/presentation/pages/page_main/community_view/scroll_to_top_button.dart';
-
+import '../../components/carousel/carousel.dart';
+import '../../controller/journal/week_view_controller.dart';
+import '../../controller/journal/week_view_state.dart' as week_view_state;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
@@ -13,29 +9,13 @@ import 'package:flutter/material.dart';
 ///
 /// This widget fetches journals from the journal controller, groups them by week,
 /// and presents each group with a label and a horizontal carousel.
-class WeekView extends ConsumerStatefulWidget {
+class WeekView extends ConsumerWidget {
   /// Creates a [WeekView] widget.
   ///
   /// The [key] parameter is optional and passed to the superclass.
   const WeekView({super.key});
-
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _WeekViewState();
-}
-
-/// The state for [WeekView], managing journal data and scrolling.
-class _WeekViewState extends ConsumerState<WeekView> {
-  /// Controller for managing the scroll position of the list.
-  final ScrollController scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    scrollController.dispose(); // Clean up scroll controller
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final journals = ref.watch(weekViewControllerProvider);
     return switch (journals) {
       week_view_state.Data(:final data) => () {
@@ -64,19 +44,8 @@ class _WeekViewState extends ConsumerState<WeekView> {
             );
           }
 
-          return Stack(
-            children: [
-              ListView(
-                controller: scrollController,
-                children: children,
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: ScrollToTopButton(
-                  scrollController: scrollController,
-                ),
-              ),
-            ],
+          return Column(
+            children: children,
           );
         }(),
       week_view_state.Loading() =>

@@ -59,10 +59,15 @@ class ButtonStatus extends StatelessWidget {
                 const SizedBox(width: 2.0),
                 Text(
                   status,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(fontWeight: FontWeight.bold, fontSize: 18),
+
+                  // TextStyle(
+                  //   fontWeight: FontWeight.bold,
+                  //   fontSize: 18,
+                  // ),
                 ),
               ],
             ),
@@ -72,10 +77,14 @@ class ButtonStatus extends StatelessWidget {
                 child: Text(
                   overflow: TextOverflow.ellipsis,
                   statusValue,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColorDark,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).primaryColorDark,
+                      fontWeight: FontWeight.w600),
+
+                  // TextStyle(
+                  //   color: Theme.of(context).primaryColorDark,
+                  //   fontWeight: FontWeight.w600,
+                  // ),
                 ),
               ),
             ),

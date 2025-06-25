@@ -1,31 +1,178 @@
 // packages
-import 'package:farmers_journal/src/presentation/controller/user/user_controller.dart';
-import 'package:farmers_journal/src/presentation/pages/page_main/community_view/community_view.dart';
-import 'package:farmers_journal/src/presentation/pages/page_main/day_view/day_view.dart';
-import 'package:farmers_journal/src/presentation/pages/page_main/month_view/month_view.dart';
-import 'package:farmers_journal/src/presentation/pages/page_main/top_nav.dart';
-import 'package:farmers_journal/src/presentation/pages/page_main/week_view.dart';
+import '../../controller/user/user_controller.dart';
+import '../../pages/page_main/top_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 //Riverpod
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:farmers_journal/src/presentation/controller/journal/journal_controller.dart';
-import 'package:farmers_journal/src/data/providers.dart';
+import '../../../data/providers.dart';
 // custom components
-import 'package:farmers_journal/src/presentation/components/button/button_create_post.dart';
-
+import '../../components/button/button_create_post.dart';
 // enums
 import 'package:farmers_journal/enums.dart';
-// models
-import 'package:farmers_journal/src/domain/model/journal.dart';
+
+import '../../../../controller.dart';
+import 'community_view/scroll_to_top_button.dart';
+import 'content.dart' show Content;
+
+class PageMain extends ConsumerStatefulWidget {
+  const PageMain({super.key});
+
+  Icon get selectedIcon =>
+      const Icon(Icons.check_outlined, key: ValueKey('selected'));
+  TextStyle get selectedText => const TextStyle(fontWeight: FontWeight.bold);
+
+  @override
+  ConsumerState<PageMain> createState() => _PageMainCollapsibleState();
+}
+
+class _PageMainCollapsibleState extends ConsumerState<PageMain> {
+  final ScrollController scrollController = ScrollController();
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final userRef = ref.watch(userControllerProvider(null));
+    final mainView = ref.watch(mainViewFilterProvider);
+    return Scaffold(
+      body: SafeArea(
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: <Widget>[
+            SliverPersistentHeader(
+              delegate: _TopNavDelegate(),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: Stack(children: [
+                  Content(
+                    scrollController: scrollController,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child:
+                        ScrollToTopButton(scrollController: scrollController),
+                  )
+                ]),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: ButtonCreatePost(
+        onClick: () {
+          // 초기 설정 없으면 초기 설정 페이지로 이동
+          if (userRef.value!.isInitialSettingRequired) {
+            context.go('/initial_setting');
+          } else {
+            context.push('/create');
+          }
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF1A1A1A)
+            : const Color(0xFFF2F2F2),
+        padding: EdgeInsets.zero,
+        shape: const CircularNotchedRectangle(),
+        height: 68,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: _BottomNavigationItem(
+                  currentMainView: mainView,
+                  view: MainView.day,
+                  icon: const Icon(Icons.calendar_view_day),
+                  title: "일간",
+                  selectedIcon: widget.selectedIcon,
+                  selectedText: widget.selectedText),
+            ),
+            Expanded(
+              child: _BottomNavigationItem(
+                  currentMainView: mainView,
+                  view: MainView.week,
+                  icon: const Icon(Icons.calendar_view_week),
+                  title: "주간",
+                  selectedIcon: widget.selectedIcon,
+                  selectedText: widget.selectedText),
+            ),
+            const Spacer(),
+            Expanded(
+              child: _BottomNavigationItem(
+                  currentMainView: mainView,
+                  view: MainView.month,
+                  icon: const Icon(Icons.calendar_month),
+                  title: "월간",
+                  selectedIcon: widget.selectedIcon,
+                  selectedText: widget.selectedText),
+            ),
+            Expanded(
+              child: _BottomNavigationItem(
+                  currentMainView: mainView,
+                  view: MainView.community,
+                  icon: const Icon(Icons.people),
+                  title: "커뮤니티",
+                  selectedIcon: widget.selectedIcon,
+                  selectedText: widget.selectedText),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TopNavDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  // TODO: implement maxExtent
+  double get maxExtent => 80;
+
+  @override
+  // TODO: implement minExtent
+  double get minExtent => 40;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final progress = shrinkOffset / (maxExtent - minExtent);
+    return Stack(children: [
+      Align(
+        alignment: Alignment.topRight,
+        child: Opacity(
+          opacity: progress.clamp(0, 1),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: IconButton(onPressed: () => {}, icon: Icon(Icons.menu)),
+          ),
+        ),
+      ),
+      Opacity(
+        opacity: 1 - progress.clamp(0, 1),
+        child: TopNav(),
+      ),
+    ]);
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
+  }
+}
 
 /// {@category Presentation}
 /// The main page widget that consumes Riverpod providers.
 ///
 /// Displays the navigation, content sections, and a floating action button for creating posts.
-class PageMain extends ConsumerWidget {
-  /// Creates a [PageMain] widget.
-  const PageMain({super.key});
+class PageMainPrev extends ConsumerWidget {
+  /// Creates a [PageMainPrev] widget.
+  const PageMainPrev({super.key});
 
   Icon get selectedIcon =>
       const Icon(Icons.check_outlined, key: ValueKey('selected'));
@@ -48,13 +195,7 @@ class PageMain extends ConsumerWidget {
                 padding: EdgeInsets.only(right: 10),
                 child: TopNav(),
               ),
-              Divider(
-                thickness: 0.5,
-                indent: 10,
-                endIndent: 10,
-                color: Theme.of(context).primaryColor,
-              ),
-              const Expanded(child: _Content()),
+              // Expanded(child: Content(scrollController: ,)),
             ],
           ),
         ),
@@ -159,80 +300,6 @@ class _BottomNavigationItem extends ConsumerWidget {
           Text(title, style: currentMainView == view ? selectedText : null)
         ],
       ),
-    );
-  }
-}
-
-/// The main content section of the page, displaying journal entries.
-class _Content extends ConsumerWidget {
-  /// Creates a [_Content] widget.
-  const _Content();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final journals = ref.watch(journalControllerProvider);
-
-    return journals.when(
-      data: (data) {
-        return _UserContent(journals: data);
-      },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, st) {
-        return Center(
-          child: Text(
-            e.toString(),
-          ),
-        );
-      },
-    );
-  }
-}
-
-/// Displays journal entries based on the selected view filter.
-class _UserContent extends ConsumerWidget {
-  /// Creates a [_UserContent] widget.
-  const _UserContent({required this.journals});
-
-  /// The list of journal entries to display.
-  final List<Journal?> journals;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final mainViewFilter = ref.watch(mainViewFilterProvider);
-    return switch (mainViewFilter) {
-      MainView.day =>
-        journals.isEmpty ? const _DefaultContent() : const DayView(),
-      MainView.week =>
-        journals.isEmpty ? const _DefaultContent() : const WeekView(),
-      MainView.month =>
-        journals.isEmpty ? const _DefaultContent() : const MonthView(),
-      MainView.community => const CommunityView(),
-    };
-  }
-}
-
-/// Displays default content when no journal entries exist.
-class _DefaultContent extends StatelessWidget {
-  /// Creates a [_DefaultContent] widget.
-  const _DefaultContent();
-
-  @override
-  Widget build(BuildContext context) {
-    final TextStyle textStyle = TextStyle(
-      color: Colors.grey.shade600,
-      fontWeight: FontWeight.bold,
-    );
-
-    return Column(
-      children: [
-        const Spacer(flex: 2),
-        Image.asset("assets/icons/LogoTemp.png"),
-        const SizedBox(
-          height: 15,
-        ),
-        Text("일지를 작성해보세요", style: textStyle),
-        const Spacer(flex: 3),
-      ],
     );
   }
 }

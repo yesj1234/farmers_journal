@@ -20,36 +20,34 @@ class OnGoingBottomWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return SliverPadding(
+    return Padding(
       // Add consistent padding around the content
       padding: const EdgeInsets.all(10),
-      sliver: SliverToBoxAdapter(
-        child: Consumer(
-          builder: (context, ref, child) {
-            // Monitor the pagination controller state
-            final state = ref.watch(paginationControllerProvider);
+      child: Consumer(
+        builder: (context, ref, child) {
+          // Monitor the pagination controller state
+          final state = ref.watch(paginationControllerProvider);
 
-            return switch (state) {
-              pagination_state.OnGoingLoading(:final journals) =>
-                const Center(child: DayViewShimmer()),
-              pagination_state.OnGoingError() => Center(
-                  child: Column(
-                    children: [
-                      const Icon(Icons.info), // Visual indicator of error
-                      const SizedBox(height: 20), // Spacing between elements
-                      Text(
-                        "Something Went Wrong!",
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: theme.colorScheme.error,
-                        ),
+          return switch (state) {
+            pagination_state.OnGoingLoading(:final journals) =>
+              const Center(child: DayViewShimmer()),
+            pagination_state.OnGoingError() => Center(
+                child: Column(
+                  children: [
+                    const Icon(Icons.info), // Visual indicator of error
+                    const SizedBox(height: 20), // Spacing between elements
+                    Text(
+                      "Something Went Wrong!",
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.error,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              _ => const SizedBox.shrink(),
-            };
-          },
-        ),
+              ),
+            _ => const SizedBox.shrink(),
+          };
+        },
       ),
     );
   }

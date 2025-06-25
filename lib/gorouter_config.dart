@@ -1,21 +1,21 @@
-import 'package:farmers_journal/src/domain/model/journal.dart';
-import 'package:farmers_journal/src/presentation/pages/page_journal/page_update_journal.dart';
-import 'package:farmers_journal/src/presentation/pages/page_login/page_reset_password.dart';
-import 'package:farmers_journal/src/presentation/pages/page_main/journal_detail/journal_detail.dart';
-import 'package:farmers_journal/src/presentation/pages/page_profile/page_setting/page_settings.dart';
-import 'package:farmers_journal/src/presentation/pages/page_journal/page_create_journal.dart';
-import 'package:farmers_journal/src/presentation/pages/page_login/auth_bridge.dart';
-import 'package:farmers_journal/src/presentation/pages/page_login/page_signup.dart';
-import 'package:farmers_journal/src/presentation/pages/page_profile/page_plant.dart';
-import 'package:farmers_journal/src/presentation/pages/page_profile/page_edit_profile.dart'; //
-import 'package:farmers_journal/src/presentation/pages/page_profile/page_place/page_place_search.dart';
-import 'package:farmers_journal/src/presentation/pages/page_profile/page_setting/page_terms_and_policy.dart';
+import './src/domain/model/journal.dart';
+import './src/presentation/pages/page_journal/page_update_journal.dart';
+import './src/presentation/pages/page_login/page_reset_password.dart';
+import './src/presentation/pages/page_main/journal_detail/journal_detail.dart';
+import './src/presentation/pages/page_profile/page_setting/page_settings.dart';
+import './src/presentation/pages/page_journal/page_create_journal.dart';
+import './src/presentation/pages/page_login/auth_bridge.dart';
+import './src/presentation/pages/page_login/page_signup.dart';
+import './src/presentation/pages/page_profile/page_plant.dart';
+import './src/presentation/pages/page_profile/page_edit_profile.dart'; //
+import './src/presentation/pages/page_profile/page_place/page_place_search.dart';
+import './src/presentation/pages/page_profile/page_setting/page_terms_and_policy.dart';
+import './src/presentation/pages/page_initial_setting/page_initial_setting.dart';
+import './src/presentation/pages/page_main/page_main.dart';
+import './src/presentation/pages/page_profile/page_profile.dart'; //
+import './src/presentation/pages/page_statistics/page_statistics.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:farmers_journal/src/presentation/pages/page_initial_setting/page_initial_setting.dart';
-import 'package:farmers_journal/src/presentation/pages/page_main/page_main.dart';
-import 'package:farmers_journal/src/presentation/pages/page_profile/page_profile.dart'; //
-import 'package:farmers_journal/src/presentation/pages/page_statistics/page_statistics.dart';
 
 final router = GoRouter(
   redirect: (context, state) {

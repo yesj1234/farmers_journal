@@ -25,7 +25,6 @@ class ScrollToTopButton extends StatelessWidget {
       // Rebuild when scroll position changes
       animation: scrollController,
       builder: (context, child) {
-        // Get current scroll offset
         double scrollOffset = scrollController.offset;
 
         return AnimatedSwitcher(
