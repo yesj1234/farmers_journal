@@ -30,8 +30,9 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
     with TickerProviderStateMixin {
   late final PageController _pageViewController;
   late final TabController _tabController;
-  late final AnimationController _dragController;
+  late final AnimationController _animationController;
   late final Animation<Offset> _offsetAnimation;
+
   @override
   void initState() {
     super.initState();
@@ -40,14 +41,14 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
         initialIndex: widget.initialIndex,
         length: widget.tags.length,
         vsync: this);
-    _dragController = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
     _offsetAnimation = Tween<Offset>(
       begin: offset,
       end: const Offset(50, 50),
-    ).animate(_dragController);
+    ).animate(_animationController);
   }
 
   Offset offset = Offset.zero;
@@ -57,7 +58,7 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
   void dispose() {
     _pageViewController.dispose();
     _tabController.dispose();
-    _dragController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -118,21 +119,10 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
           tag: tag,
           transitionOnUserGestures: true,
           child: Center(
-            child: InteractiveViewer(
-              panEnabled: true,
-              minScale: 1.0,
-              maxScale: 6.0,
-              clipBehavior: Clip.none,
-              child: URLImageTile(
-                  url: tag,
-                  onDelete: () {},
-                  isEditMode: false,
-                  maxWidth: MediaQuery.sizeOf(context).width,
-                  minWidth: MediaQuery.sizeOf(context).width,
-                  maxHeight: MediaQuery.sizeOf(context).height,
-                  minHeight: MediaQuery.sizeOf(context).height,
-                  borderRadius: BorderRadius.circular(10),
-                  boxFit: BoxFit.cover),
+            child: CustomInteractiveViewer(
+              tag: tag,
+              onPanEnd: handlePanEnd,
+              onPanUpdate: handlePanUpdate,
             ),
           ),
         );
@@ -171,16 +161,12 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
                   /// PageView for swiping between images
                   children: [
                     Positioned.fill(
-                      child: GestureDetector(
-                        onPanUpdate: handlePanUpdate,
-                        onPanEnd: handlePanEnd,
-                        child: Transform.translate(
-                          offset: offset,
-                          child: PageView(
-                              controller: _pageViewController,
-                              onPageChanged: _handlePageViewChanged,
-                              children: heroWidgets),
-                        ),
+                      child: Transform.translate(
+                        offset: offset,
+                        child: PageView(
+                            controller: _pageViewController,
+                            onPageChanged: _handlePageViewChanged,
+                            children: heroWidgets),
                       ),
                     ),
 
@@ -207,6 +193,91 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
   /// Updates the tab indicator when the page view is swiped.
   void _handlePageViewChanged(int currentPageIndex) {
     _tabController.index = currentPageIndex;
+  }
+}
+
+class CustomInteractiveViewer extends StatefulWidget {
+  const CustomInteractiveViewer(
+      {super.key, required this.tag, this.onPanUpdate, this.onPanEnd});
+  final String tag;
+  final void Function(DragUpdateDetails)? onPanUpdate;
+  final void Function(DragEndDetails)? onPanEnd;
+
+  @override
+  State<StatefulWidget> createState() => _CustomInteractiveViewer();
+}
+
+class _CustomInteractiveViewer extends State<CustomInteractiveViewer>
+    with TickerProviderStateMixin {
+  final TransformationController _transformationController =
+      TransformationController();
+  late final AnimationController _animationController;
+  late Animation<Matrix4> _animation;
+  TapDownDetails _doubleTapDetails = TapDownDetails();
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    )..addListener(() {
+        _transformationController.value = _animation.value;
+      });
+  }
+
+  void handleDoubleTap() {
+    Matrix4 endMatrix;
+    Offset position = _doubleTapDetails.localPosition;
+
+    if (_transformationController.value != Matrix4.identity()) {
+      endMatrix = Matrix4.identity();
+    } else {
+      endMatrix = Matrix4.identity()
+        ..translate(-position.dx * 2, -position.dy * 2)
+        ..scale(3.0);
+    }
+
+    _animation = Matrix4Tween(
+      begin: _transformationController.value,
+      end: endMatrix,
+    ).animate(
+      CurveTween(curve: Curves.easeOut).animate(_animationController),
+    );
+    _animationController.forward(from: 0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InteractiveViewer(
+      transformationController: _transformationController,
+      minScale: 1.0,
+      maxScale: 3.0,
+      clipBehavior: Clip.none,
+      child: GestureDetector(
+        onDoubleTapDown: (details) => _doubleTapDetails = details,
+        onDoubleTap: handleDoubleTap,
+        onPanUpdate: widget.onPanUpdate,
+        onPanEnd: widget.onPanEnd,
+        child: URLImageTile(
+            url: widget.tag,
+            onDelete: () {},
+            isEditMode: false,
+            maxWidth: MediaQuery.sizeOf(context).width,
+            minWidth: MediaQuery.sizeOf(context).width,
+            maxHeight: MediaQuery.sizeOf(context).height,
+            minHeight: MediaQuery.sizeOf(context).height,
+            borderRadius: BorderRadius.circular(10),
+            boxFit: BoxFit.cover),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _transformationController.dispose();
+    super.dispose();
   }
 }
 
