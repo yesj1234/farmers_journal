@@ -32,10 +32,12 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
   late final TabController _tabController;
   late final AnimationController _animationController;
   late final Animation<Offset> _offsetAnimation;
-
+  late final List<GlobalKey<_CustomInteractiveViewerState>> _viewerKeys;
   @override
   void initState() {
     super.initState();
+    _viewerKeys = List.generate(
+        widget.tags.length, (_) => GlobalKey<_CustomInteractiveViewerState>());
     _pageViewController = PageController(initialPage: widget.initialIndex);
     _tabController = TabController(
         initialIndex: widget.initialIndex,
@@ -72,15 +74,20 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
     });
   }
 
-  void handlePanEnd(DragEndDetails details) {
-    if (offset.dy.abs() > 20) {
+  void handlePanEnd(DragEndDetails details) async {
+    if (offset.dy.abs() > 20 ||
+        details.primaryVelocity!.abs() > dragThreshold) {
+      final currentIndex = _tabController.index;
+      final viewerKey = _viewerKeys[currentIndex];
+      final viewerState = viewerKey.currentState;
+
+      if (viewerState != null) {
+        await viewerState.resetZoom(duration: Duration(milliseconds: 100));
+      }
       Navigator.of(context).pop(_tabController.index);
       return;
     }
-    if (details.primaryVelocity!.abs() > dragThreshold) {
-      Navigator.of(context).pop(_tabController.index);
-      return;
-    }
+
     setState(() {
       offset = Offset.zero;
       backgroundOpacity = 1.0;
@@ -88,7 +95,7 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
   }
 
   /// Needs refactor, since this callback assumes that the image is a square with width and height being the same(MediaQuery.sizeOf(context).width))
-  void handleTapUp(TapUpDetails details) {
+  void handleTapUp(TapUpDetails details) async {
     final double screenWidth = MediaQuery.sizeOf(context).width;
     final double screenHeight = MediaQuery.sizeOf(context).height;
     final double imageTop = (screenHeight - screenWidth) / 2;
@@ -97,6 +104,13 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
     final tappedY = details.globalPosition.dy;
 
     if (tappedY < imageTop || tappedY > imageBottom) {
+      final currentIndex = _tabController.index;
+      final viewerKey = _viewerKeys[currentIndex];
+      final viewerState = viewerKey.currentState;
+
+      if (viewerState != null) {
+        await viewerState.resetZoom(duration: Duration(milliseconds: 100));
+      }
       Navigator.of(context).pop(_tabController.index);
     }
   }
@@ -104,30 +118,22 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
   @override
   Widget build(BuildContext context) {
     /// Creates a list of widgets for the page view, each wrapped in a Hero animation.
-    ///
-    /// By default, InteractiveViewer clips its child using Clip.hardEdge.
-    /// To prevent this behavior, consider setting clipBehavior to Clip.none.
-    /// When clipBehavior is Clip.none, InteractiveViewer may draw outside of its original area of the screen,
-    /// such as when a child is zoomed in and increases in size.
-    /// However, it will not receive gestures outside of its original area.
-    /// To prevent dead areas where InteractiveViewer does not receive gestures, don't set clipBehavior
-    /// or be sure that the InteractiveViewer widget is the size of the area that should be interactive.
-    final heroWidgets = widget.tags.map(
-      (path) {
-        final tag = path.value;
-        return Hero(
-          tag: tag,
-          transitionOnUserGestures: true,
-          child: Center(
-            child: CustomInteractiveViewer(
-              tag: tag,
-              onPanEnd: handlePanEnd,
-              onPanUpdate: handlePanUpdate,
-            ),
+
+    final heroWidgets = List.generate(widget.tags.length, (index) {
+      final tag = widget.tags[index].value;
+      return Hero(
+        tag: tag,
+        transitionOnUserGestures: true,
+        child: Center(
+          child: CustomInteractiveViewer(
+            key: _viewerKeys[index],
+            tag: tag,
+            onPanEnd: handlePanEnd,
+            onPanUpdate: handlePanUpdate,
           ),
-        );
-      },
-    ).toList();
+        ),
+      );
+    });
 
     return GestureDetector(
       onTapUp: handleTapUp,
@@ -197,6 +203,14 @@ class _DetailScreenPageView extends State<DetailScreenPageView>
 }
 
 class CustomInteractiveViewer extends StatefulWidget {
+  /// By default, InteractiveViewer clips its child using Clip.hardEdge.
+  /// To prevent this behavior, consider setting clipBehavior to Clip.none.
+  /// When clipBehavior is Clip.none, InteractiveViewer may draw outside of its original area of the screen,
+  /// such as when a child is zoomed in and increases in size.
+  /// However, it will not receive gestures outside of its original area.
+  /// To prevent dead areas where InteractiveViewer does not receive gestures, don't set clipBehavior
+  /// or be sure that the InteractiveViewer widget is the size of the area that should be interactive.
+
   const CustomInteractiveViewer(
       {super.key, required this.tag, this.onPanUpdate, this.onPanEnd});
   final String tag;
@@ -204,10 +218,10 @@ class CustomInteractiveViewer extends StatefulWidget {
   final void Function(DragEndDetails)? onPanEnd;
 
   @override
-  State<StatefulWidget> createState() => _CustomInteractiveViewer();
+  State<StatefulWidget> createState() => _CustomInteractiveViewerState();
 }
 
-class _CustomInteractiveViewer extends State<CustomInteractiveViewer>
+class _CustomInteractiveViewerState extends State<CustomInteractiveViewer>
     with TickerProviderStateMixin {
   final TransformationController _transformationController =
       TransformationController();
@@ -247,6 +261,22 @@ class _CustomInteractiveViewer extends State<CustomInteractiveViewer>
     _animationController.forward(from: 0);
   }
 
+  Future<void> resetZoom(
+      {Duration duration = const Duration(milliseconds: 300)}) async {
+    if (_transformationController.value != Matrix4.identity()) {
+      Matrix4 endMatrix = Matrix4.identity();
+      _animationController.duration = duration;
+      _animation = Matrix4Tween(
+        begin: _transformationController.value,
+        end: endMatrix,
+      ).animate(
+        CurveTween(curve: Curves.easeOut).animate(_animationController),
+      );
+
+      await _animationController.forward(from: 0);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return InteractiveViewer(
@@ -275,8 +305,8 @@ class _CustomInteractiveViewer extends State<CustomInteractiveViewer>
 
   @override
   void dispose() {
-    _animationController.dispose();
     _transformationController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 }
