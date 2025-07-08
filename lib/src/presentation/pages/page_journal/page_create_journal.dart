@@ -222,8 +222,9 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                                   width: 90,
                                   child: AnimatedOpacity(
                                       opacity: switch (weatherController) {
-                                        weather_controller_state
-                                              .WeatherControllerState.data =>
+                                        weather_controller_state.Data(
+                                          :final weatherInfo
+                                        ) =>
                                           1.0,
                                         _ => 0.0,
                                       },
