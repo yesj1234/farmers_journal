@@ -13,19 +13,16 @@ import 'package:go_router/go_router.dart';
 /// A stateful widget that displays journal entries grouped by day.
 class DayView extends ConsumerStatefulWidget {
   /// Creates a [DayView] widget.
-  const DayView({super.key});
+  const DayView({super.key, required this.scrollController});
+  final ScrollController scrollController;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _DayViewState();
 }
 
 /// The state class for [DayView].
 class _DayViewState extends ConsumerState<DayView> {
-  /// Scroll controller for the list view.
-  final ScrollController scrollController = ScrollController();
-
   @override
   void dispose() {
-    scrollController.dispose();
     super.dispose();
   }
 

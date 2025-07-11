@@ -13,7 +13,8 @@ class WeekView extends ConsumerWidget {
   /// Creates a [WeekView] widget.
   ///
   /// The [key] parameter is optional and passed to the superclass.
-  const WeekView({super.key});
+  const WeekView({super.key, required this.scrollController});
+  final ScrollController scrollController;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final journals = ref.watch(weekViewControllerProvider);

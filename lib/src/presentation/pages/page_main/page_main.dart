@@ -2,7 +2,7 @@
 import '../../controller/user/user_controller.dart';
 import '../../pages/page_main/top_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+
 //Riverpod
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/providers.dart';
@@ -23,10 +23,10 @@ class PageMain extends ConsumerStatefulWidget {
   TextStyle get selectedText => const TextStyle(fontWeight: FontWeight.bold);
 
   @override
-  ConsumerState<PageMain> createState() => _PageMainCollapsibleState();
+  ConsumerState<PageMain> createState() => _PageMainState();
 }
 
-class _PageMainCollapsibleState extends ConsumerState<PageMain> {
+class _PageMainState extends ConsumerState<PageMain> {
   final ScrollController scrollController = ScrollController();
   @override
   void dispose() {
@@ -36,44 +36,37 @@ class _PageMainCollapsibleState extends ConsumerState<PageMain> {
 
   @override
   Widget build(BuildContext context) {
-    final userRef = ref.watch(userControllerProvider(null));
     final mainView = ref.watch(mainViewFilterProvider);
     return Scaffold(
       body: SafeArea(
-        child: CustomScrollView(
-          controller: scrollController,
-          slivers: <Widget>[
-            SliverPersistentHeader(
-              delegate: _TopNavDelegate(),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Stack(children: [
-                  Content(
-                    scrollController: scrollController,
+        child: Stack(
+          children: [
+            CustomScrollView(
+              controller: scrollController,
+              slivers: <Widget>[
+                SliverPersistentHeader(
+                  delegate: _TopNavDelegate(),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Stack(children: [
+                      Content(
+                        scrollController: scrollController,
+                      ),
+                    ]),
                   ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child:
-                        ScrollToTopButton(scrollController: scrollController),
-                  )
-                ]),
-              ),
+                ),
+              ],
             ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ScrollToTopButton(scrollController: scrollController),
+            )
           ],
         ),
       ),
-      floatingActionButton: ButtonCreatePost(
-        onClick: () {
-          // 초기 설정 없으면 초기 설정 페이지로 이동
-          if (userRef.value!.isInitialSettingRequired) {
-            context.go('/initial_setting');
-          } else {
-            context.push('/create');
-          }
-        },
-      ),
+      floatingActionButton: ButtonCreatePost(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         color: Theme.of(context).brightness == Brightness.dark
@@ -131,11 +124,9 @@ class _PageMainCollapsibleState extends ConsumerState<PageMain> {
 
 class _TopNavDelegate extends SliverPersistentHeaderDelegate {
   @override
-  // TODO: implement maxExtent
   double get maxExtent => 80;
 
   @override
-  // TODO: implement minExtent
   double get minExtent => 40;
 
   @override
@@ -200,16 +191,7 @@ class PageMainPrev extends ConsumerWidget {
           ),
         ),
       ),
-      floatingActionButton: ButtonCreatePost(
-        onClick: () {
-          // 초기 설정 없으면 초기 설정 페이지로 이동
-          if (userRef.value!.isInitialSettingRequired) {
-            context.go('/initial_setting');
-          } else {
-            context.push('/create');
-          }
-        },
-      ),
+      floatingActionButton: ButtonCreatePost(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         color: Theme.of(context).brightness == Brightness.dark

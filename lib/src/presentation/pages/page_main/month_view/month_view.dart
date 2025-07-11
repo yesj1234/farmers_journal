@@ -19,8 +19,10 @@ class MonthView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final journals = ref.watch(monthViewControllerProvider);
     return switch (journals) {
-      month_view_state.Data(:final data) =>
-        Center(child: CalendarWidget(events: data)),
+      month_view_state.Data(:final data) => Center(
+            child: CalendarWidget(
+          events: data,
+        )),
       _ => const SizedBox.shrink(),
     };
   }
