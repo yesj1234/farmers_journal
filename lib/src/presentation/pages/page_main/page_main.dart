@@ -41,23 +41,35 @@ class _PageMainState extends ConsumerState<PageMain> {
       body: SafeArea(
         child: Stack(
           children: [
-            CustomScrollView(
-              controller: scrollController,
-              slivers: <Widget>[
-                SliverPersistentHeader(
-                  delegate: _TopNavDelegate(),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Stack(children: [
-                      Content(
-                        scrollController: scrollController,
-                      ),
-                    ]),
+            RefreshIndicator(
+              edgeOffset: 80,
+              onRefresh: () async {
+                if (mainView == MainView.community) {
+                  ref.invalidate(paginationControllerProvider);
+                } else if (mainView == MainView.day) {
+                  ref.invalidate(dayViewControllerProvider);
+                } else if (mainView == MainView.week) {
+                  ref.invalidate(weekViewControllerProvider);
+                }
+              },
+              child: CustomScrollView(
+                controller: scrollController,
+                slivers: <Widget>[
+                  SliverPersistentHeader(
+                    delegate: _TopNavDelegate(),
                   ),
-                ),
-              ],
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Stack(children: [
+                        Content(
+                          scrollController: scrollController,
+                        ),
+                      ]),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Align(
               alignment: Alignment.bottomRight,
@@ -127,28 +139,17 @@ class _TopNavDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => 80;
 
   @override
-  double get minExtent => 40;
+  double get minExtent => 30;
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     final progress = shrinkOffset / (maxExtent - minExtent);
-    return Stack(children: [
-      Align(
-        alignment: Alignment.topRight,
-        child: Opacity(
-          opacity: progress.clamp(0, 1),
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: IconButton(onPressed: () => {}, icon: Icon(Icons.menu)),
-          ),
-        ),
-      ),
-      Opacity(
-        opacity: 1 - progress.clamp(0, 1),
-        child: TopNav(),
-      ),
-    ]);
+
+    return Opacity(
+      opacity: 1 - progress.clamp(0, 1),
+      child: TopNav(),
+    );
   }
 
   @override

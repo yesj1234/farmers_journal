@@ -46,17 +46,12 @@ class _CommunityViewState extends ConsumerState<CommunityView> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(paginationControllerProvider);
-          },
-          child: Column(
-            children: const [
-              ItemsList(),
-              NoMoreItems(),
-              OnGoingBottomWidget(),
-            ],
-          ),
+        Column(
+          children: const [
+            ItemsList(),
+            NoMoreItems(),
+            OnGoingBottomWidget(),
+          ],
         ),
       ],
     );
