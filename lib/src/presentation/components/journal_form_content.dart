@@ -70,12 +70,7 @@ class ContentForm extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          tag.isLoading
-              ? const SizedBox.shrink()
-              : Padding(
-                  padding: const EdgeInsets.only(left: 12),
-                  child: tag.value!,
-                ),
+          tag.isLoading ? const SizedBox.shrink() : tag.value!,
           Expanded(
             child: Stack(
               children: [
