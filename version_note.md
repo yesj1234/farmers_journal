@@ -44,3 +44,4 @@
 
 **version 1.0.9**
 - main page header is now collapsible(?)
+- Minor fix of detailed view of journal.
