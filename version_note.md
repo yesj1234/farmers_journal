@@ -42,3 +42,5 @@
 - Add weather data on journal.
 - Add Push notification if comment is being added to user's journal.
 
+**version 1.0.9**
+- main page header is now collapsible(?)
