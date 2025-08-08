@@ -97,6 +97,14 @@ class ImageTileBuilder extends StatelessWidget {
           isEditMode: isEditMode ?? false,
           borderRadius: borderRadius,
         ),
+      EntityImage(:final value) => EntityImageTile(
+          width: minWidth,
+          height: minHeight,
+          id: index,
+          image: value,
+          isEditMode: isEditMode ?? false,
+          onDelete: () => onDelete?.call(index),
+        ),
     };
 
     switch (image) {
@@ -143,6 +151,9 @@ class ImageTileBuilder extends StatelessWidget {
         }
 
       case XFileImage():
+        return imageTile;
+
+      case EntityImage():
         return imageTile;
     }
   }

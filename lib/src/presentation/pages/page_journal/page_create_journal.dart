@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import '../../controller/journal/journal_form_controller_state.dart'
     as journal_form_controller_state;
+import '../../controller/journal_image/journal_image_controller.dart';
 import '../../controller/weather/weather_controller.dart';
 import '../../components/journal_form_content.dart';
 import '../../components/journal_form_date.dart';
@@ -15,6 +16,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 
 import '../../controller/weather/weather_controller_state.dart'
     as weather_controller_state;
@@ -31,6 +34,7 @@ class PageCreateJournal extends ConsumerStatefulWidget {
 class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
   final ValueNotifier<List<XFile>> imageNotifier = ValueNotifier([]);
 
+  final _maxImageCount = 8;
   Future<void> pickImage() async {
     XFile? _image = await _imagePicker.pickImage(source: ImageSource.gallery);
     // instead of invoking setState, which rebuilds the entire widget tree,
@@ -41,9 +45,15 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
   }
 
   Future<void> pickMultipleImages({required int limit}) async {
-    List<XFile> _images = await _imagePicker.pickMultiImage(limit: limit);
-    if (_images.isNotEmpty) {
-      imageNotifier.value = [...imageNotifier.value, ..._images];
+    // List<XFile> _images = await _imagePicker.pickMultiImage(limit: limit);
+    // if (_images.isNotEmpty) {
+    //   imageNotifier.value = [...imageNotifier.value, ..._images];
+    // }
+    final List<AssetPathEntity> paths =
+        await PhotoManager.getAssetPathList(type: RequestType.image);
+
+    if (context.mounted) {
+      showImagePickerModal(context: context, paths: paths);
     }
   }
 
@@ -102,6 +112,7 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
   Widget build(BuildContext context) {
     final journalFormController = ref.watch(journalFormControllerProvider);
     final weatherController = ref.watch(weatherControllerProvider());
+    final journalImageController = ref.watch(journalImageControllerProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -282,27 +293,60 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                             ),
                           ),
                         ),
-                        ValueListenableBuilder(
-                            valueListenable: imageNotifier,
-                            builder: (context, images, child) => images
-                                    .isNotEmpty
-                                ? SizedBox(
-                                    width:
-                                        MediaQuery.sizeOf(context).width - 42,
-                                    height: images.length <= 5
-                                        ? MediaQuery.sizeOf(context).height / 5
-                                        : MediaQuery.sizeOf(context).height /
-                                            2.5,
-                                    child: CustomImageWidgetLayout(
-                                      images: images
-                                          .map((item) => XFileImage(item))
-                                          .toList(),
-                                      onDelete: deleteImage,
-                                      isEditMode: true,
-                                      isImagesHidden: false,
-                                    ),
-                                  )
-                                : const SizedBox.shrink()),
+                        journalImageController.isEmpty
+                            ? const SizedBox.shrink()
+                            : AnimatedOpacity(
+                                duration: const Duration(seconds: 1),
+                                opacity:
+                                    journalImageController.isNotEmpty ? 1 : 0,
+                                child: SizedBox(
+                                  key: ValueKey(journalImageController.length),
+                                  width: MediaQuery.sizeOf(context).width - 42,
+                                  height: journalImageController.length <= 5
+                                      ? MediaQuery.sizeOf(context).height / 5
+                                      : MediaQuery.sizeOf(context).height / 2.5,
+                                  child: CustomImageWidgetLayout(
+                                    images: journalImageController
+                                        .map((item) => EntityImage(item))
+                                        .toList(),
+                                    onDelete: (int index) => ref
+                                        .read(journalImageControllerProvider
+                                            .notifier)
+                                        .onDelete(index),
+                                    isEditMode: true,
+                                    isImagesHidden: false,
+                                  ),
+                                ),
+                              ),
+                        // ValueListenableBuilder(
+                        //     valueListenable: imageNotifier,
+                        //     builder: (context, images, child) {
+                        //       final imagesLayout = images.isNotEmpty
+                        //           ? SizedBox(
+                        //               key: ValueKey(images.length),
+                        //               width:
+                        //                   MediaQuery.sizeOf(context).width - 42,
+                        //               height: images.length <= 5
+                        //                   ? MediaQuery.sizeOf(context).height /
+                        //                       5
+                        //                   : MediaQuery.sizeOf(context).height /
+                        //                       2.5,
+                        //               child: CustomImageWidgetLayout(
+                        //                 images: images
+                        //                     .map((item) => XFileImage(item))
+                        //                     .toList(),
+                        //                 onDelete: deleteImage,
+                        //                 isEditMode: true,
+                        //                 isImagesHidden: false,
+                        //               ),
+                        //             )
+                        //           : const SizedBox.shrink();
+                        //       return AnimatedOpacity(
+                        //         duration: const Duration(seconds: 1),
+                        //         opacity: images.isNotEmpty ? 1 : 0,
+                        //         child: imagesLayout,
+                        //       );
+                        //     }),
                         TitleForm(
                           titleController: titleController,
                           contentController: contentController,
@@ -314,14 +358,17 @@ class _PageCreateJournal extends ConsumerState<PageCreateJournal> {
                             controller: contentController,
                             onImagePick: () async {
                               try {
-                                if (imageNotifier.value.length >= 8) {
+                                if (imageNotifier.value.length >=
+                                    _maxImageCount) {
                                   throw (Exception('사진은 최대 8장 까지 선택할 수 있습니다.'));
                                 }
-                                if (imageNotifier.value.length >= 7) {
+                                if (imageNotifier.value.length >=
+                                    _maxImageCount - 1) {
                                   pickImage();
                                 } else {
                                   pickMultipleImages(
-                                    limit: 8 - imageNotifier.value.length,
+                                    limit: _maxImageCount -
+                                        imageNotifier.value.length,
                                   );
                                 }
                               } catch (e) {
@@ -354,6 +401,105 @@ class _CompleteButton extends StatelessWidget {
       "완료",
       style: TextStyle(
         fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+void showImagePickerModal(
+    {required BuildContext context, required List<AssetPathEntity> paths}) {
+  showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => _ImagePickerModal(paths: paths));
+}
+
+class _ImagePickerModal extends ConsumerStatefulWidget {
+  const _ImagePickerModal({super.key, required this.paths});
+  final List<AssetPathEntity> paths;
+
+  @override
+  ConsumerState<_ImagePickerModal> createState() => _ImagePickerModalState();
+}
+
+class _ImagePickerModalState extends ConsumerState<_ImagePickerModal> {
+  late AssetPathEntity _currentPath;
+  Future<List<AssetEntity>>? _futureImages;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentPath = widget.paths.first;
+    _loadImages();
+  }
+
+  void _loadImages() {
+    _futureImages = _currentPath.getAssetListPaged(page: 0, size: 10);
+  }
+
+  void _onTagSelected(AssetPathEntity path) {
+    setState(() {
+      _currentPath = path;
+      _loadImages();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> tags = widget.paths
+        .map((path) => TextButton(
+            onPressed: () => _onTagSelected(path), child: Text(path.name)))
+        .toList();
+    return Container(
+      height: 400,
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      color: Colors.amber,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 80,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: tags,
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<AssetEntity>>(
+              future: _futureImages,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Text("No images found.");
+                } else {
+                  return SizedBox(
+                    height: 400,
+                    child: GridView.count(
+                        mainAxisSpacing: 3,
+                        crossAxisSpacing: 3,
+                        crossAxisCount: 4,
+                        children: snapshot.data!
+                            .map((entity) => GestureDetector(
+                                  onTap: () => ref
+                                      .read(journalImageControllerProvider
+                                          .notifier)
+                                      .onAssetTap(entity),
+                                  child: AssetEntityImage(
+                                    entity,
+                                    width: 40,
+                                    height: 40,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ))
+                            .toList()),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

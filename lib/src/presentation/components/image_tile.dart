@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 
 /// {@category Presentation}
 /// {@subCategory Component}
@@ -193,6 +195,78 @@ class XFileImageTile extends StatelessWidget {
         height: height,
         child: Image.file(
           File(image.path),
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return const Center(child: Icon(Icons.broken_image, size: 50));
+          },
+        ),
+      ),
+    );
+    final removeImageButton = Positioned(
+      right: 1,
+      child: IconButton(
+        alignment: Alignment.topRight,
+        onPressed: onDelete,
+        padding: EdgeInsets.zero,
+        iconSize: 20,
+        icon: const Icon(
+          Icons.cancel_rounded,
+          color: Colors.white,
+        ),
+      ),
+    );
+    return isEditMode
+        ? Stack(children: [
+            imageRect,
+            removeImageButton,
+          ])
+        : imageRect;
+  }
+}
+
+class EntityImageTile extends StatelessWidget {
+  const EntityImageTile({
+    super.key,
+    required this.id,
+    required this.image,
+    required this.isEditMode,
+    required this.onDelete,
+    this.width,
+    this.height,
+    this.borderRadius,
+  });
+
+  /// An identifier for the image.
+  final int id;
+
+  /// The `XFile` object representing the image.
+  final AssetEntity image;
+
+  /// A boolean indicating whether the widget is in edit mode.
+  final bool isEditMode;
+
+  /// A callback function that is called when the delete button is pressed.
+  final void Function()? onDelete;
+
+  /// The width of the image.
+  final double? width;
+
+  /// The height of the image.
+  final double? height;
+
+  /// The border radius of the image.
+  final BorderRadius? borderRadius;
+  @override
+  Widget build(BuildContext context) {
+    final imageRect = ClipRRect(
+      borderRadius: borderRadius ?? BorderRadius.circular(10),
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: AssetEntityImage(
+          image,
           width: width,
           height: height,
           fit: BoxFit.cover,

@@ -29,7 +29,8 @@ class WeatherIconBuilder extends StatelessWidget {
         ),
         Text(
           '$temperature℃',
-          style: TemperatureStyleHelper.getStyle(context, temperature!),
+          style: TemperatureStyleHelper.getStyle(context, temperature!)
+              .copyWith(color: Colors.black),
         ),
       ],
     );

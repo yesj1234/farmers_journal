@@ -134,6 +134,9 @@ class _PageUpdateJournalState extends ConsumerState<PageUpdateJournal> {
           return Future.value(Uint8List.fromList([0]));
         case XFileImage():
           return img.value.readAsBytes();
+        case EntityImage():
+          // TODO: Handle this case.
+          throw UnimplementedError();
       }
     }).toList();
     final bytesList = await Future.wait(futureBytes);

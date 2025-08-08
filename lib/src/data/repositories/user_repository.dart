@@ -344,6 +344,9 @@ class FireStoreUserRepository implements UserRepository {
             return downloadURL;
           case null:
             throw UnimplementedError();
+          case EntityImage():
+            // TODO: Handle this case.
+            throw UnimplementedError();
         }
       }).toList();
       imageURLs = await Future.wait(imageUploadTasks);

@@ -1,4 +1,6 @@
+import 'package:farmers_journal/src/data/providers.dart';
 import 'package:farmers_journal/src/presentation/components/avatar/avatar_profile.dart';
+import 'package:farmers_journal/src/presentation/controller/auction/auction_controller.dart';
 import 'package:farmers_journal/src/presentation/controller/user/user_controller.dart';
 import 'package:farmers_journal/src/presentation/pages/page_statistics/auction_price.dart';
 import 'package:farmers_journal/src/presentation/pages/page_statistics/journal_record.dart';
@@ -14,6 +16,7 @@ class PageStatistics extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userRef = ref.watch(userControllerProvider(null));
+    final auctionPricesRef = ref.watch(auctionControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -70,22 +73,23 @@ class PageStatistics extends ConsumerWidget {
               indent: 10,
               endIndent: 10,
             ),
-            Expanded(
-              child: SizedBox(
-                width: MediaQuery.sizeOf(context).width,
-                height: MediaQuery.sizeOf(context).height,
-                child: Center(
-                  child: ListView(
-                    children: const [
-                      SizedBox(height: 20),
-                      Center(
-                        child: JournalRecord(),
-                      ),
-                      SizedBox(height: 10),
-                    ],
-                  ),
-                ),
-              ),
+            ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              children: [
+                const JournalRecord(),
+                // const SizedBox(height: 10),
+                // auctionPricesRef.maybeWhen(
+                //     data: (data) => Center(
+                //           child: SizedBox(
+                //               height: 150,
+                //               width: 230,
+                //               child: CandlestickChart()),
+                //         ),
+                //     orElse: () {
+                //       return const SizedBox.shrink();
+                //     })
+              ],
             )
           ],
         ),
